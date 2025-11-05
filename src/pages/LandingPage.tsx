@@ -25,6 +25,12 @@ export function LandingPage() {
           const orderB = b.display_order ?? Infinity;
           return orderA - orderB;
         });
+        // Debug: Log character data to see avatar_url structure
+        console.log('Characters data:', sortedCharacters.map(c => ({
+          name: c.name,
+          config_id: c.config_id,
+          avatar_url: c.avatar_url,
+        })));
         setCharacters(sortedCharacters);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to load characters';
