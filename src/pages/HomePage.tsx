@@ -1,31 +1,39 @@
+import { useState, useEffect } from 'react';
 import { CharacterCard } from '../components/CharacterCard';
-import type { Character } from '../types/api';
-
-// Hardcoded character list
-const CHARACTERS: Character[] = [
-  {
-    id: 'CHAR_6c606003-8b02-4943-8690-73b9b8fe3ae4',
-    name: 'Default Character',
-    description: 'A friendly AI companion ready to chat about anything. Engaging and helpful conversations await!',
-  },
-  {
-    id: 'CHAR_example_2',
-    name: 'Adventure Guide',
-    description: 'Your personal adventure guide, always ready to explore new ideas and share exciting stories.',
-  },
-  {
-    id: 'CHAR_example_3',
-    name: 'Tech Mentor',
-    description: 'Learn about technology, programming, and innovation with an expert who loves to teach.',
-  },
-  {
-    id: 'CHAR_example_4',
-    name: 'Creative Writer',
-    description: 'Spark your creativity with a literary companion who helps craft stories and explores imagination.',
-  },
-];
+import { getCharacters } from '../utils/api';
+import type { CharacterResponse } from '../types/api';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 export function HomePage() {
+  const [characters, setCharacters] = useState<CharacterResponse[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCharacters = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const data = await getCharacters();
+        // Sort by display_order if provided, otherwise keep original order
+        const sortedCharacters = [...data.characters].sort((a, b) => {
+          const orderA = a.display_order ?? Infinity;
+          const orderB = b.display_order ?? Infinity;
+          return orderA - orderB;
+        });
+        setCharacters(sortedCharacters);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load characters';
+        setError(errorMessage);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCharacters();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -38,11 +46,40 @@ export function HomePage() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {CHARACTERS.map((character) => (
-            <CharacterCard key={character.id} character={character} />
-          ))}
-        </div>
+        {isLoading && (
+          <div className="flex justify-center items-center py-12">
+            <LoadingSpinner />
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <p className="text-red-800 text-sm">
+              <span className="font-semibold">Error loading characters:</span> {error}
+            </p>
+          </div>
+        )}
+
+        {!isLoading && !error && characters.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-600">No characters available at this time.</p>
+          </div>
+        )}
+
+        {!isLoading && !error && characters.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {characters.map((character) => (
+              <CharacterCard
+                key={character.config_id}
+                character={{
+                  id: character.config_id,
+                  name: character.name || character.config_id,
+                  description: character.description || 'No description available',
+                }}
+              />
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );

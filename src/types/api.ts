@@ -44,6 +44,20 @@ export interface Character {
   avatar?: string;
 }
 
+// API Character Response Types
+export interface CharacterResponse {
+  config_id: string;
+  name?: string;
+  description?: string;
+  display_order?: number;
+  config: any; // Full character configuration
+}
+
+export interface CharactersResponse {
+  characters: CharacterResponse[];
+  total: number;
+}
+
 // Chat Message Types
 export interface ChatMessage {
   role: 'user' | 'ai';

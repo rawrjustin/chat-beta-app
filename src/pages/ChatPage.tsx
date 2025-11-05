@@ -1,39 +1,47 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useChat } from '../hooks/useChat';
 import { ChatMessage } from '../components/ChatMessage';
 import { ChatInput } from '../components/ChatInput';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-
-// Hardcoded character list for lookup
-const CHARACTERS: Record<string, { name: string; description: string }> = {
-  'CHAR_6c606003-8b02-4943-8690-73b9b8fe3ae4': {
-    name: 'Default Character',
-    description: 'A friendly AI companion',
-  },
-  'CHAR_example_2': {
-    name: 'Adventure Guide',
-    description: 'Your personal adventure guide',
-  },
-  'CHAR_example_3': {
-    name: 'Tech Mentor',
-    description: 'Learn about technology',
-  },
-  'CHAR_example_4': {
-    name: 'Creative Writer',
-    description: 'Spark your creativity',
-  },
-};
+import { getCharacters } from '../utils/api';
+import type { CharacterResponse } from '../types/api';
 
 export function ChatPage() {
   const { configId } = useParams<{ configId: string }>();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
-
-  const character = configId ? CHARACTERS[configId] : null;
+  const [character, setCharacter] = useState<CharacterResponse | null>(null);
+  const [isLoadingCharacter, setIsLoadingCharacter] = useState(true);
   const { messages, isLoading, error, sendMessage, startNewConversation } = useChat(
     configId || ''
   );
+
+  // Fetch character info
+  useEffect(() => {
+    const fetchCharacter = async () => {
+      if (!configId) {
+        setIsLoadingCharacter(false);
+        return;
+      }
+
+      setIsLoadingCharacter(true);
+      try {
+        const data = await getCharacters();
+        const foundCharacter = data.characters.find(
+          (char) => char.config_id === configId
+        );
+        setCharacter(foundCharacter || null);
+      } catch (err) {
+        console.error('Failed to fetch character:', err);
+        setCharacter(null);
+      } finally {
+        setIsLoadingCharacter(false);
+      }
+    };
+
+    fetchCharacter();
+  }, [configId]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -80,10 +88,14 @@ export function ChatPage() {
               </Link>
               <div>
                 <h1 className="text-xl font-semibold text-airbnb-dark">
-                  {character?.name || 'AI Character'}
+                  {isLoadingCharacter
+                    ? 'Loading...'
+                    : character?.name || configId || 'AI Character'}
                 </h1>
                 <p className="text-sm text-gray-600">
-                  {character?.description || 'Chat with AI'}
+                  {isLoadingCharacter
+                    ? ''
+                    : character?.description || 'Chat with AI'}
                 </p>
               </div>
             </div>

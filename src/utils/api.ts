@@ -4,6 +4,7 @@ import type {
   ErrorResponse,
   CreateSessionRequest,
   ProxyChatRequest,
+  CharactersResponse,
 } from '../types/api';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
@@ -60,5 +61,15 @@ export async function sendChatMessage(
 export async function checkHealth(): Promise<{ status: string; timestamp: string }> {
   const response = await fetch(`${API_BASE}/health`);
   return handleResponse<{ status: string; timestamp: string }>(response);
+}
+
+export async function getCharacters(): Promise<CharactersResponse> {
+  const response = await fetch(`${API_BASE}/api/characters`);
+  return handleResponse<CharactersResponse>(response);
+}
+
+export async function getCharacterConfig(configId: string): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/config/${configId}`);
+  return handleResponse<any>(response);
 }
 
