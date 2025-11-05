@@ -50,6 +50,7 @@ export interface CharacterResponse {
   name?: string;
   description?: string;
   display_order?: number;
+  avatar_url?: string;
   config: any; // Full character configuration
 }
 

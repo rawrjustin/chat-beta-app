@@ -233,6 +233,7 @@ export function LandingPage() {
                     id: character.config_id,
                     name: character.name || character.config_id,
                     description: character.description || 'No description available',
+                    avatar: character.avatar_url,
                   }}
                 />
               ))}
