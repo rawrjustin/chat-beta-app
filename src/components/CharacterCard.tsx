@@ -49,7 +49,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
   return (
     <Link to={`/chat/${character.id}`} className="block group">
       <div className="card h-full flex flex-col group-hover:scale-[1.02] transition-transform duration-200">
-        <div className="aspect-square bg-gradient-to-br from-purple-100 via-blue-100 to-purple-200 flex items-center justify-center overflow-hidden relative">
+        <div className="aspect-[5/6] bg-gradient-to-br from-purple-100 via-blue-100 to-purple-200 flex items-center justify-center overflow-hidden relative">
           {hasAvatar && !imageError ? (
             <>
               {!imageLoaded && (
