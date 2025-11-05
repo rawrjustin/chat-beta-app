@@ -30,6 +30,16 @@ export function Navbar() {
               Home
             </Link>
             <Link
+              to="/characters"
+              className={`text-sm font-medium transition-colors ${
+                isActive('/characters')
+                  ? 'text-purple-600'
+                  : 'text-gray-700 hover:text-purple-600'
+              }`}
+            >
+              Characters
+            </Link>
+            <Link
               to="/pricing"
               className={`text-sm font-medium transition-colors ${
                 isActive('/pricing')

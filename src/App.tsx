@@ -5,6 +5,7 @@ import { ChatPage } from './pages/ChatPage';
 import { PricingPage } from './pages/PricingPage';
 import { SupportPage } from './pages/SupportPage';
 import { AboutPage } from './pages/AboutPage';
+import { CharactersPage } from './pages/CharactersPage';
 
 function App() {
   return (
@@ -40,6 +41,14 @@ function App() {
           element={
             <Layout>
               <AboutPage />
+            </Layout>
+          }
+        />
+        <Route
+          path="/characters"
+          element={
+            <Layout>
+              <CharactersPage />
             </Layout>
           }
         />

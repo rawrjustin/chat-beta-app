@@ -4,11 +4,14 @@ import { CharacterCard } from '../components/CharacterCard';
 import { getCharacters } from '../utils/api';
 import type { CharacterResponse } from '../types/api';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { PaywallModal } from '../components/PaywallModal';
 
 export function LandingPage() {
   const [characters, setCharacters] = useState<CharacterResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [characterInput, setCharacterInput] = useState('');
+  const [showPaywall, setShowPaywall] = useState(false);
 
   useEffect(() => {
     const fetchCharacters = async () => {
@@ -47,24 +50,45 @@ export function LandingPage() {
                 story
               </span>
             </h1>
-            <p className="text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
+            <p className="text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto mb-12">
               Discover and chat with AI-powered characters. Each conversation is a new adventure,
               every character has a unique personality waiting to be explored.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                to="/#characters"
-                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:shadow-xl hover:scale-105 transition-all"
-              >
-                Explore Characters
-              </Link>
-              <a
-                href="#how-it-works"
-                className="bg-white text-gray-900 px-8 py-4 rounded-xl text-lg font-semibold border-2 border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all"
-              >
-                Learn More
-              </a>
+            
+            {/* Character Creation Input */}
+            <div className="max-w-2xl mx-auto mb-8">
+              <div className="relative">
+                <textarea
+                  value={characterInput}
+                  onChange={(e) => setCharacterInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey && characterInput.trim()) {
+                      e.preventDefault();
+                      setShowPaywall(true);
+                    }
+                  }}
+                  placeholder="Create any character you imagine with a few lines"
+                  className="w-full px-6 py-5 pr-32 text-lg rounded-2xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all resize-none bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl"
+                  rows={4}
+                />
+                <div className="absolute bottom-4 right-4 flex items-center gap-2">
+                  <span className="text-sm text-gray-400 hidden sm:inline">Press Enter to create</span>
+                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
+                </div>
+              </div>
             </div>
+
+            {/* Explore Existing Characters Button */}
+            <div className="flex justify-center">
+              <Link
+                to="/characters"
+                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-12 py-5 rounded-xl text-xl font-semibold hover:shadow-2xl hover:scale-105 transition-all inline-block"
+              >
+                Explore Existing Characters
+              </Link>
+            </div>
+
+            <PaywallModal isOpen={showPaywall} onClose={() => setShowPaywall(false)} />
           </div>
         </div>
       </section>
