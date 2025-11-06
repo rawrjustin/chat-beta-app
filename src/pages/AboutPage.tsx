@@ -1,17 +1,17 @@
 export function AboutPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">About Story World</h1>
-          <p className="text-xl text-gray-600">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
+        <div className="text-center mb-8 sm:mb-12 md:mb-16">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-4">About Story World</h1>
+          <p className="text-lg sm:text-xl text-gray-600 px-4">
             Every character has a story. We're building the future of interactive storytelling.
           </p>
         </div>
 
         <div className="prose prose-lg max-w-none">
-          <section className="mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Mission</h2>
+          <section className="mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Our Mission</h2>
             <p className="text-gray-700 text-lg leading-relaxed mb-4">
               At Story World, we believe that every character has a unique story waiting to be
               discovered. Our mission is to create immersive, engaging conversations with
@@ -24,8 +24,8 @@ export function AboutPage() {
             </p>
           </section>
 
-          <section className="mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">What We Do</h2>
+          <section className="mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">What We Do</h2>
             <p className="text-gray-700 text-lg leading-relaxed mb-4">
               Story World connects users with a diverse collection of AI characters, each carefully
               crafted with unique personalities, backgrounds, and conversational styles. Whether
@@ -38,9 +38,9 @@ export function AboutPage() {
             </p>
           </section>
 
-          <section className="mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Values</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <section className="mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">Our Values</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">Innovation</h3>
                 <p className="text-gray-600">
@@ -72,9 +72,9 @@ export function AboutPage() {
             </div>
           </section>
 
-          <section className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-8 text-white text-center">
-            <h2 className="text-3xl font-bold mb-4">Join Our Journey</h2>
-            <p className="text-purple-100 mb-6 text-lg">
+          <section className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-6 sm:p-8 text-white text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">Join Our Journey</h2>
+            <p className="text-purple-100 mb-4 sm:mb-6 text-base sm:text-lg">
               We're just getting started. Join us as we explore the endless possibilities of
               AI-powered storytelling.
             </p>

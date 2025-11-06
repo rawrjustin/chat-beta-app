@@ -55,21 +55,21 @@ export function LandingPage() {
         ></div>
         <div className="absolute inset-0 bg-gradient-to-br from-purple-50/80 via-white/80 to-blue-50/80"></div>
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 md:py-32">
           <div className="text-center">
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-4 sm:mb-6 px-4">
               Every character has a{' '}
               <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                 story
               </span>
             </h1>
-            <p className="text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto mb-12">
+            <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-8 sm:mb-12 px-4">
               Discover and chat with AI-powered characters. Each conversation is a new adventure,
               every character has a unique personality waiting to be explored.
             </p>
             
             {/* Character Creation Input */}
-            <div className="max-w-2xl mx-auto mb-8">
+            <div className="max-w-2xl mx-auto mb-6 sm:mb-8 px-4">
               <div className="relative">
                 <textarea
                   value={characterInput}
@@ -81,21 +81,21 @@ export function LandingPage() {
                     }
                   }}
                   placeholder="Create any character you imagine with a few lines"
-                  className="w-full px-6 py-5 pr-32 text-lg rounded-2xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all resize-none bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl"
+                  className="w-full px-4 sm:px-6 py-4 sm:py-5 pr-20 sm:pr-32 text-base sm:text-lg rounded-xl sm:rounded-2xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all resize-none bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl"
                   rows={4}
                 />
-                <div className="absolute bottom-4 right-4 flex items-center gap-2">
-                  <span className="text-sm text-gray-400 hidden sm:inline">Press Enter to create</span>
+                <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 flex items-center gap-2">
+                  <span className="text-xs sm:text-sm text-gray-400 hidden sm:inline">Press Enter to create</span>
                   <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
                 </div>
               </div>
             </div>
 
             {/* Explore Existing Characters Button */}
-            <div className="flex justify-center">
+            <div className="flex justify-center px-4">
               <Link
                 to="/characters"
-                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-12 py-5 rounded-xl text-xl font-semibold hover:shadow-2xl hover:scale-105 transition-all inline-block"
+                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 sm:px-12 py-4 sm:py-5 rounded-xl text-lg sm:text-xl font-semibold hover:shadow-2xl hover:scale-105 transition-all inline-block w-full sm:w-auto text-center"
               >
                 Explore Existing Characters
               </Link>
@@ -107,11 +107,11 @@ export function LandingPage() {
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" className="py-20 bg-white">
+      <section id="how-it-works" className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <div className="text-center mb-8 sm:mb-12 md:mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">How It Works</h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
               Start chatting with AI characters in three simple steps
             </p>
           </div>
@@ -154,11 +154,11 @@ export function LandingPage() {
       </section>
 
       {/* Features */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
+      <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Story World?</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <div className="text-center mb-8 sm:mb-12 md:mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">Why Story World?</h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
               Powered by advanced AI to deliver authentic, engaging conversations
             </p>
           </div>
@@ -207,11 +207,11 @@ export function LandingPage() {
       </section>
 
       {/* Characters Section */}
-      <section id="characters" className="py-20 bg-white">
+      <section id="characters" className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Meet Our Characters</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <div className="text-center mb-8 sm:mb-12 md:mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">Meet Our Characters</h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
               Discover a diverse collection of AI characters, each with their own unique story
               waiting to be told
             </p>
@@ -256,17 +256,17 @@ export function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-purple-600 to-blue-600">
+      <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-r from-purple-600 to-blue-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-white mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3 sm:mb-4 px-4">
             Ready to start your story?
           </h2>
-          <p className="text-xl text-purple-100 mb-8">
+          <p className="text-lg sm:text-xl text-purple-100 mb-6 sm:mb-8 px-4">
             Join thousands of users exploring conversations with AI characters
           </p>
           <Link
             to="/#characters"
-            className="bg-white text-purple-600 px-8 py-4 rounded-xl text-lg font-semibold hover:shadow-xl hover:scale-105 transition-all inline-block"
+            className="bg-white text-purple-600 px-6 sm:px-8 py-3 sm:py-4 rounded-xl text-base sm:text-lg font-semibold hover:shadow-xl hover:scale-105 transition-all inline-block"
           >
             Get Started Free
           </Link>

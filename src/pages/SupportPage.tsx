@@ -1,20 +1,20 @@
 export function SupportPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">Support Center</h1>
-          <p className="text-xl text-gray-600">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
+        <div className="text-center mb-8 sm:mb-12 md:mb-16">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-4">Support Center</h1>
+          <p className="text-lg sm:text-xl text-gray-600 px-4">
             We're here to help. Find answers to common questions or contact our support team.
           </p>
         </div>
 
         {/* FAQ Section */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">Frequently Asked Questions</h2>
+        <div className="mb-8 sm:mb-12 md:mb-16">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8 px-4">Frequently Asked Questions</h2>
           
-          <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 How do I start chatting with a character?
               </h3>
@@ -68,9 +68,9 @@ export function SupportPage() {
         </div>
 
         {/* Contact Section */}
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-8 text-white">
-          <h2 className="text-3xl font-bold mb-4">Still need help?</h2>
-          <p className="text-purple-100 mb-6">
+        <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-6 sm:p-8 text-white">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">Still need help?</h2>
+          <p className="text-purple-100 mb-4 sm:mb-6 text-sm sm:text-base">
             Can't find what you're looking for? Our support team is ready to assist you.
           </p>
           <div className="space-y-4">

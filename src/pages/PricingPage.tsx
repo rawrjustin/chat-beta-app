@@ -1,17 +1,17 @@
 export function PricingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">Simple, Transparent Pricing</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
+        <div className="text-center mb-8 sm:mb-12 md:mb-16">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-4">Simple, Transparent Pricing</h1>
+          <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
             Choose the plan that's right for you. All plans include access to all characters.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
           {/* Free Plan */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8">
             <div className="text-center mb-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Free</h3>
               <div className="flex items-baseline justify-center">
@@ -48,7 +48,7 @@ export function PricingPage() {
           </div>
 
           {/* Pro Plan */}
-          <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl shadow-xl border-2 border-purple-500 p-8 transform scale-105">
+          <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl shadow-xl border-2 border-purple-500 p-6 sm:p-8 md:transform md:scale-105">
             <div className="text-center mb-8">
               <div className="inline-block bg-yellow-400 text-purple-900 text-xs font-bold px-3 py-1 rounded-full mb-2">
                 POPULAR
@@ -94,7 +94,7 @@ export function PricingPage() {
           </div>
 
           {/* Enterprise Plan */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8">
             <div className="text-center mb-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Enterprise</h3>
               <div className="flex items-baseline justify-center">
@@ -136,9 +136,9 @@ export function PricingPage() {
           </div>
         </div>
 
-        <div className="mt-16 text-center">
-          <p className="text-gray-600 mb-4">All plans include:</p>
-          <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-600">
+        <div className="mt-8 sm:mt-12 md:mt-16 text-center px-4">
+          <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">All plans include:</p>
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-gray-600">
             <span>✓ No credit card required</span>
             <span>✓ Cancel anytime</span>
             <span>✓ 30-day money-back guarantee</span>
