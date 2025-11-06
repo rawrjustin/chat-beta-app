@@ -15,6 +15,7 @@ export function ChatPage() {
   const [isLoadingCharacter, setIsLoadingCharacter] = useState(true);
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
   const { messages, isLoading, error, sendMessage, startNewConversation } = useChat(
     configId || ''
   );
@@ -50,7 +51,19 @@ export function ChatPage() {
     setImageError(true);
   };
 
-  const handleImageLoad = () => {
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    const dimensions = {
+      width: img.naturalWidth,
+      height: img.naturalHeight,
+    };
+    console.log('Chat page character image dimensions:', {
+      character: character?.name,
+      dimensions,
+      aspectRatio: `${dimensions.width} / ${dimensions.height}`,
+      url: imageUrl,
+    });
+    setImageDimensions(dimensions);
     setImageLoaded(true);
   };
 
@@ -65,6 +78,7 @@ export function ChatPage() {
       setIsLoadingCharacter(true);
       setImageError(false);
       setImageLoaded(false);
+      setImageDimensions(null);
       try {
         const data = await getCharacters();
         const foundCharacter = data.characters.find(
@@ -137,7 +151,15 @@ export function ChatPage() {
         </div>
         
         <div className="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-purple-50 to-blue-50">
-          <div className="w-full max-w-xs aspect-[5/6] bg-gradient-to-br from-purple-100 via-blue-100 to-purple-200 rounded-2xl flex items-center justify-center overflow-hidden relative shadow-lg">
+          <div 
+            className="w-full max-w-xs bg-gradient-to-br from-purple-100 via-blue-100 to-purple-200 rounded-2xl flex items-center justify-center overflow-hidden relative shadow-lg"
+            style={{
+              aspectRatio: imageDimensions 
+                ? `${imageDimensions.width} / ${imageDimensions.height}` 
+                : '5 / 6',
+              minHeight: '300px',
+            }}
+          >
             {hasAvatar && !imageError ? (
               <>
                 {!imageLoaded && (
@@ -148,7 +170,7 @@ export function ChatPage() {
                 <img
                   src={imageUrl}
                   alt={character?.name || 'Character'}
-                  className={`w-full h-full object-cover transition-opacity duration-300 ${
+                  className={`w-full h-full object-contain transition-opacity duration-300 ${
                     imageLoaded ? 'opacity-100' : 'opacity-0'
                   }`}
                   onError={handleImageError}

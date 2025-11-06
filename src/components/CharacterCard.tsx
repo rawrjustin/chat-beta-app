@@ -9,6 +9,7 @@ interface CharacterCardProps {
 export function CharacterCard({ character }: CharacterCardProps) {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
 
   const hasAvatar = character.avatar && character.avatar.trim() !== '';
 
@@ -42,14 +43,34 @@ export function CharacterCard({ character }: CharacterCardProps) {
     setImageError(true);
   };
 
-  const handleImageLoad = () => {
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    const dimensions = {
+      width: img.naturalWidth,
+      height: img.naturalHeight,
+    };
+    console.log('Character image dimensions:', {
+      character: character.name,
+      dimensions,
+      aspectRatio: `${dimensions.width} / ${dimensions.height}`,
+      url: imageUrl,
+    });
+    setImageDimensions(dimensions);
     setImageLoaded(true);
   };
 
   return (
     <Link to={`/chat/${character.id}`} className="block group">
       <div className="card h-full flex flex-col group-hover:scale-[1.02] transition-transform duration-200">
-        <div className="aspect-[5/6] bg-gradient-to-br from-purple-100 via-blue-100 to-purple-200 flex items-center justify-center overflow-hidden relative">
+        <div 
+          className="bg-gradient-to-br from-purple-100 via-blue-100 to-purple-200 flex items-center justify-center overflow-hidden relative"
+          style={{
+            aspectRatio: imageDimensions 
+              ? `${imageDimensions.width} / ${imageDimensions.height}` 
+              : '5 / 6',
+            minHeight: '200px',
+          }}
+        >
           {hasAvatar && !imageError ? (
             <>
               {!imageLoaded && (
@@ -60,7 +81,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
               <img
                 src={imageUrl}
                 alt={character.name}
-                className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 ${
+                className={`w-full h-full object-contain group-hover:scale-110 transition-transform duration-300 ${
                   imageLoaded ? 'opacity-100' : 'opacity-0'
                 }`}
                 onError={handleImageError}
