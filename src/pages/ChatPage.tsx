@@ -248,9 +248,26 @@ export function ChatPage() {
         {/* Chat Messages */}
         <div
           ref={chatContainerRef}
-          className="flex-1 overflow-y-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6"
+          className="flex-1 overflow-y-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 relative"
         >
-          <div className="max-w-4xl mx-auto">
+          {/* Mobile Background Avatar - Only visible on mobile */}
+          {hasAvatar && !imageError && imageUrl && (
+            <div 
+              className="lg:hidden absolute inset-0 pointer-events-none z-0"
+              style={{
+                backgroundImage: `url(${imageUrl})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                opacity: 0.12,
+              }}
+            />
+          )}
+          
+          {/* Overlay gradient to ensure readability */}
+          <div className="lg:hidden absolute inset-0 bg-gradient-to-b from-gray-50/70 via-gray-50/50 to-gray-50/70 pointer-events-none z-0" />
+          
+          <div className="max-w-4xl mx-auto relative z-10">
           {messages.length === 0 && (
             <div className="text-center py-12">
               <div className="inline-block p-4 bg-primary-100 rounded-full mb-4">
