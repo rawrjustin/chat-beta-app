@@ -14,7 +14,7 @@ export function Navbar() {
               <span className="text-white font-bold text-lg">S</span>
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              Story AI
+              Story World
             </span>
           </Link>
 

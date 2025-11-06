@@ -18,7 +18,7 @@ export function PricingPage() {
                 <span className="text-5xl font-bold text-gray-900">$0</span>
                 <span className="text-gray-600 ml-2">/month</span>
               </div>
-              <p className="text-gray-600 mt-4">Perfect for trying out Story AI</p>
+              <p className="text-gray-600 mt-4">Perfect for trying out Story World</p>
             </div>
 
             <ul className="space-y-4 mb-8">

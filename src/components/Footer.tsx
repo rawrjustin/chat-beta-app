@@ -10,7 +10,7 @@ export function Footer() {
               <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">S</span>
               </div>
-              <span className="text-xl font-bold text-white">Story AI</span>
+              <span className="text-xl font-bold text-white">Story World</span>
             </div>
             <p className="text-sm text-gray-400">
               Every character has a story. Discover and chat with AI-powered characters.
@@ -82,7 +82,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-          <p>&copy; {new Date().getFullYear()} Story AI. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Story World. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -26,7 +26,7 @@ export function SupportPage() {
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Is Story AI free to use?
+                Is Story World free to use?
               </h3>
               <p className="text-gray-600">
                 Yes! We offer a free tier that includes access to all characters with 50 messages
@@ -75,14 +75,14 @@ export function SupportPage() {
           </p>
           <div className="space-y-4">
             <a
-              href="mailto:support@storyai.com"
+              href="mailto:support@storyworld.com"
               className="block bg-white text-purple-600 px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all text-center"
             >
               Email Support
             </a>
             <div className="text-center text-purple-100">
               <p>Or reach us at:</p>
-              <p className="font-semibold mt-2">support@storyai.com</p>
+              <p className="font-semibold mt-2">support@storyworld.com</p>
             </div>
           </div>
         </div>
