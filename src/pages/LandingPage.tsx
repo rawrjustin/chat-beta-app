@@ -116,17 +116,6 @@ export function LandingPage() {
             </p>
           </div>
 
-          <div className="max-w-4xl mx-auto mb-12">
-            <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 md:p-10 mb-8">
-              <p className="text-lg sm:text-xl text-gray-700 leading-relaxed mb-4">
-                What does a character with a rich, complex backstory know about storytelling? More than the average AI companion, it turns out.
-              </p>
-              <p className="text-lg sm:text-xl text-gray-700 leading-relaxed">
-                Our characters were designed to offer a different kind of AI interaction. They're not companions to replace human relationships, but rather <strong>characters with deep narratives, unique histories, and authentic personalities</strong> that invite you to explore their worlds and stories.
-              </p>
-            </div>
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
               <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-blue-100 rounded-xl flex items-center justify-center mb-4">
@@ -161,14 +150,6 @@ export function LandingPage() {
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Authentic Personalities</h3>
               <p className="text-gray-600">
                 Each character has distinct traits, backgrounds, and conversational styles. They remember their stories, their world, and their place in it—creating conversations that feel natural and contextually rich.
-              </p>
-            </div>
-          </div>
-
-          <div className="max-w-4xl mx-auto mt-12">
-            <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6 sm:p-8 border border-purple-100">
-              <p className="text-base sm:text-lg text-gray-700 leading-relaxed italic">
-                "The idea behind Story World—that AI characters should be designed with rich narratives and human psychology in mind—is worth taking seriously. Our characters appear engaging and memorable, but more importantly, they're built with deep stories and backgrounds that invite exploration rather than dependency."
               </p>
             </div>
           </div>
