@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Layout } from './components/Layout';
 import { LandingPage } from './pages/LandingPage';
 import { ChatPage } from './pages/ChatPage';
@@ -6,10 +7,25 @@ import { PricingPage } from './pages/PricingPage';
 import { SupportPage } from './pages/SupportPage';
 import { AboutPage } from './pages/AboutPage';
 import { CharactersPage } from './pages/CharactersPage';
+import mixpanel from 'mixpanel-browser';
+
+function PageViewTracker() {
+  const location = useLocation();
+
+  useEffect(() => {
+    mixpanel.track('Page View', {
+      page_url: window.location.href,
+      page_title: document.title,
+    });
+  }, [location]);
+
+  return null;
+}
 
 function App() {
   return (
     <BrowserRouter>
+      <PageViewTracker />
       <Routes>
         <Route path="/chat/:configId" element={<ChatPage />} />
         <Route
