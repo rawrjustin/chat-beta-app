@@ -106,74 +106,49 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* How It Works */}
-      <section id="how-it-works" className="py-12 sm:py-16 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">How It Works</h2>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
-              Start chatting with AI characters in three simple steps
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-purple-600">1</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Choose a Character</h3>
-              <p className="text-gray-600">
-                Browse our collection of unique AI characters, each with their own personality and
-                story.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-purple-600">2</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Start Chatting</h3>
-              <p className="text-gray-600">
-                Begin a conversation and watch as the character responds with personality,
-                context, and creativity.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-purple-600">3</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Explore Stories</h3>
-              <p className="text-gray-600">
-                Every conversation is unique. Discover new perspectives, stories, and adventures
-                with each chat.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Features */}
       <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12 md:mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">Why Story World?</h2>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
-              Powered by advanced AI to deliver authentic, engaging conversations
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-4">
+              Characters with rich backgrounds, deep stories, and authentic personalities—designed for exploration, not dependency
             </p>
+          </div>
+
+          <div className="max-w-4xl mx-auto mb-12">
+            <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 md:p-10 mb-8">
+              <p className="text-lg sm:text-xl text-gray-700 leading-relaxed mb-4">
+                What does a character with a rich, complex backstory know about storytelling? More than the average AI companion, it turns out.
+              </p>
+              <p className="text-lg sm:text-xl text-gray-700 leading-relaxed">
+                Our characters were designed to offer a different kind of AI interaction. They're not companions to replace human relationships, but rather <strong>characters with deep narratives, unique histories, and authentic personalities</strong> that invite you to explore their worlds and stories.
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
               <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-blue-100 rounded-xl flex items-center justify-center mb-4">
                 <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">AI-Powered</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Rich Stories & Backgrounds</h3>
               <p className="text-gray-600">
-                Advanced language models create authentic, context-aware conversations that feel
-                natural and engaging.
+                Each character comes with a detailed history, personality, and world. They're not just chatbots—they're characters with stories waiting to be discovered.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-blue-100 rounded-xl flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Designed with Wellbeing in Mind</h3>
+              <p className="text-gray-600">
+                Research shows that many users turn to AI for emotional needs. Our characters are designed to explore stories and narratives, not to create dependency or replace real relationships.
               </p>
             </div>
 
@@ -183,23 +158,17 @@ export function LandingPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Unique Personalities</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Authentic Personalities</h3>
               <p className="text-gray-600">
-                Each character has distinct traits, backgrounds, and conversational styles that
-                make every interaction memorable.
+                Each character has distinct traits, backgrounds, and conversational styles. They remember their stories, their world, and their place in it—creating conversations that feel natural and contextually rich.
               </p>
             </div>
+          </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-blue-100 rounded-xl flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Instant Access</h3>
-              <p className="text-gray-600">
-                No sign-up required to start chatting. Jump right into conversations and explore
-                characters at your own pace.
+          <div className="max-w-4xl mx-auto mt-12">
+            <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6 sm:p-8 border border-purple-100">
+              <p className="text-base sm:text-lg text-gray-700 leading-relaxed italic">
+                "The idea behind Story World—that AI characters should be designed with rich narratives and human psychology in mind—is worth taking seriously. Our characters appear engaging and memorable, but more importantly, they're built with deep stories and backgrounds that invite exploration rather than dependency."
               </p>
             </div>
           </div>
