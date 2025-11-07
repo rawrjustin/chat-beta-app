@@ -1,13 +1,40 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { ChatMessage } from '../types/api';
 import { sendChatMessage } from '../utils/api';
 import mixpanel from 'mixpanel-browser';
+import { saveChatSession, loadChatSession, clearChatSession } from '../utils/storage';
 
 export function useChat(configId: string) {
   const [sessionId, setSessionId] = useState<string>('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Load saved chat session on mount
+  useEffect(() => {
+    if (!configId) return;
+
+    const savedChat = loadChatSession(configId);
+    if (savedChat) {
+      setSessionId(savedChat.sessionId);
+      setMessages(savedChat.messages);
+      console.log('Loaded saved chat session:', {
+        configId,
+        sessionId: savedChat.sessionId,
+        messageCount: savedChat.messages.length,
+      });
+    }
+  }, [configId]);
+
+  // Save chat session whenever messages or sessionId changes
+  useEffect(() => {
+    if (!configId) return;
+    
+    // Only save if we have messages or a session ID
+    if (messages.length > 0 || sessionId) {
+      saveChatSession(configId, sessionId, messages);
+    }
+  }, [configId, sessionId, messages]);
 
   const sendMessage = useCallback(
     async (userInput: string) => {
@@ -39,8 +66,8 @@ export function useChat(configId: string) {
         const response = await sendChatMessage(sessionId || '', configId, userInput);
         const responseTime = Date.now() - startTime;
 
-        // Update session ID if we didn't have one
-        if (!sessionId && response.session_id) {
+        // Update session ID from response (server may create or update it)
+        if (response.session_id) {
           setSessionId(response.session_id);
         }
 
@@ -79,7 +106,11 @@ export function useChat(configId: string) {
     setSessionId('');
     setMessages([]);
     setError(null);
-  }, []);
+    // Clear saved session from local storage
+    if (configId) {
+      clearChatSession(configId);
+    }
+  }, [configId]);
 
   return {
     messages,
