@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: chat-beta-app
+    env: static
+    buildCommand: npm run build
+    publishPath: dist
+    # Note: Redirects for SPA routing must be configured in Render dashboard:
+    # Go to your static site -> Settings -> Redirects and Rewrites
+    # Add: Source: /*, Destination: /index.html, Action: Rewrite
+
