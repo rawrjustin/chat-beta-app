@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import type { ChatMessage } from '../types/api';
 import { sendChatMessage } from '../utils/api';
+import mixpanel from 'mixpanel-browser';
 import { saveChatSession, loadChatSession, clearChatSession } from '../utils/storage';
 
 export function useChat(configId: string) {
@@ -42,6 +43,16 @@ export function useChat(configId: string) {
       setIsLoading(true);
       setError(null);
 
+      // Track AI Prompt Sent event
+      mixpanel.track('AI Prompt Sent and Prompt Text', {
+        'Prompt Text': userInput,
+      });
+
+      // Track Launch AI event on first message
+      if (messages.length === 0) {
+        mixpanel.track('Launch AI');
+      }
+
       // Add user message to UI immediately
       const userMessage: ChatMessage = {
         role: 'user',
@@ -50,13 +61,20 @@ export function useChat(configId: string) {
       };
       setMessages((prev) => [...prev, userMessage]);
 
+      const startTime = Date.now();
       try {
         const response = await sendChatMessage(sessionId || '', configId, userInput);
+        const responseTime = Date.now() - startTime;
 
         // Update session ID from response (server may create or update it)
         if (response.session_id) {
           setSessionId(response.session_id);
         }
+
+        // Track AI Response Sent event
+        mixpanel.track('AI Response Sent', {
+          'API Response Time': responseTime,
+        });
 
         // Add AI response to UI
         const aiMessage: ChatMessage = {
@@ -68,13 +86,20 @@ export function useChat(configId: string) {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to send message';
         setError(errorMessage);
+        
+        // Track API Error event
+        mixpanel.track('API Error', {
+          error_type: 'api',
+          error_message: errorMessage,
+        });
+        
         // Remove the user message on error
         setMessages((prev) => prev.slice(0, -1));
       } finally {
         setIsLoading(false);
       }
     },
-    [sessionId, configId, isLoading]
+    [sessionId, configId, isLoading, messages.length]
   );
 
   const startNewConversation = useCallback(() => {
