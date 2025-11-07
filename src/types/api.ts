@@ -42,6 +42,7 @@ export interface Character {
   name: string;
   description: string;
   avatar?: string;
+  avatar_url?: string; // Support both avatar and avatar_url fields
 }
 
 // API Character Response Types

@@ -75,7 +75,7 @@ export function HomePage() {
                   id: character.config_id,
                   name: character.name || character.config_id,
                   description: character.description || 'No description available',
-                  avatar: character.avatar_url,
+                  avatar_url: character.avatar_url,
                 }}
               />
             ))}

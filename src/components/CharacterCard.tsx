@@ -11,7 +11,9 @@ export function CharacterCard({ character }: CharacterCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
 
-  const hasAvatar = character.avatar && character.avatar.trim() !== '';
+  // Prioritize avatar_url over avatar
+  const avatarUrl = character.avatar_url || character.avatar;
+  const hasAvatar = avatarUrl && avatarUrl.trim() !== '';
 
   // Normalize image URL - handle relative URLs
   const getImageUrl = (url: string | undefined): string => {
@@ -32,11 +34,11 @@ export function CharacterCard({ character }: CharacterCardProps) {
     return url;
   };
 
-  const imageUrl = hasAvatar ? getImageUrl(character.avatar) : '';
+  const imageUrl = hasAvatar ? getImageUrl(avatarUrl) : '';
 
   const handleImageError = () => {
     console.error('Failed to load avatar image:', {
-      url: character.avatar,
+      url: avatarUrl,
       normalizedUrl: imageUrl,
       character: character.name,
     });
