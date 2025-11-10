@@ -30,11 +30,6 @@ export function Footer() {
                   Pricing
                 </Link>
               </li>
-              <li>
-                <Link to="/about" className="hover:text-white transition-colors">
-                  About
-                </Link>
-              </li>
             </ul>
           </div>
 
@@ -42,9 +37,9 @@ export function Footer() {
             <h3 className="text-white font-semibold mb-4">Support</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/support" className="hover:text-white transition-colors">
-                  Help Center
-                </Link>
+                <a href="mailto:support@storyworld.com" className="hover:text-white transition-colors">
+                  Contact Support
+                </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">

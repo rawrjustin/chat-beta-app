@@ -4,8 +4,6 @@ import { Layout } from './components/Layout';
 import { LandingPage } from './pages/LandingPage';
 import { ChatPage } from './pages/ChatPage';
 import { PricingPage } from './pages/PricingPage';
-import { SupportPage } from './pages/SupportPage';
-import { AboutPage } from './pages/AboutPage';
 import { CharactersPage } from './pages/CharactersPage';
 import mixpanel from 'mixpanel-browser';
 
@@ -41,22 +39,6 @@ function App() {
           element={
             <Layout>
               <PricingPage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/support"
-          element={
-            <Layout>
-              <SupportPage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <Layout>
-              <AboutPage />
             </Layout>
           }
         />

@@ -11,9 +11,8 @@ export function CharacterCard({ character }: CharacterCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
 
-  // Prioritize avatar_url over avatar
-  const avatarUrl = character.avatar_url || character.avatar;
-  const hasAvatar = avatarUrl && avatarUrl.trim() !== '';
+  const avatarUrl = (character.avatar_url ?? character.avatar ?? '').trim();
+  const hasAvatar = avatarUrl !== '';
 
   // Normalize image URL - handle relative URLs
   const getImageUrl = (url: string | undefined): string => {

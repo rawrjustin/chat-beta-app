@@ -52,26 +52,6 @@ export function Navbar() {
               Pricing
             </Link>
             <Link
-              to="/support"
-              className={`text-sm font-medium transition-colors ${
-                isActive('/support')
-                  ? 'text-purple-600'
-                  : 'text-gray-700 hover:text-purple-600'
-              }`}
-            >
-              Support
-            </Link>
-            <Link
-              to="/about"
-              className={`text-sm font-medium transition-colors ${
-                isActive('/about')
-                  ? 'text-purple-600'
-                  : 'text-gray-700 hover:text-purple-600'
-              }`}
-            >
-              About
-            </Link>
-            <Link
               to="/"
               className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:shadow-lg transition-all"
             >
@@ -132,28 +112,6 @@ export function Navbar() {
                 }`}
               >
                 Pricing
-              </Link>
-              <Link
-                to="/support"
-                onClick={() => setMobileMenuOpen(false)}
-                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                  isActive('/support')
-                    ? 'text-purple-600 bg-purple-50'
-                    : 'text-gray-700 hover:text-purple-600 hover:bg-gray-50'
-                }`}
-              >
-                Support
-              </Link>
-              <Link
-                to="/about"
-                onClick={() => setMobileMenuOpen(false)}
-                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                  isActive('/about')
-                    ? 'text-purple-600 bg-purple-50'
-                    : 'text-gray-700 hover:text-purple-600 hover:bg-gray-50'
-                }`}
-              >
-                About
               </Link>
               <Link
                 to="/"

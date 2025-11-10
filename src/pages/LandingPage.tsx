@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CharacterCard } from '../components/CharacterCard';
 import { getCharacters } from '../utils/api';
+import { extractAvatarUrl } from '../utils/avatar';
 import type { CharacterResponse } from '../types/api';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { PaywallModal } from '../components/PaywallModal';
@@ -25,13 +26,11 @@ export function LandingPage() {
           const orderB = b.display_order ?? Infinity;
           return orderA - orderB;
         });
-        // Debug: Log character data to see avatar_url structure
-        console.log('Characters data:', sortedCharacters.map(c => ({
-          name: c.name,
-          config_id: c.config_id,
-          avatar_url: c.avatar_url,
-        })));
-        setCharacters(sortedCharacters);
+        const enhancedCharacters = sortedCharacters.map((character) => ({
+          ...character,
+          avatar_url: extractAvatarUrl(character) ?? character.avatar_url,
+        }));
+        setCharacters(enhancedCharacters);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to load characters';
         setError(errorMessage);

@@ -5,6 +5,7 @@ import { ChatMessage } from '../components/ChatMessage';
 import { ChatInput } from '../components/ChatInput';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { getCharacters } from '../utils/api';
+import { extractAvatarUrl } from '../utils/avatar';
 import { SuggestedPromptsBar } from '../components/SuggestedPromptsBar';
 import type { CharacterResponse, SuggestedPreprompt } from '../types/api';
 
@@ -51,12 +52,13 @@ export function ChatPage() {
     return url;
   };
 
-  const hasAvatar = character?.avatar_url && character.avatar_url.trim() !== '';
-  const imageUrl = hasAvatar ? getImageUrl(character.avatar_url) : '';
+  const avatarUrl = character?.avatar_url?.trim() ?? '';
+  const hasAvatar = avatarUrl !== '';
+  const imageUrl = hasAvatar ? getImageUrl(avatarUrl) : '';
 
   const handleImageError = () => {
     console.error('Failed to load avatar image:', {
-      url: character?.avatar_url,
+      url: avatarUrl,
       normalizedUrl: imageUrl,
       character: character?.name,
     });
@@ -96,7 +98,14 @@ export function ChatPage() {
         const foundCharacter = data.characters.find(
           (char) => char.config_id === configId
         );
-        setCharacter(foundCharacter || null);
+        if (foundCharacter) {
+          setCharacter({
+            ...foundCharacter,
+            avatar_url: extractAvatarUrl(foundCharacter) ?? foundCharacter.avatar_url,
+          });
+        } else {
+          setCharacter(null);
+        }
       } catch (err) {
         console.error('Failed to fetch character:', err);
         setCharacter(null);
