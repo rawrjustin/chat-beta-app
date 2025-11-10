@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useChat } from '../hooks/useChat';
 import { ChatMessage } from '../components/ChatMessage';
 import { ChatInput } from '../components/ChatInput';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { getCharacters } from '../utils/api';
-import type { CharacterResponse } from '../types/api';
+import { SuggestedPromptsBar } from '../components/SuggestedPromptsBar';
+import type { CharacterResponse, SuggestedPreprompt } from '../types/api';
 
 export function ChatPage() {
   const { configId } = useParams<{ configId: string }>();
@@ -16,9 +17,20 @@ export function ChatPage() {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
-  const { messages, isLoading, error, sendMessage, startNewConversation } = useChat(
-    configId || ''
+  const {
+    messages,
+    isLoading,
+    error,
+    sendMessage,
+    startNewConversation,
+    suggestedPrompts,
+    clearSuggestedPrompts,
+  } = useChat(configId || '');
+  const [promptVisibility, setPromptVisibility] = useState<'hidden' | 'visible' | 'fading'>(
+    'hidden'
   );
+  const promptFadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fadeVersionRef = useRef(0);
 
   // Normalize image URL - handle relative URLs
   const getImageUrl = (url: string | undefined): string => {
@@ -100,6 +112,69 @@ export function ChatPage() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Reset prompt visibility whenever new prompts are provided
+  useEffect(() => {
+    if (suggestedPrompts.length > 0) {
+      setPromptVisibility('visible');
+      if (promptFadeTimeoutRef.current) {
+        clearTimeout(promptFadeTimeoutRef.current);
+        promptFadeTimeoutRef.current = null;
+      }
+    } else {
+      setPromptVisibility((prev) => (prev === 'visible' ? 'hidden' : prev));
+    }
+  }, [suggestedPrompts]);
+
+  useEffect(() => {
+    return () => {
+      if (promptFadeTimeoutRef.current) {
+        clearTimeout(promptFadeTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const schedulePromptFadeOut = useCallback(() => {
+    if (suggestedPrompts.length === 0) {
+      return;
+    }
+
+    fadeVersionRef.current += 1;
+    const currentVersion = fadeVersionRef.current;
+
+    setPromptVisibility('fading');
+
+    if (promptFadeTimeoutRef.current) {
+      clearTimeout(promptFadeTimeoutRef.current);
+    }
+
+    promptFadeTimeoutRef.current = setTimeout(() => {
+      if (fadeVersionRef.current === currentVersion) {
+        clearSuggestedPrompts();
+        setPromptVisibility('hidden');
+        promptFadeTimeoutRef.current = null;
+      }
+    }, 220);
+  }, [clearSuggestedPrompts, suggestedPrompts.length]);
+
+  const handleSendMessage = useCallback(
+    (message: string) => {
+      if (!message.trim() || isLoading) {
+        return;
+      }
+
+      schedulePromptFadeOut();
+      void sendMessage(message);
+    },
+    [isLoading, schedulePromptFadeOut, sendMessage]
+  );
+
+  const handlePromptSelect = (prompt: SuggestedPreprompt) => {
+    if (!prompt?.prompt) {
+      return;
+    }
+    handleSendMessage(prompt.prompt);
+  };
 
   if (!configId) {
     return (
@@ -317,7 +392,15 @@ export function ChatPage() {
       </div>
 
         {/* Chat Input */}
-        <ChatInput onSendMessage={sendMessage} isLoading={isLoading} />
+        <div className="border-t border-gray-200 bg-white">
+          <SuggestedPromptsBar
+            prompts={suggestedPrompts}
+            visibility={promptVisibility}
+            onSelect={handlePromptSelect}
+            disabled={isLoading}
+          />
+          <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
+        </div>
       </div>
     </div>
   );

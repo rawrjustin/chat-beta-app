@@ -5,6 +5,7 @@ export interface ChatResponse {
   request_id?: string;
   text_response_cleaned?: string;
   warning_message?: string | null;
+  preprompts?: SuggestedPreprompt[];
 }
 
 export interface CreateSessionResponse {
@@ -65,5 +66,13 @@ export interface ChatMessage {
   role: 'user' | 'ai';
   content: string;
   timestamp?: Date;
+}
+
+export type SuggestedPrepromptType = 'roleplay' | 'conversation';
+
+export interface SuggestedPreprompt {
+  type: SuggestedPrepromptType;
+  prompt: string;
+  simplified_text: string;
 }
 

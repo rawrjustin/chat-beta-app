@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import type { ChatMessage } from '../types/api';
+import type { ChatMessage, SuggestedPreprompt } from '../types/api';
 import { sendChatMessage } from '../utils/api';
 import mixpanel from 'mixpanel-browser';
 import { saveChatSession, loadChatSession, clearChatSession } from '../utils/storage';
@@ -9,6 +9,7 @@ export function useChat(configId: string) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [suggestedPrompts, setSuggestedPrompts] = useState<SuggestedPreprompt[]>([]);
 
   // Load saved chat session on mount
   useEffect(() => {
@@ -83,6 +84,7 @@ export function useChat(configId: string) {
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, aiMessage]);
+        setSuggestedPrompts(response.preprompts ?? []);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to send message';
         setError(errorMessage);
@@ -95,6 +97,7 @@ export function useChat(configId: string) {
         
         // Remove the user message on error
         setMessages((prev) => prev.slice(0, -1));
+        setSuggestedPrompts([]);
       } finally {
         setIsLoading(false);
       }
@@ -106,11 +109,16 @@ export function useChat(configId: string) {
     setSessionId('');
     setMessages([]);
     setError(null);
+    setSuggestedPrompts([]);
     // Clear saved session from local storage
     if (configId) {
       clearChatSession(configId);
     }
   }, [configId]);
+
+  const clearSuggestedPrompts = useCallback(() => {
+    setSuggestedPrompts([]);
+  }, []);
 
   return {
     messages,
@@ -118,6 +126,8 @@ export function useChat(configId: string) {
     error,
     sendMessage,
     startNewConversation,
+    suggestedPrompts,
+    clearSuggestedPrompts,
   };
 }
 

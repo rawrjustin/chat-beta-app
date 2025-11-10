@@ -18,7 +18,7 @@ export function ChatInput({ onSendMessage, isLoading, disabled }: ChatInputProps
   };
 
   return (
-    <form onSubmit={handleSubmit} className="border-t border-gray-200 bg-white p-3 sm:p-4">
+    <form onSubmit={handleSubmit} className="p-3 sm:p-4">
       <div className="flex gap-2 max-w-4xl mx-auto">
         <input
           type="text"
