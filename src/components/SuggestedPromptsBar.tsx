@@ -51,6 +51,8 @@ export function SuggestedPromptsBar({
               ? 'bg-gradient-to-br from-purple-50 via-pink-50 to-purple-100 border-purple-200 hover:border-purple-300'
               : 'bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-100 border-blue-200 hover:border-blue-300';
 
+          const displayText = (prompt.simplified_text ?? '').trim() || prompt.prompt;
+
           return (
             <button
               key={key}
@@ -58,7 +60,8 @@ export function SuggestedPromptsBar({
               onClick={() => onSelect(prompt)}
               disabled={disabled}
               className={`w-full px-4 sm:px-5 py-3 sm:py-3.5 text-left text-sm sm:text-base font-medium text-gray-800 border rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed ${accentColor}`}
-              aria-label={prompt.simplified_text || prompt.prompt}
+              aria-label={prompt.prompt}
+              title={prompt.prompt}
               data-prompt-type={prompt.type}
             >
               <span className="flex items-start gap-3">
@@ -68,7 +71,7 @@ export function SuggestedPromptsBar({
                   }`}
                   aria-hidden="true"
                 />
-                <span className="leading-snug">{prompt.prompt}</span>
+                <span className="leading-snug">{displayText}</span>
               </span>
             </button>
           );
