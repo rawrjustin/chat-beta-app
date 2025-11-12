@@ -5,6 +5,7 @@ import type {
   CreateSessionRequest,
   ProxyChatRequest,
   InitialMessageRequest,
+  InitialMessageHistoryMessage,
   CharactersResponse,
 } from '../types/api';
 
@@ -61,11 +62,15 @@ export async function sendChatMessage(
 
 export async function fetchInitialMessage(
   sessionId: string,
-  configId: string
+  configId: string,
+  previousMessages?: InitialMessageHistoryMessage[]
 ): Promise<ChatResponse> {
   const request: InitialMessageRequest = {
     session_id: sessionId,
     config_id: configId,
+    ...(previousMessages && previousMessages.length > 0
+      ? { previous_messages: previousMessages }
+      : {}),
   };
 
   const response = await fetch(`${API_BASE}/api/initial-message`, {

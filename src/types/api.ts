@@ -37,9 +37,15 @@ export interface ProxyChatRequest {
   config_id: string;
 }
 
+export interface InitialMessageHistoryMessage {
+  role: 'user' | 'ai';
+  content: string;
+}
+
 export interface InitialMessageRequest {
   session_id: string;
   config_id: string;
+  previous_messages?: InitialMessageHistoryMessage[];
 }
 
 // Character Data Types
