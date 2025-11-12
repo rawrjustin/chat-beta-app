@@ -314,7 +314,7 @@ export function ChatPage() {
         {/* Chat Messages */}
         <div
           ref={chatContainerRef}
-          className="flex-1 overflow-y-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 relative"
+          className="flex-1 overflow-y-auto px-3 sm:px-4 md:px-6 lg:px-8 pb-4 sm:pb-6 pt-16 sm:pt-20 lg:pt-6 relative"
         >
           {/* Mobile Background Avatar - Only visible on mobile */}
           {hasAvatar && !imageError && imageUrl && (
