@@ -18,7 +18,11 @@ export function ChatInput({ onSendMessage, isLoading, disabled }: ChatInputProps
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-3 sm:p-4">
+    <form
+      onSubmit={handleSubmit}
+      className="px-3 sm:px-4 pt-3 sm:pt-4 pb-3 sm:pb-4"
+      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 0.75rem)' }}
+    >
       <div className="flex gap-2 max-w-4xl mx-auto">
         <input
           type="text"

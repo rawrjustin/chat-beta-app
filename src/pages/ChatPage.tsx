@@ -265,7 +265,10 @@ export function ChatPage() {
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header - Mobile only */}
-        <header className="lg:hidden bg-white border-b border-gray-200 sticky top-0 z-10">
+        <header
+          className="lg:hidden bg-white border-b border-gray-200 sticky top-0 z-20"
+          style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
+        >
           <div className="px-4 sm:px-6 py-3 sm:py-4">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
@@ -314,7 +317,7 @@ export function ChatPage() {
         {/* Chat Messages */}
         <div
           ref={chatContainerRef}
-          className="flex-1 overflow-y-auto px-3 sm:px-4 md:px-6 lg:px-8 pb-4 sm:pb-6 pt-16 sm:pt-20 lg:pt-6 relative"
+          className="flex-1 overflow-y-auto px-3 sm:px-4 md:px-6 lg:px-8 pb-4 sm:pb-6 pt-20 sm:pt-24 lg:pt-6 relative"
         >
           {/* Mobile Background Avatar - Only visible on mobile */}
           {hasAvatar && !imageError && imageUrl && (
