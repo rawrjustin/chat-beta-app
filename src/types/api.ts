@@ -37,6 +37,11 @@ export interface ProxyChatRequest {
   config_id: string;
 }
 
+export interface InitialMessageRequest {
+  session_id: string;
+  config_id: string;
+}
+
 // Character Data Types
 export interface Character {
   id: string;

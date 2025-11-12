@@ -4,6 +4,7 @@ import type {
   ErrorResponse,
   CreateSessionRequest,
   ProxyChatRequest,
+  InitialMessageRequest,
   CharactersResponse,
 } from '../types/api';
 
@@ -48,6 +49,26 @@ export async function sendChatMessage(
   };
 
   const response = await fetch(`${API_BASE}/api/chat`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+  });
+
+  return handleResponse<ChatResponse>(response);
+}
+
+export async function fetchInitialMessage(
+  sessionId: string,
+  configId: string
+): Promise<ChatResponse> {
+  const request: InitialMessageRequest = {
+    session_id: sessionId,
+    config_id: configId,
+  };
+
+  const response = await fetch(`${API_BASE}/api/initial-message`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import type { ChatMessage, SuggestedPreprompt } from '../types/api';
-import { sendChatMessage } from '../utils/api';
+import { createSession, fetchInitialMessage, sendChatMessage } from '../utils/api';
 import mixpanel from 'mixpanel-browser';
 import { saveChatSession, loadChatSession, clearChatSession } from '../utils/storage';
 
@@ -10,21 +10,42 @@ export function useChat(configId: string) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [suggestedPrompts, setSuggestedPrompts] = useState<SuggestedPreprompt[]>([]);
+  const [hasInitialized, setHasInitialized] = useState(false);
+  const [hasAttemptedRestore, setHasAttemptedRestore] = useState(false);
 
-  // Load saved chat session on mount
+  // Load saved chat session on mount or when changing characters
   useEffect(() => {
-    if (!configId) return;
+    if (!configId) {
+      setSessionId('');
+      setMessages([]);
+      setSuggestedPrompts([]);
+      setError(null);
+      setIsLoading(false);
+      setHasInitialized(false);
+      setHasAttemptedRestore(false);
+      return;
+    }
 
     const savedChat = loadChatSession(configId);
     if (savedChat) {
       setSessionId(savedChat.sessionId);
       setMessages(savedChat.messages);
+      setHasInitialized(savedChat.messages.length > 0);
       console.log('Loaded saved chat session:', {
         configId,
         sessionId: savedChat.sessionId,
         messageCount: savedChat.messages.length,
       });
+    } else {
+      setSessionId('');
+      setMessages([]);
+      setHasInitialized(false);
     }
+
+    setSuggestedPrompts([]);
+    setError(null);
+    setIsLoading(false);
+    setHasAttemptedRestore(true);
   }, [configId]);
 
   // Save chat session whenever messages or sessionId changes
@@ -36,6 +57,83 @@ export function useChat(configId: string) {
       saveChatSession(configId, sessionId, messages);
     }
   }, [configId, sessionId, messages]);
+
+  const initializeChat = useCallback(async () => {
+    if (!configId) {
+      return;
+    }
+
+    if (messages.length > 0) {
+      setHasInitialized(true);
+      return;
+    }
+
+    if (hasInitialized) {
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      let activeSessionId = sessionId;
+
+      if (!activeSessionId) {
+        const session = await createSession(configId);
+        activeSessionId = session.session_id;
+        setSessionId(activeSessionId);
+      }
+
+      const startTime = Date.now();
+      const response = await fetchInitialMessage(activeSessionId, configId);
+      const responseTime = Date.now() - startTime;
+
+      if (response.session_id) {
+        setSessionId(response.session_id);
+      }
+
+      const aiMessage: ChatMessage = {
+        role: 'ai',
+        content: response.ai,
+        timestamp: new Date(),
+      };
+
+      setMessages((prev) => (prev.length === 0 ? [aiMessage] : prev));
+      setSuggestedPrompts(response.preprompts ?? []);
+
+      mixpanel.track('AI Initial Message', {
+        'API Response Time': responseTime,
+      });
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to load initial message';
+      setError(errorMessage);
+      mixpanel.track('API Error', {
+        error_type: 'initial_message',
+        error_message: errorMessage,
+      });
+    } finally {
+      setIsLoading(false);
+      setHasInitialized(true);
+    }
+  }, [configId, hasInitialized, messages.length, sessionId]);
+
+  useEffect(() => {
+    if (!configId || !hasAttemptedRestore) {
+      return;
+    }
+
+    if (hasInitialized) {
+      return;
+    }
+
+    if (messages.length > 0) {
+      setHasInitialized(true);
+      return;
+    }
+
+    void initializeChat();
+  }, [configId, hasAttemptedRestore, hasInitialized, messages.length, initializeChat]);
 
   const sendMessage = useCallback(
     async (userInput: string) => {
@@ -49,8 +147,8 @@ export function useChat(configId: string) {
         'Prompt Text': userInput,
       });
 
-      // Track Launch AI event on first message
-      if (messages.length === 0) {
+      const hasUserMessage = messages.some((message) => message.role === 'user');
+      if (!hasUserMessage) {
         mixpanel.track('Launch AI');
       }
 
@@ -64,7 +162,15 @@ export function useChat(configId: string) {
 
       const startTime = Date.now();
       try {
-        const response = await sendChatMessage(sessionId || '', configId, userInput);
+        let activeSessionId = sessionId;
+
+        if (!activeSessionId) {
+          const session = await createSession(configId);
+          activeSessionId = session.session_id;
+          setSessionId(activeSessionId);
+        }
+
+        const response = await sendChatMessage(activeSessionId, configId, userInput);
         const responseTime = Date.now() - startTime;
 
         // Update session ID from response (server may create or update it)
@@ -102,7 +208,7 @@ export function useChat(configId: string) {
         setIsLoading(false);
       }
     },
-    [sessionId, configId, isLoading, messages.length]
+    [sessionId, configId, isLoading, messages]
   );
 
   const startNewConversation = useCallback(() => {
@@ -110,6 +216,9 @@ export function useChat(configId: string) {
     setMessages([]);
     setError(null);
     setSuggestedPrompts([]);
+    setHasInitialized(false);
+    setHasAttemptedRestore(true);
+    setIsLoading(false);
     // Clear saved session from local storage
     if (configId) {
       clearChatSession(configId);

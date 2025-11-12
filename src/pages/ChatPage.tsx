@@ -352,7 +352,15 @@ export function ChatPage() {
           <div className="lg:hidden absolute inset-0 bg-gradient-to-b from-gray-50/70 via-gray-50/50 to-gray-50/70 pointer-events-none z-0" />
           
           <div className="max-w-4xl mx-auto relative z-10">
-          {messages.length === 0 && (
+          {isLoading && messages.length === 0 && (
+            <div className="flex justify-start mb-4">
+              <div className="bg-white/90 border border-gray-200 rounded-2xl px-4 py-3 shadow-sm">
+                <LoadingSpinner />
+              </div>
+            </div>
+          )}
+
+          {messages.length === 0 && !isLoading && (
             <div className="text-center py-12">
               <div className="inline-block p-4 bg-primary-100 rounded-full mb-4">
                 <svg
