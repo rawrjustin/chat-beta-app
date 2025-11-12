@@ -24,7 +24,7 @@ export function SuggestedPromptsBar({
     }
 
     const baseClasses =
-      'transition-all duration-300 ease-out transform px-3 sm:px-4 md:px-6 lg:px-8 pt-3 sm:pt-4 pb-3 sm:pb-4';
+      'transition-all duration-300 ease-out transform px-3 sm:px-4 md:px-6 lg:px-8 pt-2.5 sm:pt-3 pb-2.5 sm:pb-3';
 
     if (visibility === 'visible') {
       return `${baseClasses} opacity-100 translate-y-0 pointer-events-auto`;
@@ -43,7 +43,7 @@ export function SuggestedPromptsBar({
 
   return (
     <div className={containerClasses} aria-hidden={visibility === 'hidden'}>
-      <div className="flex flex-col gap-2 sm:gap-2.5 md:gap-3 max-w-4xl mx-auto">
+      <div className="flex flex-col gap-1.5 sm:gap-2 md:gap-2.5 max-w-4xl mx-auto">
         {prompts.map((prompt, index) => {
           const key = `${prompt.type}-${index}-${prompt.simplified_text || prompt.prompt}`;
           const accentColor =
@@ -59,7 +59,7 @@ export function SuggestedPromptsBar({
               type="button"
               onClick={() => onSelect(prompt)}
               disabled={disabled}
-              className={`w-full px-4 sm:px-5 py-3 sm:py-3.5 text-left text-sm sm:text-base font-medium text-gray-800 border rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed ${accentColor}`}
+              className={`w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left text-sm sm:text-base font-medium text-gray-800 border rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed ${accentColor}`}
               aria-label={prompt.prompt}
               title={prompt.prompt}
               data-prompt-type={prompt.type}
