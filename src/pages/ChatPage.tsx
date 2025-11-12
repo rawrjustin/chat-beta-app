@@ -8,6 +8,7 @@ import { getCharacters } from '../utils/api';
 import { extractAvatarUrl } from '../utils/avatar';
 import { SuggestedPromptsBar } from '../components/SuggestedPromptsBar';
 import type { CharacterResponse, SuggestedPreprompt } from '../types/api';
+import mixpanel from 'mixpanel-browser';
 
 export function ChatPage() {
   const { configId } = useParams<{ configId: string }>();
@@ -182,6 +183,14 @@ export function ChatPage() {
     if (!prompt?.prompt) {
       return;
     }
+    
+    // Track Pre Prompt Clicked event
+    mixpanel.track('Pre Prompt Clicked', {
+      type: prompt.type,
+      prompt_text: prompt.prompt,
+      simplified_text: prompt.simplified_text,
+    });
+    
     handleSendMessage(prompt.prompt);
   };
 
