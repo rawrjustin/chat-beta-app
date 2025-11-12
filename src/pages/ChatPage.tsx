@@ -5,7 +5,7 @@ import { ChatMessage } from '../components/ChatMessage';
 import { ChatInput } from '../components/ChatInput';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { getCharacters } from '../utils/api';
-import { extractAvatarUrl } from '../utils/avatar';
+import { extractAvatarUrl, normalizeAvatarUrl } from '../utils/avatar';
 import { SuggestedPromptsBar } from '../components/SuggestedPromptsBar';
 import type { CharacterResponse, SuggestedPreprompt } from '../types/api';
 
@@ -33,28 +33,9 @@ export function ChatPage() {
   const promptFadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fadeVersionRef = useRef(0);
 
-  // Normalize image URL - handle relative URLs
-  const getImageUrl = (url: string | undefined): string => {
-    if (!url) return '';
-    
-    // If it's already a full URL (http/https), return as is
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-      return url;
-    }
-    
-    // If it's a relative URL starting with /, prepend API base URL
-    if (url.startsWith('/')) {
-      const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
-      return `${API_BASE}${url}`;
-    }
-    
-    // Otherwise return as is (might be a data URL or other format)
-    return url;
-  };
-
   const avatarUrl = character?.avatar_url?.trim() ?? '';
   const hasAvatar = avatarUrl !== '';
-  const imageUrl = hasAvatar ? getImageUrl(avatarUrl) : '';
+  const imageUrl = hasAvatar ? normalizeAvatarUrl(avatarUrl) : '';
 
   const handleImageError = () => {
     console.error('Failed to load avatar image:', {
@@ -99,9 +80,10 @@ export function ChatPage() {
           (char) => char.config_id === configId
         );
         if (foundCharacter) {
+          const extracted = extractAvatarUrl(foundCharacter) ?? foundCharacter.avatar_url;
           setCharacter({
             ...foundCharacter,
-            avatar_url: extractAvatarUrl(foundCharacter) ?? foundCharacter.avatar_url,
+            avatar_url: normalizeAvatarUrl(extracted),
           });
         } else {
           setCharacter(null);

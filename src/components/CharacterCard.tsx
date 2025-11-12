@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Character } from '../types/api';
+import { normalizeAvatarUrl } from '../utils/avatar';
 
 interface CharacterCardProps {
   character: Character;
@@ -11,33 +12,13 @@ export function CharacterCard({ character }: CharacterCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
 
-  const avatarUrl = (character.avatar_url ?? character.avatar ?? '').trim();
-  const hasAvatar = avatarUrl !== '';
-
-  // Normalize image URL - handle relative URLs
-  const getImageUrl = (url: string | undefined): string => {
-    if (!url) return '';
-    
-    // If it's already a full URL (http/https), return as is
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-      return url;
-    }
-    
-    // If it's a relative URL starting with /, prepend API base URL
-    if (url.startsWith('/')) {
-      const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
-      return `${API_BASE}${url}`;
-    }
-    
-    // Otherwise return as is (might be a data URL or other format)
-    return url;
-  };
-
-  const imageUrl = hasAvatar ? getImageUrl(avatarUrl) : '';
+  const avatarUrlRaw = (character.avatar_url ?? character.avatar ?? '').trim();
+  const hasAvatar = avatarUrlRaw !== '';
+  const imageUrl = hasAvatar ? normalizeAvatarUrl(avatarUrlRaw) : '';
 
   const handleImageError = () => {
     console.error('Failed to load avatar image:', {
-      url: avatarUrl,
+      url: avatarUrlRaw,
       normalizedUrl: imageUrl,
       character: character.name,
     });

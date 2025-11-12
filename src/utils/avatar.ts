@@ -1,6 +1,7 @@
 import type { CharacterResponse } from '../types/api';
 
 const AVATAR_KEY_PATTERN = /(avatar|image)/i;
+const ABSOLUTE_URL_REGEX = /^(?:[a-z][a-z0-9+\-.]*:)?\/\//i;
 
 export function extractAvatarUrl(character: CharacterResponse): string | undefined {
   const directCandidates = [
@@ -39,5 +40,28 @@ export function extractAvatarUrl(character: CharacterResponse): string | undefin
   }
 
   return undefined;
+}
+
+export function normalizeAvatarUrl(url: string | undefined): string {
+  const trimmed = typeof url === 'string' ? url.trim() : '';
+  if (!trimmed) {
+    return '';
+  }
+
+  if (ABSOLUTE_URL_REGEX.test(trimmed) || trimmed.startsWith('data:')) {
+    return trimmed;
+  }
+
+  const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+
+  if (trimmed.startsWith('/')) {
+    return `${apiBase}${trimmed}`;
+  }
+
+  if (trimmed.startsWith('./')) {
+    return `${apiBase}/${trimmed.replace(/^\.\//, '')}`;
+  }
+
+  return `${apiBase}/${trimmed}`;
 }
 

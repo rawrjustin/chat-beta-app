@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CharacterCard } from '../components/CharacterCard';
 import { getCharacters } from '../utils/api';
-import { extractAvatarUrl } from '../utils/avatar';
+import { extractAvatarUrl, normalizeAvatarUrl } from '../utils/avatar';
 import type { CharacterResponse } from '../types/api';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 
@@ -22,10 +22,13 @@ export function CharactersPage() {
           const orderB = b.display_order ?? Infinity;
           return orderA - orderB;
         });
-        const enhancedCharacters = sortedCharacters.map((character) => ({
-          ...character,
-          avatar_url: extractAvatarUrl(character) ?? character.avatar_url,
-        }));
+        const enhancedCharacters = sortedCharacters.map((character) => {
+          const extracted = extractAvatarUrl(character) ?? character.avatar_url;
+          return {
+            ...character,
+            avatar_url: normalizeAvatarUrl(extracted),
+          };
+        });
         setCharacters(enhancedCharacters);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to load characters';
