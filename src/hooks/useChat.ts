@@ -8,6 +8,14 @@ import { createSession, fetchInitialMessage, sendChatMessage } from '../utils/ap
 import mixpanel from 'mixpanel-browser';
 import { saveChatSession, loadChatSession, clearChatSession } from '../utils/storage';
 
+const mapChatMessageToHistory = ({
+  role,
+  content,
+}: ChatMessage): InitialMessageHistoryMessage => ({
+  role: role === 'ai' ? 'assistant' : 'user',
+  content,
+});
+
 export function useChat(configId: string) {
   const [sessionId, setSessionId] = useState<string>('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -97,12 +105,7 @@ export function useChat(configId: string) {
         setSessionId(activeSessionId);
       }
 
-      const previousMessagesPayload = messages
-        .slice(-5)
-        .map(({ role, content }) => ({
-          role,
-          content,
-        }));
+      const previousMessagesPayload = messages.slice(-5).map(mapChatMessageToHistory);
 
       const startTime = Date.now();
       const response = await fetchInitialMessage(
@@ -174,10 +177,7 @@ export function useChat(configId: string) {
 
       const conversationHistory: InitialMessageHistoryMessage[] = messages
         .slice(-8)
-        .map(({ role, content }) => ({
-          role,
-          content,
-        }));
+        .map(mapChatMessageToHistory);
 
       // Add user message to UI immediately
       const userMessage: ChatMessage = {

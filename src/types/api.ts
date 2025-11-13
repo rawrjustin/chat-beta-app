@@ -39,7 +39,7 @@ export interface ProxyChatRequest {
 }
 
 export interface InitialMessageHistoryMessage {
-  role: 'user' | 'ai';
+  role: 'user' | 'assistant';
   content: string;
 }
 
