@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { SuggestedPreprompt } from '../types/api';
+import { segmentByQuotes } from '../utils/text';
 
 type PromptVisibility = 'hidden' | 'visible' | 'fading';
 
@@ -24,7 +25,7 @@ export function SuggestedPromptsBar({
     }
 
     const baseClasses =
-      'transition-all duration-300 ease-out transform px-3 sm:px-4 md:px-6 lg:px-8 pt-2.5 sm:pt-3 pb-2.5 sm:pb-3';
+      'transition-all duration-300 ease-out transform px-3 sm:px-4 md:px-6 lg:px-8 pt-2 sm:pt-2.5 pb-2 sm:pb-2.5';
 
     if (visibility === 'visible') {
       return `${baseClasses} opacity-100 translate-y-0 pointer-events-auto`;
@@ -53,6 +54,7 @@ export function SuggestedPromptsBar({
 
           const displayText = (prompt.simplified_text ?? '').trim() || prompt.prompt;
           const isRoleplay = prompt.type === 'roleplay';
+          const segments = isRoleplay ? segmentByQuotes(displayText) : null;
 
           return (
             <button
@@ -60,7 +62,7 @@ export function SuggestedPromptsBar({
               type="button"
               onClick={() => onSelect(prompt)}
               disabled={disabled}
-              className={`w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left text-sm sm:text-base font-medium text-gray-800 border rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed ${accentColor}`}
+              className={`w-full px-4 sm:px-5 py-2 sm:py-2.5 text-left text-sm sm:text-base font-medium text-gray-800 border rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed ${accentColor}`}
               aria-label={prompt.prompt}
               title={prompt.prompt}
               data-prompt-type={prompt.type}
@@ -72,8 +74,17 @@ export function SuggestedPromptsBar({
                   }`}
                   aria-hidden="true"
                 />
-                <span className={`leading-snug ${isRoleplay ? 'italic' : ''}`}>
-                  {displayText}
+                <span className="leading-snug">
+                  {isRoleplay && segments
+                    ? segments.map((segment, segmentIndex) => (
+                        <span
+                          key={`${key}-segment-${segmentIndex}`}
+                          className={segment.isQuoted ? undefined : 'italic'}
+                        >
+                          {segment.text}
+                        </span>
+                      ))
+                    : displayText}
                 </span>
               </span>
             </button>

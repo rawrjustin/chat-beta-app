@@ -3,6 +3,7 @@ import type {
   ChatMessage,
   SuggestedPreprompt,
   InitialMessageHistoryMessage,
+  ChatMessageMetadata,
 } from '../types/api';
 import { createSession, fetchInitialMessage, sendChatMessage } from '../utils/api';
 import mixpanel from 'mixpanel-browser';
@@ -159,7 +160,7 @@ export function useChat(configId: string) {
   }, [configId, hasAttemptedRestore, hasFetchedInitialMessage, initializeChat]);
 
   const sendMessage = useCallback(
-    async (userInput: string) => {
+    async (userInput: string, metadata?: ChatMessageMetadata) => {
       if (!userInput.trim() || isLoading) return;
 
       setIsLoading(true);
@@ -183,6 +184,7 @@ export function useChat(configId: string) {
       const userMessage: ChatMessage = {
         role: 'user',
         content: userInput,
+        metadata,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, userMessage]);

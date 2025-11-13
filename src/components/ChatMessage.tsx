@@ -1,4 +1,5 @@
 import type { ChatMessage as ChatMessageType } from '../types/api';
+import { segmentByQuotes } from '../utils/text';
 
 interface ChatMessageProps {
   message: ChatMessageType;
@@ -6,6 +7,11 @@ interface ChatMessageProps {
 
 export function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.role === 'user';
+  const shouldFormatRoleplayAction =
+    Boolean(message.metadata?.isRoleplayAction) && isUser;
+  const formattedSegments = shouldFormatRoleplayAction
+    ? segmentByQuotes(message.content)
+    : null;
 
   return (
     <div
@@ -18,7 +24,18 @@ export function ChatMessage({ message }: ChatMessageProps) {
             : 'bg-white text-gray-900 border border-gray-200 rounded-tl-none shadow-sm'
         }`}
       >
-        <p className="whitespace-pre-wrap break-words text-sm sm:text-base">{message.content}</p>
+        <p className="whitespace-pre-wrap break-words text-sm sm:text-base">
+          {shouldFormatRoleplayAction && formattedSegments
+            ? formattedSegments.map((segment, index) => (
+                <span
+                  key={`message-segment-${index}`}
+                  className={segment.isQuoted ? undefined : 'italic'}
+                >
+                  {segment.text}
+                </span>
+              ))
+            : message.content}
+        </p>
         {message.timestamp && (
           <p
             className={`text-xs mt-1 ${

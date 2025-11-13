@@ -7,7 +7,11 @@ import { LoadingSpinner } from '../components/LoadingSpinner';
 import { getCharacters } from '../utils/api';
 import { extractAvatarUrl, normalizeAvatarUrl } from '../utils/avatar';
 import { SuggestedPromptsBar } from '../components/SuggestedPromptsBar';
-import type { CharacterResponse, SuggestedPreprompt } from '../types/api';
+import type {
+  CharacterResponse,
+  SuggestedPreprompt,
+  ChatMessageMetadata,
+} from '../types/api';
 
 export function ChatPage() {
   const { configId } = useParams<{ configId: string }>();
@@ -149,13 +153,13 @@ export function ChatPage() {
   }, [clearSuggestedPrompts, suggestedPrompts.length]);
 
   const handleSendMessage = useCallback(
-    (message: string) => {
+    (message: string, metadata?: ChatMessageMetadata) => {
       if (!message.trim() || isLoading) {
         return;
       }
 
       schedulePromptFadeOut();
-      void sendMessage(message);
+      void sendMessage(message, metadata);
     },
     [isLoading, schedulePromptFadeOut, sendMessage]
   );
@@ -164,6 +168,16 @@ export function ChatPage() {
     if (!prompt?.prompt) {
       return;
     }
+
+    if (prompt.type === 'roleplay') {
+      const metadata: ChatMessageMetadata = {
+        promptType: prompt.type,
+        isRoleplayAction: true,
+      };
+      handleSendMessage(prompt.prompt, metadata);
+      return;
+    }
+
     handleSendMessage(prompt.prompt);
   };
 

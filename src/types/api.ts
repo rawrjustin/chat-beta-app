@@ -74,10 +74,16 @@ export interface CharactersResponse {
 }
 
 // Chat Message Types
+export interface ChatMessageMetadata {
+  promptType?: SuggestedPrepromptType;
+  isRoleplayAction?: boolean;
+}
+
 export interface ChatMessage {
   role: 'user' | 'ai';
   content: string;
   timestamp?: Date;
+  metadata?: ChatMessageMetadata;
 }
 
 export type SuggestedPrepromptType = 'roleplay' | 'conversation';

@@ -1,7 +1,8 @@
 import { useState, FormEvent } from 'react';
+import type { ChatMessageMetadata } from '../types/api';
 
 interface ChatInputProps {
-  onSendMessage: (message: string) => void;
+  onSendMessage: (message: string, metadata?: ChatMessageMetadata) => void;
   isLoading: boolean;
   disabled?: boolean;
 }
