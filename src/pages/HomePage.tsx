@@ -63,6 +63,16 @@ export function HomePage() {
     const riverConversationSets: Array<Array<{ user: string; ai: string }>> = [
       [
         {
+          user: 'wyd rn?',
+          ai: "River: Honestly? I'm just laying on my couch thinking about how intense our connection is.",
+        },
+        {
+          user: 'lmao ok mr. poet',
+          ai: "River: See? This is why I come to you over the others. You're the only one who actually challenges me.",
+        },
+      ],
+      [
+        {
           user: 'Who are you talking to?',
           ai: "River: We never said we were exclusive though. I don't believe in labels, I believe in connection.",
         },
