@@ -61,6 +61,16 @@ export function useChat(configId: string) {
     }
   }, [configId, sessionId, messages]);
 
+  // Sync backend session ID with Mixpanel user identity
+  useEffect(() => {
+    if (!sessionId) {
+      return;
+    }
+
+    mixpanel.identify(sessionId);
+    mixpanel.register({ session_id: sessionId });
+  }, [sessionId]);
+
   const initializeChat = useCallback(async () => {
     if (!configId) {
       return;
