@@ -5,6 +5,9 @@ import { extractAvatarUrl, normalizeAvatarUrl } from '../utils/avatar';
 import type { CharacterResponse } from '../types/api';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 
+const HERO_ROTATION_INTERVAL_MS = 24000;
+const CONVERSATION_ROTATION_INTERVAL_MS = 24000;
+
 export function HomePage() {
   const [characters, setCharacters] = useState<CharacterResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -53,6 +56,9 @@ export function HomePage() {
   >(() => {
     const riverCharacter = characters.find(
       (character) => character.name?.toLowerCase() === 'river'
+    );
+    const dogmaCharacter = characters.find(
+      (character) => character.name?.toLowerCase() === 'dogma'
     );
     const riverConversationSets: Array<Array<{ user: string; ai: string }>> = [
       [
@@ -137,7 +143,13 @@ export function HomePage() {
       ],
     ];
 
-    return [
+    const heroes: {
+      id: string;
+      name: string;
+      avatarUrl: string;
+      description: string;
+      conversationSets: Array<Array<{ user: string; ai: string }>>;
+    }[] = [
       {
         id: 'river',
         name: 'River',
@@ -148,6 +160,20 @@ export function HomePage() {
         conversationSets: riverConversationSets,
       },
     ];
+
+    if (dogmaCharacter) {
+      heroes.push({
+        id: 'dogma',
+        name: dogmaCharacter.name ?? 'Dogma',
+        avatarUrl:
+          normalizeAvatarUrl(dogmaCharacter.avatar_url) ||
+          'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80',
+        description: dogmaCharacter.description ?? '',
+        conversationSets: [],
+      });
+    }
+
+    return heroes;
   }, [characters]);
 
   const heroIndexRef = useRef(0);
@@ -157,12 +183,29 @@ export function HomePage() {
   const activeHero = heroCharacters[heroIndex] ?? heroCharacters[0];
 
   useEffect(() => {
+    if (heroCharacters.length <= 1) {
+      return;
+    }
+
     const interval = window.setInterval(() => {
       heroIndexRef.current = (heroIndexRef.current + 1) % heroCharacters.length;
       setHeroIndex(heroIndexRef.current);
-    }, 8000);
+    }, HERO_ROTATION_INTERVAL_MS);
 
     return () => window.clearInterval(interval);
+  }, [heroCharacters.length]);
+
+  useEffect(() => {
+    if (heroCharacters.length === 0) {
+      heroIndexRef.current = 0;
+      setHeroIndex(0);
+      return;
+    }
+
+    if (heroIndexRef.current >= heroCharacters.length) {
+      heroIndexRef.current = 0;
+      setHeroIndex(0);
+    }
   }, [heroCharacters.length]);
 
   useEffect(() => {
@@ -180,7 +223,7 @@ export function HomePage() {
       conversationIndexRef.current =
         (conversationIndexRef.current + 1) % conversationCount;
       setConversationIndex(conversationIndexRef.current);
-    }, 8000);
+    }, CONVERSATION_ROTATION_INTERVAL_MS);
 
     return () => window.clearInterval(interval);
   }, [activeHero?.conversationSets.length, heroIndex]);
@@ -244,30 +287,36 @@ export function HomePage() {
                 </div>
 
                 <div className="space-y-4">
-                  {activeConversation.map((pair, index) => (
-                    <div key={`${activeHero.id}-message-${index}`} className="space-y-3">
-                      <div className="flex gap-3 items-start">
-                        <div className="flex-shrink-0 h-9 w-9 rounded-full bg-white/20 flex items-center justify-center text-xs font-semibold text-white/80">
-                          You
+                  {activeConversation.length > 0 ? (
+                    activeConversation.map((pair, index) => (
+                      <div key={`${activeHero.id}-message-${index}`} className="space-y-3">
+                        <div className="flex gap-3 items-start">
+                          <div className="flex-shrink-0 h-9 w-9 rounded-full bg-white/20 flex items-center justify-center text-xs font-semibold text-white/80">
+                            You
+                          </div>
+                          <div className="flex-1 bg-white/15 border border-white/10 rounded-2xl px-4 py-3 text-sm text-slate-100 shadow-lg shadow-black/20">
+                            {pair.user}
+                          </div>
                         </div>
-                        <div className="flex-1 bg-white/15 border border-white/10 rounded-2xl px-4 py-3 text-sm text-slate-100 shadow-lg shadow-black/20">
-                          {pair.user}
+                        <div className="flex gap-3 items-start">
+                          <div className="flex-shrink-0 h-9 w-9 rounded-full overflow-hidden border border-white/20">
+                            <img
+                              src={activeHero.avatarUrl}
+                              alt={`${activeHero.name} avatar`}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1 bg-white border border-white/70 rounded-2xl px-4 py-3 text-sm text-slate-900 shadow-lg shadow-black/25">
+                            {pair.ai}
+                          </div>
                         </div>
                       </div>
-                      <div className="flex gap-3 items-start">
-                        <div className="flex-shrink-0 h-9 w-9 rounded-full overflow-hidden border border-white/20">
-                          <img
-                            src={activeHero.avatarUrl}
-                            alt={`${activeHero.name} avatar`}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="flex-1 bg-white border border-white/70 rounded-2xl px-4 py-3 text-sm text-slate-900 shadow-lg shadow-black/25">
-                          {pair.ai}
-                        </div>
-                      </div>
+                    ))
+                  ) : (
+                    <div className="bg-white/10 border border-white/15 rounded-2xl px-4 py-3 text-sm text-slate-100">
+                      Dialogue preview coming soon.
                     </div>
-                  ))}
+                  )}
                 </div>
 
               </div>
