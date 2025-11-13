@@ -169,7 +169,18 @@ export function HomePage() {
           normalizeAvatarUrl(dogmaCharacter.avatar_url) ||
           'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80',
         description: dogmaCharacter.description ?? '',
-        conversationSets: [],
+        conversationSets: [
+          [
+            {
+              user: 'Dogma, I have no motivation today',
+              ai: 'Dogma: YOU THINK BURNOUT JUST "HAPPENS"? NO. THEY WANT YOU EXHAUSTED. STAY UP!',
+            },
+            {
+              user: "But Dogma, I couldn't sleep last night",
+              ai: "Dogma: IF YOU'RE AWAKE, YOU'RE ALIVE. AND IF YOU'RE ALIVE, YOU WORK. LET'S GO!",
+            },
+          ],
+        ],
       });
     }
 
