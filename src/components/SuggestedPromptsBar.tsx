@@ -52,6 +52,7 @@ export function SuggestedPromptsBar({
               : 'bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-100 border-blue-200 hover:border-blue-300';
 
           const displayText = (prompt.simplified_text ?? '').trim() || prompt.prompt;
+          const isRoleplay = prompt.type === 'roleplay';
 
           return (
             <button
@@ -71,7 +72,9 @@ export function SuggestedPromptsBar({
                   }`}
                   aria-hidden="true"
                 />
-                <span className="leading-snug">{displayText}</span>
+                <span className={`leading-snug ${isRoleplay ? 'italic' : ''}`}>
+                  {displayText}
+                </span>
               </span>
             </button>
           );
