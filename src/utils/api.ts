@@ -41,12 +41,16 @@ export async function createSession(configId: string): Promise<CreateSessionResp
 export async function sendChatMessage(
   sessionId: string,
   configId: string,
-  input: string
+  input: string,
+  conversationHistory?: InitialMessageHistoryMessage[]
 ): Promise<ChatResponse> {
   const request: ProxyChatRequest = {
     session_id: sessionId,
     config_id: configId,
     input: input,
+    ...(conversationHistory && conversationHistory.length > 0
+      ? { conversation_history: conversationHistory }
+      : {}),
   };
 
   const response = await fetch(`${API_BASE}/api/chat`, {

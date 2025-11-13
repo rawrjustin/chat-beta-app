@@ -1,5 +1,9 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import type { ChatMessage, SuggestedPreprompt } from '../types/api';
+import type {
+  ChatMessage,
+  SuggestedPreprompt,
+  InitialMessageHistoryMessage,
+} from '../types/api';
 import { createSession, fetchInitialMessage, sendChatMessage } from '../utils/api';
 import mixpanel from 'mixpanel-browser';
 import { saveChatSession, loadChatSession, clearChatSession } from '../utils/storage';
@@ -168,6 +172,13 @@ export function useChat(configId: string) {
         mixpanel.track('Launch AI');
       }
 
+      const conversationHistory: InitialMessageHistoryMessage[] = messages
+        .slice(-8)
+        .map(({ role, content }) => ({
+          role,
+          content,
+        }));
+
       // Add user message to UI immediately
       const userMessage: ChatMessage = {
         role: 'user',
@@ -186,7 +197,12 @@ export function useChat(configId: string) {
           setSessionId(activeSessionId);
         }
 
-        const response = await sendChatMessage(activeSessionId, configId, userInput);
+        const response = await sendChatMessage(
+          activeSessionId,
+          configId,
+          userInput,
+          conversationHistory
+        );
         const responseTime = Date.now() - startTime;
 
         // Update session ID from response (server may create or update it)

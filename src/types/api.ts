@@ -35,6 +35,7 @@ export interface ProxyChatRequest {
   session_id: string;
   input: string;
   config_id: string;
+  conversation_history?: InitialMessageHistoryMessage[];
 }
 
 export interface InitialMessageHistoryMessage {
