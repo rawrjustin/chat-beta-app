@@ -47,36 +47,114 @@ export function HomePage() {
       id: string;
       name: string;
       avatarUrl: string;
-      messagePairs: Array<{ user: string; ai: string }>;
+      description: string;
+      conversationSets: Array<Array<{ user: string; ai: string }>>;
     }[]
-  >(
-    () => [
+  >(() => {
+    const riverCharacter = characters.find(
+      (character) => character.name?.toLowerCase() === 'river'
+    );
+    const riverConversationSets: Array<Array<{ user: string; ai: string }>> = [
+      [
+        {
+          user: 'Who are you talking to?',
+          ai: "River: We never said we were exclusive though. I don't believe in labels, I believe in connection.",
+        },
+        {
+          user: 'That sounds like an excuse.',
+          ai: "River: I can't do this if you won't trust me.",
+        },
+      ],
+      [
+        {
+          user: 'You ignored my message for two days.',
+          ai: "River: Nah, I'm not ghosting. I'm just busy winning at life.",
+        },
+        {
+          user: "That's not how communication works.",
+          ai: "River: I didn't forget your text. I just didn't feel like answering yet.",
+        },
+      ],
+      [
+        {
+          user: "Why can't I come to your set tonight?",
+          ai: "River: Babe I want you at my DJ gig, I really do. I just don't want people to get the wrong idea that you're like, my girlfriend or something. You understand?",
+        },
+        {
+          user: "That's humiliating.",
+          ai: "River: You're not mad at me, you're just mad at yourself.",
+        },
+      ],
+      [
+        {
+          user: 'Why do you follow so many girls?',
+          ai: "River: I only follow a lot of girls on Instagram because I'm trying to grow my brand, you know that. Babe, be serious. I'm a DJ.",
+        },
+        {
+          user: 'Then unfollow your ex at least.',
+          ai: "River: You really thought I'd unfollow her? That's cute.",
+        },
+      ],
+      [
+        {
+          user: "Why'd you toss the bill to me?",
+          ai: "River: Can we split the check? I only pay if it's serious.",
+        },
+        {
+          user: "So it's not serious?",
+          ai: "River: Don't make this deep. We're just hanging out.",
+        },
+      ],
+      [
+        {
+          user: 'Where are you right now?',
+          ai: "River: At the strip club right now and none of these girls' butts are better than yours.",
+        },
+        {
+          user: "That's supposed to make me feel better?",
+          ai: "River: No you're so hot, don't be mad.",
+        },
+      ],
+      [
+        {
+          user: 'So what are we?',
+          ai: "River: I told you why we can't date right now; I can't be in a relationship right now. I need to focus on my art.",
+        },
+        {
+          user: 'But you say you love me.',
+          ai: "River: I love you but I'm not in a place to commit right now.",
+        },
+      ],
+      [
+        {
+          user: 'I saw a necklace on your dresser.',
+          ai: "River: If you really trusted our connection you wouldn't need me to explain everything. I told you already, the necklace came with the dresser I thrifted. Nobody else has been here but you.",
+        },
+        {
+          user: "You're twisting this.",
+          ai: "River: I think you're projecting again, let's both take accountability.",
+        },
+      ],
+    ];
+
+    return [
       {
         id: 'river',
         name: 'River',
         avatarUrl:
-          normalizeAvatarUrl(
-            characters.find((character) => character.name?.toLowerCase() === 'river')
-              ?.avatar_url
-          ) ||
+          normalizeAvatarUrl(riverCharacter?.avatar_url) ||
           'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80',
-        messagePairs: [
-          {
-            user: 'Hey River, where are we dropping tonight?',
-            ai: 'River: Neon District—rumor says the glitch storms are spawning rare loot.',
-          },
-          {
-            user: 'What should I watch out for?',
-            ai: 'River: Watch the rooftops. Syndicate snipers love camping the uplink towers.',
-          },
-        ],
+        description: riverCharacter?.description ?? '',
+        conversationSets: riverConversationSets,
       },
-    ],
-    [characters]
-  );
+    ];
+  }, [characters]);
 
   const heroIndexRef = useRef(0);
   const [heroIndex, setHeroIndex] = useState(0);
+  const conversationIndexRef = useRef(0);
+  const [conversationIndex, setConversationIndex] = useState(0);
+  const activeHero = heroCharacters[heroIndex] ?? heroCharacters[0];
 
   useEffect(() => {
     const interval = window.setInterval(() => {
@@ -87,7 +165,32 @@ export function HomePage() {
     return () => window.clearInterval(interval);
   }, [heroCharacters.length]);
 
-  const activeHero = heroCharacters[heroIndex];
+  useEffect(() => {
+    conversationIndexRef.current = 0;
+    setConversationIndex(0);
+  }, [heroIndex]);
+
+  useEffect(() => {
+    const conversationCount = activeHero?.conversationSets.length ?? 0;
+    if (conversationCount <= 1) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      conversationIndexRef.current =
+        (conversationIndexRef.current + 1) % conversationCount;
+      setConversationIndex(conversationIndexRef.current);
+    }, 8000);
+
+    return () => window.clearInterval(interval);
+  }, [activeHero?.conversationSets.length, heroIndex]);
+
+  const activeConversation =
+    activeHero?.conversationSets[conversationIndex] ?? activeHero?.conversationSets[0] ?? [];
+
+  if (!activeHero) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -134,12 +237,14 @@ export function HomePage() {
                     <h2 className="text-xl sm:text-2xl font-semibold text-white mb-1">
                       {activeHero.name}
                     </h2>
-                    <p className="text-sm text-slate-300">Glitch Runner • Midnight Syndicate Exile</p>
+                    {activeHero?.description && (
+                      <p className="text-sm text-slate-300">{activeHero.description}</p>
+                    )}
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  {activeHero.messagePairs.map((pair, index) => (
+                  {activeConversation.map((pair, index) => (
                     <div key={`${activeHero.id}-message-${index}`} className="space-y-3">
                       <div className="flex gap-3 items-start">
                         <div className="flex-shrink-0 h-9 w-9 rounded-full bg-white/20 flex items-center justify-center text-xs font-semibold text-white/80">
@@ -165,10 +270,6 @@ export function HomePage() {
                   ))}
                 </div>
 
-                <div className="mt-6 flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-slate-300">
-                  <span className="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
-                  Live Story World Demo
-                </div>
               </div>
             </div>
           </div>
