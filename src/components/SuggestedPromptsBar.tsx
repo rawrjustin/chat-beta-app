@@ -8,6 +8,7 @@ interface SuggestedPromptsBarProps {
   prompts: SuggestedPreprompt[];
   visibility?: PromptVisibility;
   disabled?: boolean;
+  isLoading?: boolean;
   onSelect: (prompt: SuggestedPreprompt) => void;
 }
 
@@ -15,9 +16,10 @@ export function SuggestedPromptsBar({
   prompts,
   visibility = 'hidden',
   disabled = false,
+  isLoading = false,
   onSelect,
 }: SuggestedPromptsBarProps) {
-  const shouldRender = prompts.length > 0 || visibility === 'fading';
+  const shouldRender = prompts.length > 0 || visibility === 'fading' || isLoading;
 
   const containerClasses = useMemo(() => {
     if (!shouldRender) {
@@ -42,10 +44,24 @@ export function SuggestedPromptsBar({
     return null;
   }
 
+  const showLoadingOnly = isLoading && prompts.length === 0;
+
   return (
     <div className={containerClasses} aria-hidden={visibility === 'hidden'}>
-      <div className="flex flex-col gap-1.5 sm:gap-2 md:gap-2.5 max-w-4xl mx-auto">
-        {prompts.map((prompt, index) => {
+      <div
+        className="flex flex-col gap-1.5 sm:gap-2 md:gap-2.5 max-w-4xl mx-auto"
+        aria-live={isLoading ? 'polite' : 'off'}
+      >
+        {showLoadingOnly ? (
+          <div className="w-full px-4 sm:px-5 py-2 sm:py-2.5 text-sm sm:text-base font-medium text-gray-700 bg-gradient-to-r from-slate-100 via-white to-slate-100 border border-slate-200 rounded-xl shadow-sm flex items-center gap-3">
+            <span
+              className="h-4 w-4 sm:h-5 sm:w-5 rounded-full border-2 border-slate-300 border-t-transparent animate-spin"
+              aria-hidden="true"
+            />
+            <span className="leading-snug">Generating follow-up suggestions...</span>
+          </div>
+        ) : (
+          prompts.map((prompt, index) => {
           const key = `${prompt.type}-${index}-${prompt.simplified_text || prompt.prompt}`;
           const accentColor =
             prompt.type === 'roleplay'
@@ -56,7 +72,7 @@ export function SuggestedPromptsBar({
           const isRoleplay = prompt.type === 'roleplay';
           const segments = isRoleplay ? segmentByQuotes(displayText) : null;
 
-          return (
+            return (
             <button
               key={key}
               type="button"
@@ -88,8 +104,9 @@ export function SuggestedPromptsBar({
                 </span>
               </span>
             </button>
-          );
-        })}
+            );
+          })
+        )}
       </div>
     </div>
   );

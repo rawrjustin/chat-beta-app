@@ -11,6 +11,7 @@ import type {
   CharacterResponse,
   SuggestedPreprompt,
   ChatMessageMetadata,
+  ChatMessage as ChatMessageType,
 } from '../types/api';
 
 export function ChatPage() {
@@ -30,6 +31,7 @@ export function ChatPage() {
     startNewConversation,
     suggestedPrompts,
     clearSuggestedPrompts,
+    isFetchingFollowups,
   } = useChat(configId || '');
   const [promptVisibility, setPromptVisibility] = useState<'hidden' | 'visible' | 'fading'>(
     'hidden'
@@ -110,16 +112,22 @@ export function ChatPage() {
 
   // Reset prompt visibility whenever new prompts are provided
   useEffect(() => {
-    if (suggestedPrompts.length > 0) {
-      setPromptVisibility('visible');
+    if (suggestedPrompts.length > 0 || isFetchingFollowups) {
+      setPromptVisibility((prevVisibility: typeof promptVisibility) =>
+        prevVisibility === 'visible' ? prevVisibility : 'visible'
+      );
       if (promptFadeTimeoutRef.current) {
         clearTimeout(promptFadeTimeoutRef.current);
         promptFadeTimeoutRef.current = null;
       }
     } else {
-      setPromptVisibility((prev) => (prev === 'visible' ? 'hidden' : prev));
+      setPromptVisibility((prevVisibility: typeof promptVisibility) =>
+        prevVisibility === 'visible' || prevVisibility === 'fading'
+          ? 'hidden'
+          : prevVisibility
+      );
     }
-  }, [suggestedPrompts]);
+  }, [suggestedPrompts, isFetchingFollowups]);
 
   useEffect(() => {
     return () => {
@@ -173,12 +181,23 @@ export function ChatPage() {
       const metadata: ChatMessageMetadata = {
         promptType: prompt.type,
         isRoleplayAction: true,
+        inputSource: 'prompt-roleplay',
       };
       handleSendMessage(prompt.prompt, metadata);
       return;
     }
 
-    handleSendMessage(prompt.prompt);
+    if (prompt.type === 'conversation') {
+      handleSendMessage(prompt.prompt, {
+        promptType: prompt.type,
+        inputSource: 'prompt-conversation',
+      });
+      return;
+    }
+
+    handleSendMessage(prompt.prompt, {
+      promptType: prompt.type,
+    });
   };
 
   if (!configId) {
@@ -386,7 +405,7 @@ export function ChatPage() {
             </div>
           )}
 
-          {messages.map((message, index) => (
+          {messages.map((message: ChatMessageType, index: number) => (
             <ChatMessage key={index} message={message} />
           ))}
 
@@ -417,6 +436,7 @@ export function ChatPage() {
             visibility={promptVisibility}
             onSelect={handlePromptSelect}
             disabled={isLoading}
+            isLoading={isFetchingFollowups}
           />
           <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
         </div>

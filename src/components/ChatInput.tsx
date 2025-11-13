@@ -14,7 +14,7 @@ export function ChatInput({ onSendMessage, isLoading, disabled }: ChatInputProps
     e.preventDefault();
     if (!input.trim() || isLoading || disabled) return;
 
-    onSendMessage(input);
+    onSendMessage(input, { inputSource: 'user-written' });
     setInput('');
   };
 

@@ -8,6 +8,7 @@ import type {
   InitialMessageHistoryMessage,
   CharactersResponse,
   AdminCharactersResponse,
+  FollowupsJobResponse,
 } from '../types/api';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
@@ -115,5 +116,19 @@ export async function getAdminCharacters(password: string): Promise<AdminCharact
   }
 
   return response.json();
+}
+
+export async function fetchFollowupsJob(jobId: string): Promise<FollowupsJobResponse> {
+  const response = await fetch(
+    `${API_BASE}/api/chat-followups/${encodeURIComponent(jobId)}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  return handleResponse<FollowupsJobResponse>(response);
 }
 

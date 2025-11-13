@@ -3,6 +3,7 @@ import { segmentByQuotes } from '../utils/text';
 
 interface ChatMessageProps {
   message: ChatMessageType;
+  key?: string | number;
 }
 
 export function ChatMessage({ message }: ChatMessageProps) {

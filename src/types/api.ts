@@ -6,6 +6,9 @@ export interface ChatResponse {
   text_response_cleaned?: string;
   warning_message?: string | null;
   preprompts?: SuggestedPreprompt[];
+  followups_job_id?: string;
+  followups_ready?: boolean;
+  followups_status?: FollowupsJobStatus;
 }
 
 export interface CreateSessionResponse {
@@ -83,6 +86,7 @@ export interface AdminCharactersResponse extends CharactersResponse {
 export interface ChatMessageMetadata {
   promptType?: SuggestedPrepromptType;
   isRoleplayAction?: boolean;
+  inputSource?: 'user-written' | 'prompt-roleplay' | 'prompt-conversation';
 }
 
 export interface ChatMessage {
@@ -98,5 +102,16 @@ export interface SuggestedPreprompt {
   type: SuggestedPrepromptType;
   prompt: string;
   simplified_text: string;
+}
+
+export type FollowupsJobStatus = 'pending' | 'ready' | 'failed';
+
+export interface FollowupsJobResponse {
+  followups_job_id: string;
+  status: FollowupsJobStatus;
+  preprompts?: SuggestedPreprompt[];
+  error?: string;
+  poll_after_ms?: number;
+  completed_at?: string;
 }
 
