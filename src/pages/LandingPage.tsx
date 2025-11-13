@@ -6,6 +6,7 @@ import { extractAvatarUrl, normalizeAvatarUrl } from '../utils/avatar';
 import type { CharacterResponse } from '../types/api';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { PaywallModal } from '../components/PaywallModal';
+import mixpanel from 'mixpanel-browser';
 
 export function LandingPage() {
   const [characters, setCharacters] = useState<CharacterResponse[]>([]);
@@ -79,6 +80,12 @@ export function LandingPage() {
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey && characterInput.trim()) {
                       e.preventDefault();
+                      
+                      // Track Character Creation Input Submitted event
+                      mixpanel.track('Character Creation Input Submitted', {
+                        input_text: characterInput.trim(),
+                      });
+                      
                       setShowPaywall(true);
                     }
                   }}
