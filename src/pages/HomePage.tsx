@@ -268,10 +268,6 @@ export function HomePage() {
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 md:py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             <div>
-              <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-1.5 rounded-full text-xs uppercase tracking-[0.2em] font-semibold mb-6">
-                Featured Character
-                <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-              </span>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
                 Dive back into Story World with
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-purple-200 to-rose-300">
@@ -279,8 +275,8 @@ export function HomePage() {
                 </span>
               </h1>
               <p className="text-base sm:text-lg text-slate-200 mb-6 max-w-xl">
-                Preview the energy before you jump in. Each hero showcases a glimpse of the chaos,
-                charm, and lore waiting inside their chat.
+                Step into a world of AI characters. Engage with characters who actually understand
+                you.
               </p>
             </div>
 

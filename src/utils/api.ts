@@ -7,6 +7,7 @@ import type {
   InitialMessageRequest,
   InitialMessageHistoryMessage,
   CharactersResponse,
+  AdminCharactersResponse,
 } from '../types/api';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
@@ -101,5 +102,18 @@ export async function getCharacters(): Promise<CharactersResponse> {
 export async function getCharacterConfig(configId: string): Promise<any> {
   const response = await fetch(`${API_BASE}/api/config/${configId}`);
   return handleResponse<any>(response);
+}
+
+export async function getAdminCharacters(password: string): Promise<AdminCharactersResponse> {
+  const response = await fetch(
+    `${API_BASE}/admin/api/characters?password=${encodeURIComponent(password)}`
+  );
+
+  const contentType = response.headers.get('content-type');
+  if (!response.ok || !contentType || !contentType.includes('application/json')) {
+    throw new Error('Authentication failed - incorrect password or unexpected response');
+  }
+
+  return response.json();
 }
 

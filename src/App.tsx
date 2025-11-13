@@ -5,6 +5,7 @@ import { HomePage } from './pages/HomePage';
 import { ChatPage } from './pages/ChatPage';
 import { PricingPage } from './pages/PricingPage';
 import { CharactersPage } from './pages/CharactersPage';
+import { AdminPage } from './pages/AdminPage';
 import mixpanel from 'mixpanel-browser';
 
 function PageViewTracker() {
@@ -47,6 +48,14 @@ function App() {
           element={
             <Layout>
               <CharactersPage />
+            </Layout>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <Layout>
+              <AdminPage />
             </Layout>
           }
         />

@@ -65,12 +65,18 @@ export interface CharacterResponse {
   description?: string;
   display_order?: number;
   avatar_url?: string;
+  hidden?: boolean;
   config: any; // Full character configuration
 }
 
 export interface CharactersResponse {
   characters: CharacterResponse[];
   total: number;
+}
+
+export interface AdminCharactersResponse extends CharactersResponse {
+  visible: number;
+  hidden: number;
 }
 
 // Chat Message Types
