@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Layout } from './components/Layout';
-import { LandingPage } from './pages/LandingPage';
+import { HomePage } from './pages/HomePage';
 import { ChatPage } from './pages/ChatPage';
 import { PricingPage } from './pages/PricingPage';
 import { CharactersPage } from './pages/CharactersPage';
@@ -30,7 +30,7 @@ function App() {
           path="/"
           element={
             <Layout>
-              <LandingPage />
+              <HomePage />
             </Layout>
           }
         />

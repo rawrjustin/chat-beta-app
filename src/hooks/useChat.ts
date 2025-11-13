@@ -61,16 +61,6 @@ export function useChat(configId: string) {
     }
   }, [configId, sessionId, messages]);
 
-  // Sync backend session ID with Mixpanel user identity
-  useEffect(() => {
-    if (!sessionId) {
-      return;
-    }
-
-    mixpanel.identify(sessionId);
-    mixpanel.register({ session_id: sessionId });
-  }, [sessionId]);
-
   const initializeChat = useCallback(async () => {
     if (!configId) {
       return;
@@ -206,22 +196,7 @@ export function useChat(configId: string) {
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, aiMessage]);
-        
-        // Update suggested prompts
-        const newPrompts = response.preprompts ?? [];
-        setSuggestedPrompts(newPrompts);
-        
-        // Track Pre Prompts Refreshed event with all 4 prompts
-        const refreshEventProperties: Record<string, string> = {};
-        for (let i = 0; i < 4; i++) {
-          const prompt = newPrompts[i];
-          if (prompt) {
-            refreshEventProperties[`prompt_${i + 1}_type`] = prompt.type;
-            refreshEventProperties[`prompt_${i + 1}_prompt_text`] = prompt.prompt;
-            refreshEventProperties[`prompt_${i + 1}_simplified_text`] = prompt.simplified_text;
-          }
-        }
-        mixpanel.track('Pre Prompts Refreshed', refreshEventProperties);
+        setSuggestedPrompts(response.preprompts ?? []);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to send message';
         setError(errorMessage);
