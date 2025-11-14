@@ -87,6 +87,7 @@ export interface ChatMessageMetadata {
   promptType?: SuggestedPrepromptType;
   isRoleplayAction?: boolean;
   inputSource?: 'user-written' | 'prompt-roleplay' | 'prompt-conversation';
+  simplifiedText?: string;
 }
 
 export interface ChatMessage {

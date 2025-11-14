@@ -182,6 +182,7 @@ export function ChatPage() {
         promptType: prompt.type,
         isRoleplayAction: true,
         inputSource: 'prompt-roleplay',
+      simplifiedText: prompt.simplified_text,
       };
       handleSendMessage(prompt.prompt, metadata);
       return;
@@ -191,12 +192,14 @@ export function ChatPage() {
       handleSendMessage(prompt.prompt, {
         promptType: prompt.type,
         inputSource: 'prompt-conversation',
+      simplifiedText: prompt.simplified_text,
       });
       return;
     }
 
     handleSendMessage(prompt.prompt, {
       promptType: prompt.type,
+    simplifiedText: prompt.simplified_text,
     });
   };
 

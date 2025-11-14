@@ -318,10 +318,16 @@ export function useChat(configId: string) {
       const inputSource = metadata?.inputSource ?? 'user-written';
 
       // Track AI Prompt Sent event
-      mixpanel.track('AI Prompt Sent and Prompt Text', {
+      const promptEventPayload: Record<string, string> = {
         'Prompt Text': userInput,
         input_source: inputSource,
-      });
+      };
+
+      if (metadata?.simplifiedText) {
+        promptEventPayload.simplified_text = metadata.simplifiedText;
+      }
+
+      mixpanel.track('AI Prompt Sent and Prompt Text', promptEventPayload);
 
       const hasUserMessage = messages.some(
         (message: ChatMessage) => message.role === 'user'
