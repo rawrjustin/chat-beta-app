@@ -43,14 +43,13 @@ export function CharacterCard({ character }: CharacterCardProps) {
 
   return (
     <Link to={`/chat/${character.id}`} className="block group">
-      <div className="card h-full flex flex-col group-hover:scale-[1.02] transition-transform duration-200">
+      <div className="card h-full flex flex-row md:flex-col group-hover:scale-[1.02] transition-transform duration-200 gap-4 md:gap-0">
         <div 
-          className="bg-gradient-to-br from-purple-100 via-blue-100 to-purple-200 flex items-center justify-center overflow-hidden relative"
+          className="relative bg-gradient-to-br from-purple-100 via-blue-100 to-purple-200 flex items-center justify-center overflow-hidden flex-shrink-0 w-24 sm:w-28 md:w-full md:min-h-[200px]"
           style={{
             aspectRatio: imageDimensions 
               ? `${imageDimensions.width} / ${imageDimensions.height}` 
               : '5 / 6',
-            minHeight: '200px',
           }}
         >
           {hasAvatar && !imageError ? (
@@ -76,8 +75,8 @@ export function CharacterCard({ character }: CharacterCardProps) {
             </div>
           )}
         </div>
-        <div className="p-6 flex-1 flex flex-col">
-          <h3 className="text-xl font-bold text-gray-900 mb-2">
+        <div className="flex-1 flex flex-col p-4 md:p-6">
+          <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">
             {character.name}
           </h3>
           <p className="text-gray-600 text-sm flex-1 mb-4 line-clamp-3 leading-relaxed">
