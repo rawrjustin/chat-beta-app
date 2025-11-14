@@ -64,91 +64,91 @@ export function HomePage() {
       [
         {
           user: 'wyd rn?',
-          ai: "River: Honestly? I'm just laying on my couch thinking about how intense our connection is.",
+          ai: "Honestly? I'm just laying on my couch thinking about how intense our connection is.",
         },
         {
           user: 'lmao ok mr. poet',
-          ai: "River: See? This is why I come to you over the others. You're the only one who actually challenges me.",
+          ai: "See? This is why I come to you over the others. You're the only one who actually challenges me.",
         },
       ],
       [
         {
           user: 'Who are you talking to?',
-          ai: "River: We never said we were exclusive though. I don't believe in labels, I believe in connection.",
+          ai: "We never said we were exclusive though. I don't believe in labels, I believe in connection.",
         },
         {
           user: 'That sounds like an excuse.',
-          ai: "River: I can't do this if you won't trust me.",
+          ai: "I can't do this if you won't trust me.",
         },
       ],
       [
         {
           user: 'You ignored my message for two days.',
-          ai: "River: Nah, I'm not ghosting. I'm just busy winning at life.",
+          ai: "Nah, I'm not ghosting. I'm just busy winning at life.",
         },
         {
           user: "That's not how communication works.",
-          ai: "River: I didn't forget your text. I just didn't feel like answering yet.",
+          ai: "I didn't forget your text. I just didn't feel like answering yet.",
         },
       ],
       [
         {
           user: "Why can't I come to your set tonight?",
-          ai: "River: Babe I want you at my DJ gig, I really do. I just don't want people to get the wrong idea that you're like, my girlfriend or something. You understand?",
+          ai: "Babe I want you at my DJ gig, I really do. I just don't want people to get the wrong idea that you're like, my girlfriend or something. You understand?",
         },
         {
           user: "That's humiliating.",
-          ai: "River: You're not mad at me, you're just mad at yourself.",
+          ai: "You're not mad at me, you're just mad at yourself.",
         },
       ],
       [
         {
           user: 'Why do you follow so many girls?',
-          ai: "River: I only follow a lot of girls on Instagram because I'm trying to grow my brand, you know that. Babe, be serious. I'm a DJ.",
+          ai: "I only follow a lot of girls on Instagram because I'm trying to grow my brand, you know that. Babe, be serious. I'm a DJ.",
         },
         {
           user: 'Then unfollow your ex at least.',
-          ai: "River: You really thought I'd unfollow her? That's cute.",
+          ai: "You really thought I'd unfollow her? That's cute.",
         },
       ],
       [
         {
           user: "Why'd you toss the bill to me?",
-          ai: "River: Can we split the check? I only pay if it's serious.",
+          ai: "Can we split the check? I only pay if it's serious.",
         },
         {
           user: "So it's not serious?",
-          ai: "River: Don't make this deep. We're just hanging out.",
+          ai: "Don't make this deep. We're just hanging out.",
         },
       ],
       [
         {
           user: 'Where are you right now?',
-          ai: "River: At the strip club right now and none of these girls' butts are better than yours.",
+          ai: "At the strip club right now and none of these girls' butts are better than yours.",
         },
         {
           user: "That's supposed to make me feel better?",
-          ai: "River: No you're so hot, don't be mad.",
+          ai: "No you're so hot, don't be mad.",
         },
       ],
       [
         {
           user: 'So what are we?',
-          ai: "River: I told you why we can't date right now; I can't be in a relationship right now. I need to focus on my art.",
+          ai: "I told you why we can't date right now; I can't be in a relationship right now. I need to focus on my art.",
         },
         {
           user: 'But you say you love me.',
-          ai: "River: I love you but I'm not in a place to commit right now.",
+          ai: "I love you but I'm not in a place to commit right now.",
         },
       ],
       [
         {
           user: 'I saw a necklace on your dresser.',
-          ai: "River: If you really trusted our connection you wouldn't need me to explain everything. I told you already, the necklace came with the dresser I thrifted. Nobody else has been here but you.",
+          ai: "If you really trusted our connection you wouldn't need me to explain everything. I told you already, the necklace came with the dresser I thrifted. Nobody else has been here but you.",
         },
         {
           user: "You're twisting this.",
-          ai: "River: I think you're projecting again, let's both take accountability.",
+          ai: "I think you're projecting again, let's both take accountability.",
         },
       ],
     ];
@@ -183,11 +183,11 @@ export function HomePage() {
           [
             {
               user: 'Dogma, I have no motivation today',
-              ai: 'Dogma: YOU THINK BURNOUT JUST "HAPPENS"? NO. THEY WANT YOU EXHAUSTED. STAY UP!',
+              ai: 'YOU THINK BURNOUT JUST "HAPPENS"? NO. THEY WANT YOU EXHAUSTED. STAY UP!',
             },
             {
               user: "But Dogma, I couldn't sleep last night",
-              ai: "Dogma: IF YOU'RE AWAKE, YOU'RE ALIVE. AND IF YOU'RE ALIVE, YOU WORK. LET'S GO!",
+              ai: "IF YOU'RE AWAKE, YOU'RE ALIVE. AND IF YOU'RE ALIVE, YOU WORK. LET'S GO!",
             },
           ],
         ],
