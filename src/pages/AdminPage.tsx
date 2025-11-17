@@ -114,7 +114,7 @@ export function AdminPage() {
 
   const handleCopyShareLink = useCallback(async (configId: string) => {
     if (!shareBaseUrl) return;
-    const shareLink = `${shareBaseUrl}?character=${configId}`;
+    const shareLink = `${shareBaseUrl}/chat/${configId}`;
 
     try {
       await navigator.clipboard.writeText(shareLink);
@@ -166,7 +166,7 @@ export function AdminPage() {
             <input
               type="text"
               readOnly
-              value={`${shareBaseUrl}?character=${character.config_id}`}
+              value={`${shareBaseUrl}/chat/${character.config_id}`}
               className="flex-1 bg-gray-50 border border-gray-200 rounded px-2 py-1 text-sm text-gray-600"
             />
             <button
@@ -252,8 +252,7 @@ export function AdminPage() {
               <div className="px-6 py-4 border-b border-gray-200">
                 <h2 className="text-lg font-semibold text-gray-900">All Characters</h2>
                 <p className="mt-1 text-sm text-gray-500">
-                  Includes hidden characters. Share links point to the main application with the character query
-                  parameter applied.
+                  Includes hidden characters. Share links point directly to the chat page for each character.
                 </p>
               </div>
               <div className="overflow-x-auto">
