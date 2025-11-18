@@ -1,10 +1,20 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { getAdminCharacters } from '../utils/api';
+import {
+  clearCharacterPasswordProtection,
+  getAdminCharacters,
+  setCharacterPasswordProtection,
+} from '../utils/api';
 import type { AdminCharactersResponse, CharacterResponse } from '../types/api';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 
 const PASSWORD_STORAGE_KEY = 'chat-beta-admin-password';
+
+interface PasswordRowState {
+  isSaving: boolean;
+  error: string | null;
+  success: string | null;
+}
 
 export function AdminPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -22,6 +32,10 @@ export function AdminPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copiedConfigId, setCopiedConfigId] = useState<string | null>(null);
+  const [passwordInputs, setPasswordInputs] = useState<Record<string, string>>({});
+  const [passwordActionState, setPasswordActionState] = useState<
+    Record<string, PasswordRowState>
+  >({});
 
   const hasAttemptedInitialFetch = useRef(false);
 
@@ -125,12 +139,122 @@ export function AdminPage() {
     }
   }, [shareBaseUrl]);
 
+  const updatePasswordActionState = useCallback(
+    (configId: string, partial: Partial<PasswordRowState>) => {
+      setPasswordActionState((prev) => {
+        const existing = prev[configId] ?? { isSaving: false, error: null, success: null };
+        return {
+          ...prev,
+          [configId]: {
+            ...existing,
+            ...partial,
+          },
+        };
+      });
+    },
+    []
+  );
+
+  const handlePasswordInputChange = useCallback(
+    (configId: string, value: string) => {
+      setPasswordInputs((prev) => ({
+        ...prev,
+        [configId]: value,
+      }));
+      updatePasswordActionState(configId, { error: null, success: null });
+    },
+    [updatePasswordActionState]
+  );
+
+  const handleApplyPassword = useCallback(
+    async (configId: string, newPasswordValue: string) => {
+      if (!password) {
+        setError('Enter the admin password to manage character settings.');
+        return;
+      }
+
+      const newPassword = newPasswordValue.trim();
+      if (!newPassword) {
+        updatePasswordActionState(configId, {
+          error: 'Enter a password before saving.',
+          success: null,
+        });
+        return;
+      }
+
+      updatePasswordActionState(configId, { isSaving: true, error: null, success: null });
+
+      try {
+        await setCharacterPasswordProtection(configId, password, newPassword);
+        await fetchAdminData(password);
+        setPasswordInputs((prev) => ({ ...prev, [configId]: '' }));
+        updatePasswordActionState(configId, {
+          isSaving: false,
+          success: 'Password updated',
+        });
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Failed to update password. Please try again.';
+        updatePasswordActionState(configId, {
+          isSaving: false,
+          error: message,
+        });
+      }
+    },
+    [fetchAdminData, password, updatePasswordActionState]
+  );
+
+  const handleRemovePassword = useCallback(
+    async (configId: string) => {
+      if (!password) {
+        setError('Enter the admin password to manage character settings.');
+        return;
+      }
+
+      const confirmed =
+        typeof window !== 'undefined'
+          ? window.confirm('Remove the password requirement for this character?')
+          : true;
+      if (!confirmed) {
+        return;
+      }
+
+      updatePasswordActionState(configId, { isSaving: true, error: null, success: null });
+
+      try {
+        await clearCharacterPasswordProtection(configId, password);
+        await fetchAdminData(password);
+        updatePasswordActionState(configId, {
+          isSaving: false,
+          success: 'Password removed',
+        });
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Failed to remove password. Please try again.';
+        updatePasswordActionState(configId, {
+          isSaving: false,
+          error: message,
+        });
+      }
+    },
+    [fetchAdminData, password, updatePasswordActionState]
+  );
+
   const renderCharacterRow = (character: CharacterResponse) => {
     const statusLabel = character.hidden ? 'Hidden' : 'Visible';
     const statusStyles = character.hidden
       ? 'bg-red-100 text-red-800'
       : 'bg-green-100 text-green-800';
     const avatarUrl = character.avatar_url;
+    const passwordInputValue = passwordInputs[character.config_id] ?? '';
+    const passwordState = passwordActionState[character.config_id];
+    const passwordStatusLabel = character.password_required ? 'Protected' : 'Not Protected';
+    const passwordStatusStyles = character.password_required
+      ? 'bg-yellow-100 text-yellow-800'
+      : 'bg-gray-100 text-gray-700';
+    const passwordUpdatedAtLabel = character.password_updated_at
+      ? new Date(character.password_updated_at).toLocaleString()
+      : null;
 
     return (
       <tr key={character.config_id} className="border-b border-gray-200">
@@ -160,6 +284,63 @@ export function AdminPage() {
           <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${statusStyles}`}>
             {statusLabel}
           </span>
+        </td>
+        <td className="px-4 py-3">
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <span
+                className={`inline-flex items-center px-2.5 py-1 rounded-full font-medium ${passwordStatusStyles}`}
+              >
+                {passwordStatusLabel}
+              </span>
+              {passwordUpdatedAtLabel && (
+                <span className="text-gray-500">Updated {passwordUpdatedAtLabel}</span>
+              )}
+            </div>
+            {character.password_hint && (
+              <p className="text-xs text-gray-500">Hint: {character.password_hint}</p>
+            )}
+            <div className="flex flex-col xl:flex-row gap-2">
+              <input
+                type="password"
+                value={passwordInputValue}
+                onChange={(event) =>
+                  handlePasswordInputChange(character.config_id, event.target.value)
+                }
+                placeholder={
+                  character.password_required ? 'Update password' : 'Set new password'
+                }
+                className="flex-1 bg-gray-50 border border-gray-200 rounded px-2 py-1 text-sm text-gray-700"
+                disabled={Boolean(passwordState?.isSaving) || isLoading}
+              />
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleApplyPassword(character.config_id, passwordInputValue)}
+                  className="btn-secondary text-xs"
+                  disabled={Boolean(passwordState?.isSaving) || isLoading}
+                >
+                  {character.password_required ? 'Update' : 'Set Password'}
+                </button>
+                {character.password_required && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemovePassword(character.config_id)}
+                    className="text-xs px-3 py-1.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
+                    disabled={Boolean(passwordState?.isSaving) || isLoading}
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            </div>
+            {passwordState?.error && (
+              <p className="text-xs text-red-600">{passwordState.error}</p>
+            )}
+            {passwordState?.success && (
+              <p className="text-xs text-green-600">{passwordState.success}</p>
+            )}
+          </div>
         </td>
         <td className="px-4 py-3">
           <div className="flex items-center gap-2">
@@ -252,7 +433,7 @@ export function AdminPage() {
               <div className="px-6 py-4 border-b border-gray-200">
                 <h2 className="text-lg font-semibold text-gray-900">All Characters</h2>
                 <p className="mt-1 text-sm text-gray-500">
-                  Includes hidden characters. Share links point directly to the chat page for each character.
+                  Includes hidden characters. You can set or remove chat passwords and share protected links from here.
                 </p>
               </div>
               <div className="overflow-x-auto">
@@ -272,6 +453,9 @@ export function AdminPage() {
                         Status
                       </th>
                       <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Password Protection
+                      </th>
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Share Link
                       </th>
                     </tr>
@@ -279,7 +463,7 @@ export function AdminPage() {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {sortedCharacters.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="px-4 py-6 text-center text-sm text-gray-500">
+                        <td colSpan={6} className="px-4 py-6 text-center text-sm text-gray-500">
                           No characters found.
                         </td>
                       </tr>

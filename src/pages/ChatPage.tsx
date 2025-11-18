@@ -4,9 +4,14 @@ import { useChat } from '../hooks/useChat';
 import { ChatMessage } from '../components/ChatMessage';
 import { ChatInput } from '../components/ChatInput';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { getCharacters } from '../utils/api';
+import { getCharacters, verifyCharacterPassword } from '../utils/api';
 import { extractAvatarUrl, normalizeAvatarUrl } from '../utils/avatar';
 import { SuggestedPromptsBar } from '../components/SuggestedPromptsBar';
+import {
+  clearCharacterAccessToken,
+  getCharacterAccessToken,
+  saveCharacterAccessToken,
+} from '../utils/storage';
 import type {
   CharacterResponse,
   SuggestedPreprompt,
@@ -23,6 +28,18 @@ export function ChatPage() {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
+  const [isVerifyingPassword, setIsVerifyingPassword] = useState(false);
+  const normalizedConfigId = configId ?? '';
+  const isPasswordProtected = Boolean(character?.password_required);
+  const isChatUnlocked = Boolean(
+    normalizedConfigId &&
+    !isLoadingCharacter &&
+    (!isPasswordProtected || Boolean(accessToken))
+  );
   const {
     messages,
     isLoading,
@@ -32,12 +49,17 @@ export function ChatPage() {
     suggestedPrompts,
     clearSuggestedPrompts,
     isFetchingFollowups,
-  } = useChat(configId || '');
+  } = useChat(normalizedConfigId, {
+    accessToken,
+    enabled: isChatUnlocked,
+  });
   const [promptVisibility, setPromptVisibility] = useState<'hidden' | 'visible' | 'fading'>(
     'hidden'
   );
   const promptFadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fadeVersionRef = useRef(0);
+  const isLocked = isPasswordProtected && !accessToken && !isLoadingCharacter;
+  const canForgetAccess = isPasswordProtected && Boolean(accessToken);
 
   const avatarUrl = character?.avatar_url?.trim() ?? '';
   const hasAvatar = avatarUrl !== '';
@@ -67,6 +89,38 @@ export function ChatPage() {
     setImageDimensions(dimensions);
     setImageLoaded(true);
   };
+
+  useEffect(() => {
+    if (!normalizedConfigId || isLoadingCharacter) {
+      return;
+    }
+
+    if (!character) {
+      clearCharacterAccessToken(normalizedConfigId);
+      setAccessToken(null);
+      return;
+    }
+
+    if (!character.password_required) {
+      clearCharacterAccessToken(normalizedConfigId);
+      setAccessToken(null);
+      return;
+    }
+
+    const stored = getCharacterAccessToken(normalizedConfigId);
+    if (!stored) {
+      setAccessToken(null);
+      return;
+    }
+
+    if (stored.expiresAt && stored.expiresAt <= Date.now()) {
+      clearCharacterAccessToken(normalizedConfigId);
+      setAccessToken(null);
+      return;
+    }
+
+    setAccessToken(stored.token);
+  }, [character, normalizedConfigId, isLoadingCharacter]);
 
   // Fetch character info
   useEffect(() => {
@@ -160,16 +214,82 @@ export function ChatPage() {
     }, 220);
   }, [clearSuggestedPrompts, suggestedPrompts.length]);
 
+  const handlePasswordSubmit = useCallback(
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      if (!normalizedConfigId) {
+        return;
+      }
+
+      const trimmedPassword = passwordInput.trim();
+      if (!trimmedPassword) {
+        setPasswordError('Please enter the password.');
+        return;
+      }
+
+      setPasswordError(null);
+      setPasswordSuccess(null);
+      setIsVerifyingPassword(true);
+
+      try {
+        const response = await verifyCharacterPassword(normalizedConfigId, trimmedPassword);
+
+        if (!response.success || !response.access_token) {
+          throw new Error('Incorrect password. Please try again.');
+        }
+
+        let expiresAtMs: number | undefined;
+        if (response.expires_at) {
+          const parsed = Date.parse(response.expires_at);
+          if (!Number.isNaN(parsed)) {
+            expiresAtMs = parsed;
+          }
+        } else if (typeof response.ttl_seconds === 'number') {
+          expiresAtMs = Date.now() + response.ttl_seconds * 1000;
+        }
+
+        saveCharacterAccessToken(
+          normalizedConfigId,
+          response.access_token,
+          typeof expiresAtMs === 'number' ? expiresAtMs : null
+        );
+        setAccessToken(response.access_token);
+        setPasswordInput('');
+        setPasswordSuccess('Access granted. Loading chat…');
+        startNewConversation();
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Failed to verify password. Please try again.';
+        setPasswordError(message);
+      } finally {
+        setIsVerifyingPassword(false);
+      }
+    },
+    [normalizedConfigId, passwordInput, startNewConversation]
+  );
+
+  const handleForgetAccess = useCallback(() => {
+    if (!normalizedConfigId) {
+      return;
+    }
+    clearCharacterAccessToken(normalizedConfigId);
+    setAccessToken(null);
+    setPasswordInput('');
+    setPasswordError(null);
+    setPasswordSuccess(null);
+    startNewConversation();
+  }, [normalizedConfigId, startNewConversation]);
+
   const handleSendMessage = useCallback(
     (message: string, metadata?: ChatMessageMetadata) => {
-      if (!message.trim() || isLoading) {
+      if (!message.trim() || isLoading || isLocked) {
         return;
       }
 
       schedulePromptFadeOut();
       void sendMessage(message, metadata);
     },
-    [isLoading, schedulePromptFadeOut, sendMessage]
+    [isLoading, isLocked, schedulePromptFadeOut, sendMessage]
   );
 
   const handlePromptSelect = (prompt: SuggestedPreprompt) => {
@@ -216,6 +336,101 @@ export function ChatPage() {
     );
   }
 
+  if (isLocked) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-10 px-4 flex items-center justify-center">
+        <div className="w-full max-w-xl space-y-6">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-purple-600 transition-colors text-sm"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            Back to Home
+          </Link>
+
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6">
+            {isLoadingCharacter ? (
+              <div className="flex flex-col items-center justify-center gap-4 py-6 text-gray-600">
+                <LoadingSpinner />
+                <p>Loading character details…</p>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-start gap-4">
+                  {hasAvatar && !imageError ? (
+                    <img
+                      src={imageUrl}
+                      alt={character?.name || 'Character avatar'}
+                      className="w-16 h-16 rounded-full object-cover border border-gray-200"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-lg font-semibold text-gray-600">
+                      {character?.name?.charAt(0).toUpperCase() || '?'}
+                    </div>
+                  )}
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h1 className="text-2xl font-bold text-gray-900">
+                        {character?.name || normalizedConfigId || 'AI Character'}
+                      </h1>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        <svg
+                          className="w-3.5 h-3.5 mr-1"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path d="M10 2a4 4 0 00-4 4v2H5a1 1 0 00-1 1v7a2 2 0 002 2h8a2 2 0 002-2v-7a1 1 0 00-1-1h-1V6a4 4 0 00-4-4zm2 6V6a2 2 0 10-4 0v2h4z" />
+                        </svg>
+                        Password Required
+                      </span>
+                    </div>
+                    <p className="text-gray-600 mt-2">
+                      {character?.description || 'Enter the password below to unlock this chat.'}
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          <form
+            onSubmit={handlePasswordSubmit}
+            className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 space-y-4"
+          >
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Character Password
+              </label>
+              <input
+                type="password"
+                value={passwordInput}
+                onChange={(event) => setPasswordInput(event.target.value)}
+                placeholder="Enter password to unlock"
+                className="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-purple-500 focus:outline-none focus:ring-purple-500 sm:text-sm"
+              />
+            </div>
+            {passwordError && <p className="text-sm text-red-600">{passwordError}</p>}
+            {passwordSuccess && <p className="text-sm text-green-600">{passwordSuccess}</p>}
+            <button
+              type="submit"
+              className="btn-primary w-full"
+              disabled={isVerifyingPassword || passwordInput.trim().length === 0}
+            >
+              {isVerifyingPassword ? 'Validating…' : 'Unlock Character'}
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className="min-h-screen bg-gray-50 flex"
@@ -248,6 +463,14 @@ export function ChatPage() {
               ? 'Loading...'
               : character?.name || configId || 'AI Character'}
           </h2>
+          {isPasswordProtected && (
+            <span className="inline-flex items-center gap-1 text-xs font-medium text-yellow-800 bg-yellow-100 px-2 py-0.5 rounded-full">
+              <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 2a4 4 0 00-4 4v2H5a1 1 0 00-1 1v7a2 2 0 002 2h8a2 2 0 002-2v-7a1 1 0 00-1-1h-1V6a4 4 0 00-4-4zm2 6V6a2 2 0 10-4 0v2h4z" />
+              </svg>
+              Password Protected
+            </span>
+          )}
           <p className="text-sm text-gray-600 line-clamp-3">
             {isLoadingCharacter
               ? ''
@@ -290,7 +513,7 @@ export function ChatPage() {
           </div>
         </div>
 
-        <div className="p-6 border-t border-gray-200">
+        <div className="p-6 border-t border-gray-200 space-y-3">
           <button
             onClick={startNewConversation}
             className="w-full btn-secondary text-sm px-4 py-2.5"
@@ -298,6 +521,14 @@ export function ChatPage() {
           >
             New Chat
           </button>
+          {canForgetAccess && (
+            <button
+              onClick={handleForgetAccess}
+              className="w-full border border-gray-300 text-sm px-4 py-2.5 rounded-lg text-gray-700 hover:bg-gray-50 transition"
+            >
+              Forget Password
+            </button>
+          )}
         </div>
       </aside>
 
@@ -340,15 +571,33 @@ export function ChatPage() {
                       ? ''
                       : character?.description || 'Chat with AI'}
                   </p>
+                  {isPasswordProtected && (
+                    <span className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-medium text-yellow-800 bg-yellow-100 px-2 py-0.5 rounded-full mt-1">
+                      <svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2a4 4 0 00-4 4v2H5a1 1 0 00-1 1v7a2 2 0 002 2h8a2 2 0 002-2v-7a1 1 0 00-1-1h-1V6a4 4 0 00-4-4zm2 6V6a2 2 0 10-4 0v2h4z" />
+                      </svg>
+                      Password Protected
+                    </span>
+                  )}
                 </div>
               </div>
-              <button
-                onClick={startNewConversation}
-                className="btn-secondary text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 flex-shrink-0"
-                disabled={isLoading}
-              >
-                New Chat
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={startNewConversation}
+                  className="btn-secondary text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 flex-shrink-0"
+                  disabled={isLoading}
+                >
+                  New Chat
+                </button>
+                {canForgetAccess && (
+                  <button
+                    onClick={handleForgetAccess}
+                    className="text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
+                  >
+                    Forget Password
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </header>
@@ -438,10 +687,14 @@ export function ChatPage() {
             prompts={suggestedPrompts}
             visibility={promptVisibility}
             onSelect={handlePromptSelect}
-            disabled={isLoading}
+            disabled={isLoading || isLocked}
             isLoading={isFetchingFollowups}
           />
-          <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
+          <ChatInput
+            onSendMessage={handleSendMessage}
+            isLoading={isLoading}
+            disabled={isLocked}
+          />
         </div>
       </div>
     </div>

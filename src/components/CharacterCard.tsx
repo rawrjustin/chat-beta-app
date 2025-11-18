@@ -15,6 +15,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
   const avatarUrlRaw = (character.avatar_url ?? character.avatar ?? '').trim();
   const hasAvatar = avatarUrlRaw !== '';
   const imageUrl = hasAvatar ? normalizeAvatarUrl(avatarUrlRaw) : '';
+  const isPasswordProtected = Boolean(character.password_required);
 
   const handleImageError = () => {
     console.error('Failed to load avatar image:', {
@@ -54,6 +55,14 @@ export function CharacterCard({ character }: CharacterCardProps) {
         >
           {hasAvatar && !imageError ? (
             <>
+              {isPasswordProtected && (
+                <div className="absolute top-2 right-2 bg-white/95 text-gray-700 text-[11px] px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1">
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 2a4 4 0 00-4 4v2H5a1 1 0 00-1 1v7a2 2 0 002 2h8a2 2 0 002-2v-7a1 1 0 00-1-1h-1V6a4 4 0 00-4-4zm2 6V6a2 2 0 10-4 0v2h4z" />
+                  </svg>
+                  Locked
+                </div>
+              )}
               {!imageLoaded && (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
@@ -79,6 +88,14 @@ export function CharacterCard({ character }: CharacterCardProps) {
           <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">
             {character.name}
           </h3>
+          {isPasswordProtected && (
+            <span className="inline-flex items-center gap-1 text-xs font-medium text-yellow-800 bg-yellow-100 px-2 py-0.5 rounded-full mb-2">
+              <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 2a4 4 0 00-4 4v2H5a1 1 0 00-1 1v7a2 2 0 002 2h8a2 2 0 002-2v-7a1 1 0 00-1-1h-1V6a4 4 0 00-4-4zm2 6V6a2 2 0 10-4 0v2h4z" />
+              </svg>
+              Password Required
+            </span>
+          )}
           <p className="text-gray-600 text-sm flex-1 mb-4 line-clamp-3 leading-relaxed">
             {character.description}
           </p>

@@ -8,12 +8,24 @@ interface StoredChat {
 }
 
 const STORAGE_PREFIX = 'storyworld_chat_';
+const ACCESS_STORAGE_PREFIX = 'storyworld_character_access_';
+
+interface StoredCharacterAccess {
+  configId: string;
+  token: string;
+  storedAt: number;
+  expiresAt?: number | null;
+}
 
 /**
  * Get storage key for a specific character
  */
 function getStorageKey(configId: string): string {
   return `${STORAGE_PREFIX}${configId}`;
+}
+
+function getAccessStorageKey(configId: string): string {
+  return `${ACCESS_STORAGE_PREFIX}${configId}`;
 }
 
 /**
@@ -104,5 +116,45 @@ export function getAllChatSessions(): Record<string, StoredChat> {
   }
   
   return sessions;
+}
+
+export function saveCharacterAccessToken(
+  configId: string,
+  token: string,
+  expiresAt?: number | null
+): void {
+  try {
+    const payload: StoredCharacterAccess = {
+      configId,
+      token,
+      storedAt: Date.now(),
+      expiresAt: typeof expiresAt === 'number' ? expiresAt : null,
+    };
+    localStorage.setItem(getAccessStorageKey(configId), JSON.stringify(payload));
+  } catch (error) {
+    console.error('Failed to save character access token:', error);
+  }
+}
+
+export function getCharacterAccessToken(configId: string): StoredCharacterAccess | null {
+  try {
+    const raw = localStorage.getItem(getAccessStorageKey(configId));
+    if (!raw) {
+      return null;
+    }
+    const parsed: StoredCharacterAccess = JSON.parse(raw);
+    return parsed;
+  } catch (error) {
+    console.error('Failed to load character access token:', error);
+    return null;
+  }
+}
+
+export function clearCharacterAccessToken(configId: string): void {
+  try {
+    localStorage.removeItem(getAccessStorageKey(configId));
+  } catch (error) {
+    console.error('Failed to clear character access token:', error);
+  }
 }
 

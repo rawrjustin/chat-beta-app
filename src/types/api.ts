@@ -32,6 +32,8 @@ export interface ErrorResponse {
 // Request Types
 export interface CreateSessionRequest {
   config_id: string;
+  character_password?: string;
+  character_access_token?: string;
 }
 
 export interface ProxyChatRequest {
@@ -39,6 +41,8 @@ export interface ProxyChatRequest {
   input: string;
   config_id: string;
   conversation_history?: InitialMessageHistoryMessage[];
+  character_password?: string;
+  character_access_token?: string;
 }
 
 export interface InitialMessageHistoryMessage {
@@ -50,6 +54,8 @@ export interface InitialMessageRequest {
   session_id: string;
   config_id: string;
   previous_messages?: InitialMessageHistoryMessage[];
+  character_password?: string;
+  character_access_token?: string;
 }
 
 // Character Data Types
@@ -59,6 +65,7 @@ export interface Character {
   description: string;
   avatar?: string;
   avatar_url?: string; // Support both avatar and avatar_url fields
+  password_required?: boolean;
 }
 
 // API Character Response Types
@@ -69,6 +76,9 @@ export interface CharacterResponse {
   display_order?: number;
   avatar_url?: string;
   hidden?: boolean;
+  password_required?: boolean;
+  password_hint?: string | null;
+  password_updated_at?: string | null;
   config: any; // Full character configuration
 }
 
@@ -80,6 +90,20 @@ export interface CharactersResponse {
 export interface AdminCharactersResponse extends CharactersResponse {
   visible: number;
   hidden: number;
+}
+
+export interface PasswordProtectionResponse {
+  config_id: string;
+  password_required: boolean;
+  updated_at?: string;
+}
+
+export interface CharacterPasswordVerificationResponse {
+  success: boolean;
+  access_token?: string;
+  expires_at?: string | null;
+  ttl_seconds?: number | null;
+  password_required?: boolean;
 }
 
 // Chat Message Types

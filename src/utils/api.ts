@@ -9,9 +9,16 @@ import type {
   CharactersResponse,
   AdminCharactersResponse,
   FollowupsJobResponse,
+  PasswordProtectionResponse,
+  CharacterPasswordVerificationResponse,
 } from '../types/api';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+
+interface CharacterAuthOptions {
+  characterPassword?: string;
+  characterAccessToken?: string;
+}
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
@@ -24,9 +31,16 @@ async function handleResponse<T>(response: Response): Promise<T> {
   return response.json();
 }
 
-export async function createSession(configId: string): Promise<CreateSessionResponse> {
+export async function createSession(
+  configId: string,
+  auth?: CharacterAuthOptions
+): Promise<CreateSessionResponse> {
   const request: CreateSessionRequest = {
     config_id: configId,
+    ...(auth?.characterPassword ? { character_password: auth.characterPassword } : {}),
+    ...(auth?.characterAccessToken
+      ? { character_access_token: auth.characterAccessToken }
+      : {}),
   };
 
   const response = await fetch(`${API_BASE}/api/sessions`, {
@@ -44,7 +58,8 @@ export async function sendChatMessage(
   sessionId: string,
   configId: string,
   input: string,
-  conversationHistory?: InitialMessageHistoryMessage[]
+  conversationHistory?: InitialMessageHistoryMessage[],
+  auth?: CharacterAuthOptions
 ): Promise<ChatResponse> {
   const request: ProxyChatRequest = {
     session_id: sessionId,
@@ -52,6 +67,10 @@ export async function sendChatMessage(
     input: input,
     ...(conversationHistory && conversationHistory.length > 0
       ? { conversation_history: conversationHistory }
+      : {}),
+    ...(auth?.characterPassword ? { character_password: auth.characterPassword } : {}),
+    ...(auth?.characterAccessToken
+      ? { character_access_token: auth.characterAccessToken }
       : {}),
   };
 
@@ -69,13 +88,18 @@ export async function sendChatMessage(
 export async function fetchInitialMessage(
   sessionId: string,
   configId: string,
-  previousMessages?: InitialMessageHistoryMessage[]
+  previousMessages?: InitialMessageHistoryMessage[],
+  auth?: CharacterAuthOptions
 ): Promise<ChatResponse> {
   const request: InitialMessageRequest = {
     session_id: sessionId,
     config_id: configId,
     ...(previousMessages && previousMessages.length > 0
       ? { previous_messages: previousMessages }
+      : {}),
+    ...(auth?.characterPassword ? { character_password: auth.characterPassword } : {}),
+    ...(auth?.characterAccessToken
+      ? { character_access_token: auth.characterAccessToken }
       : {}),
   };
 
@@ -130,5 +154,63 @@ export async function fetchFollowupsJob(jobId: string): Promise<FollowupsJobResp
   );
 
   return handleResponse<FollowupsJobResponse>(response);
+}
+
+export async function verifyCharacterPassword(
+  configId: string,
+  password: string
+): Promise<CharacterPasswordVerificationResponse> {
+  const response = await fetch(
+    `${API_BASE}/api/characters/${encodeURIComponent(configId)}/verify-password`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ password }),
+    }
+  );
+
+  return handleResponse<CharacterPasswordVerificationResponse>(response);
+}
+
+export async function setCharacterPasswordProtection(
+  configId: string,
+  adminPassword: string,
+  newPassword: string
+): Promise<PasswordProtectionResponse> {
+  const response = await fetch(
+    `${API_BASE}/admin/api/characters/${encodeURIComponent(
+      configId
+    )}/password?password=${encodeURIComponent(adminPassword)}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ password: newPassword }),
+    }
+  );
+
+  return handleResponse<PasswordProtectionResponse>(response);
+}
+
+export async function clearCharacterPasswordProtection(
+  configId: string,
+  adminPassword: string
+): Promise<PasswordProtectionResponse> {
+  const response = await fetch(
+    `${API_BASE}/admin/api/characters/${encodeURIComponent(
+      configId
+    )}/password?password=${encodeURIComponent(adminPassword)}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  return handleResponse<PasswordProtectionResponse>(response);
 }
 

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import type {
   ChatMessage,
   SuggestedPreprompt,
@@ -23,7 +23,13 @@ const mapChatMessageToHistory = ({
   content,
 });
 
-export function useChat(configId: string) {
+interface UseChatOptions {
+  accessToken?: string | null;
+  characterPassword?: string;
+  enabled?: boolean;
+}
+
+export function useChat(configId: string, options: UseChatOptions = {}) {
   const [sessionId, setSessionId] = useState<string>('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,6 +41,15 @@ export function useChat(configId: string) {
   const initialFetchInProgressRef = useRef(false);
   const followupsJobIdRef = useRef<string | null>(null);
   const isComponentMountedRef = useRef(true);
+  const isEnabled = options.enabled !== false;
+
+  const authOptions = useMemo(
+    () => ({
+      characterPassword: options.characterPassword,
+      characterAccessToken: options.accessToken ?? undefined,
+    }),
+    [options.accessToken, options.characterPassword]
+  );
 
   useEffect(() => {
     isComponentMountedRef.current = true;
@@ -170,7 +185,7 @@ export function useChat(configId: string) {
 
   // Load saved chat session on mount or when changing characters
   useEffect(() => {
-    if (!configId) {
+    if (!configId || !isEnabled) {
       setSessionId('');
       setMessages([]);
       setSuggestedPrompts([]);
@@ -207,30 +222,35 @@ export function useChat(configId: string) {
     initialFetchInProgressRef.current = false;
     followupsJobIdRef.current = null;
     setIsFetchingFollowups(false);
-  }, [configId]);
+  }, [
+    configId,
+    authOptions.characterAccessToken,
+    authOptions.characterPassword,
+    isEnabled,
+  ]);
 
   // Save chat session whenever messages or sessionId changes
   useEffect(() => {
-    if (!configId) return;
-    
+    if (!configId || !isEnabled) return;
+
     // Only save if we have messages or a session ID
     if (messages.length > 0 || sessionId) {
       saveChatSession(configId, sessionId, messages);
     }
-  }, [configId, sessionId, messages]);
+  }, [configId, sessionId, messages, isEnabled]);
 
   // Sync backend session ID with Mixpanel user identity
   useEffect(() => {
-    if (!sessionId) {
+    if (!sessionId || !isEnabled) {
       return;
     }
 
     mixpanel.identify(sessionId);
     mixpanel.register({ session_id: sessionId });
-  }, [sessionId]);
+  }, [sessionId, isEnabled]);
 
   const initializeChat = useCallback(async () => {
-    if (!configId) {
+    if (!configId || !isEnabled) {
       return;
     }
 
@@ -246,7 +266,7 @@ export function useChat(configId: string) {
       let activeSessionId = sessionId;
 
       if (!activeSessionId) {
-        const session = await createSession(configId);
+        const session = await createSession(configId, authOptions);
         activeSessionId = session.session_id;
         setSessionId(activeSessionId);
       }
@@ -257,7 +277,8 @@ export function useChat(configId: string) {
       const response = await fetchInitialMessage(
         activeSessionId,
         configId,
-        previousMessagesPayload.length > 0 ? previousMessagesPayload : undefined
+        previousMessagesPayload.length > 0 ? previousMessagesPayload : undefined,
+        authOptions
       );
       const responseTime = Date.now() - startTime;
 
@@ -292,10 +313,10 @@ export function useChat(configId: string) {
       setHasFetchedInitialMessage(true);
       initialFetchInProgressRef.current = false;
     }
-  }, [configId, messages, sessionId, handleFollowupsFromResponse]);
+  }, [configId, messages, sessionId, handleFollowupsFromResponse, authOptions, isEnabled]);
 
   useEffect(() => {
-    if (!configId || !hasAttemptedRestore) {
+    if (!configId || !hasAttemptedRestore || !isEnabled) {
       return;
     }
 
@@ -304,11 +325,11 @@ export function useChat(configId: string) {
     }
 
     void initializeChat();
-  }, [configId, hasAttemptedRestore, hasFetchedInitialMessage, initializeChat]);
+  }, [configId, hasAttemptedRestore, hasFetchedInitialMessage, initializeChat, isEnabled]);
 
   const sendMessage = useCallback(
     async (userInput: string, metadata?: ChatMessageMetadata) => {
-      if (!userInput.trim() || isLoading) return;
+      if (!userInput.trim() || isLoading || !configId || !isEnabled) return;
 
       setIsLoading(true);
       setError(null);
@@ -354,7 +375,7 @@ export function useChat(configId: string) {
         let activeSessionId = sessionId;
 
         if (!activeSessionId) {
-          const session = await createSession(configId);
+          const session = await createSession(configId, authOptions);
           activeSessionId = session.session_id;
           setSessionId(activeSessionId);
         }
@@ -363,7 +384,8 @@ export function useChat(configId: string) {
           activeSessionId,
           configId,
           userInput,
-          conversationHistory
+          conversationHistory,
+          authOptions
         );
         const responseTime = Date.now() - startTime;
 
@@ -403,8 +425,16 @@ export function useChat(configId: string) {
       } finally {
         setIsLoading(false);
       }
-    },
-    [sessionId, configId, isLoading, messages, handleFollowupsFromResponse]
+  },
+    [
+      sessionId,
+      configId,
+      isLoading,
+      messages,
+      handleFollowupsFromResponse,
+      authOptions,
+      isEnabled,
+    ]
   );
 
   const startNewConversation = useCallback(() => {
