@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { CharacterCard } from '../components/CharacterCard';
 import { getCharacters } from '../utils/api';
 import { extractAvatarUrl, normalizeAvatarUrl } from '../utils/avatar';
@@ -48,6 +49,7 @@ export function HomePage() {
   const heroCharacters = useMemo<
     {
       id: string;
+      configId: string;
       name: string;
       avatarUrl: string;
       description: string;
@@ -155,6 +157,7 @@ export function HomePage() {
 
     const heroes: {
       id: string;
+      configId: string;
       name: string;
       avatarUrl: string;
       description: string;
@@ -162,10 +165,9 @@ export function HomePage() {
     }[] = [
       {
         id: 'river',
+        configId: riverCharacter?.config_id ?? 'river',
         name: 'River',
-        avatarUrl:
-          normalizeAvatarUrl(riverCharacter?.avatar_url) ||
-          'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80',
+        avatarUrl: normalizeAvatarUrl(riverCharacter?.avatar_url) || '',
         description: riverCharacter?.description ?? '',
         conversationSets: riverConversationSets,
       },
@@ -174,10 +176,9 @@ export function HomePage() {
     if (dogmaCharacter) {
       heroes.push({
         id: 'dogma',
+        configId: dogmaCharacter.config_id,
         name: dogmaCharacter.name ?? 'Dogma',
-        avatarUrl:
-          normalizeAvatarUrl(dogmaCharacter.avatar_url) ||
-          'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80',
+        avatarUrl: normalizeAvatarUrl(dogmaCharacter.avatar_url) || '',
         description: dogmaCharacter.description ?? '',
         conversationSets: [
           [
@@ -286,12 +287,18 @@ export function HomePage() {
 
               <div className="relative bg-white/8 border border-white/10 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-lg">
                 <div className="flex items-start gap-4 mb-5">
-                  <div className="h-20 w-20 rounded-2xl overflow-hidden border border-white/20 shadow-lg">
-                    <img
-                      src={activeHero.avatarUrl}
-                      alt={activeHero.name}
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="h-20 w-20 rounded-2xl overflow-hidden border border-white/20 shadow-lg bg-white/10 flex items-center justify-center">
+                    {activeHero.avatarUrl ? (
+                      <img
+                        src={activeHero.avatarUrl}
+                        alt={activeHero.name}
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      <div className="text-2xl font-bold text-white/60">
+                        {activeHero.name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
                   </div>
                   <div>
                     <h2 className="text-xl sm:text-2xl font-semibold text-white mb-1">
@@ -316,12 +323,18 @@ export function HomePage() {
                           </div>
                         </div>
                         <div className="flex gap-3 items-start">
-                          <div className="flex-shrink-0 h-9 w-9 rounded-full overflow-hidden border border-white/20">
-                            <img
-                              src={activeHero.avatarUrl}
-                              alt={`${activeHero.name} avatar`}
-                              className="w-full h-full object-cover"
-                            />
+                          <div className="flex-shrink-0 h-9 w-9 rounded-full overflow-hidden border border-white/20 bg-white/10 flex items-center justify-center">
+                            {activeHero.avatarUrl ? (
+                              <img
+                                src={activeHero.avatarUrl}
+                                alt={`${activeHero.name} avatar`}
+                                className="w-full h-full object-contain"
+                              />
+                            ) : (
+                              <div className="text-xs font-bold text-white/60">
+                                {activeHero.name.charAt(0).toUpperCase()}
+                              </div>
+                            )}
                           </div>
                           <div className="flex-1 bg-white border border-white/70 rounded-2xl px-4 py-3 text-sm text-slate-900 shadow-lg shadow-black/25">
                             {pair.ai}
@@ -334,6 +347,15 @@ export function HomePage() {
                       Dialogue preview coming soon.
                     </div>
                   )}
+                </div>
+
+                <div className="mt-6">
+                  <Link
+                    to={`/chat/${activeHero.configId}`}
+                    className="inline-flex items-center justify-center w-full bg-gradient-to-r from-sky-400 to-purple-500 hover:from-sky-500 hover:to-purple-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+                  >
+                    Chat with {activeHero.name}
+                  </Link>
                 </div>
 
               </div>
