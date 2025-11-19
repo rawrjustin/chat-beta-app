@@ -118,6 +118,12 @@ export function ChatPage() {
       return;
     }
 
+    // Only load token from storage if we don't already have one set
+    // This prevents overwriting a token that was just set from password submission
+    if (accessToken) {
+      return;
+    }
+
     const stored = getCharacterAccessToken(normalizedConfigId);
     if (!stored) {
       setAccessToken(null);
@@ -131,7 +137,7 @@ export function ChatPage() {
     }
 
     setAccessToken(stored.token);
-  }, [character, normalizedConfigId, isLoadingCharacter]);
+  }, [character, normalizedConfigId, isLoadingCharacter, accessToken]);
 
   // Fetch character info
   useEffect(() => {
@@ -278,7 +284,8 @@ export function ChatPage() {
         setAccessToken(response.access_token);
         setPasswordInput('');
         setPasswordSuccess('Access granted. Loading chat…');
-        startNewConversation();
+        // Don't call startNewConversation here - let the chat initialize naturally
+        // when isChatUnlocked becomes true
       } catch (err) {
         const message =
           err instanceof Error ? err.message : 'Failed to verify password. Please try again.';
