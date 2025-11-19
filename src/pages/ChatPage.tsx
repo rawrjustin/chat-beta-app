@@ -35,10 +35,17 @@ export function ChatPage() {
   const [isVerifyingPassword, setIsVerifyingPassword] = useState(false);
   const normalizedConfigId = configId ?? '';
   const isPasswordProtected = Boolean(character?.password_required);
+  
+  // Check for stored token to determine if chat should be unlocked
+  // This prevents race conditions where state hasn't updated yet
+  const storedTokenForUnlock = normalizedConfigId ? getCharacterAccessToken(normalizedConfigId) : null;
+  const hasTokenForUnlock = Boolean(accessToken) || Boolean(storedTokenForUnlock);
+  const needsPasswordForUnlock = isPasswordProtected || Boolean(storedTokenForUnlock);
+  
   const isChatUnlocked = Boolean(
     normalizedConfigId &&
     !isLoadingCharacter &&
-    (!isPasswordProtected || Boolean(accessToken))
+    (!needsPasswordForUnlock || hasTokenForUnlock)
   );
   const handleTokenInvalidated = useCallback(() => {
     if (normalizedConfigId) {
@@ -69,8 +76,21 @@ export function ChatPage() {
   );
   const promptFadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fadeVersionRef = useRef(0);
-  const isLocked = isPasswordProtected && !accessToken && !isLoadingCharacter;
-  const canForgetAccess = isPasswordProtected && Boolean(accessToken);
+  const justSetTokenRef = useRef(false);
+  
+  // Check if we have a token in state OR in localStorage
+  // This prevents showing password prompt if token exists but state hasn't updated yet
+  const storedToken = normalizedConfigId ? getCharacterAccessToken(normalizedConfigId) : null;
+  const hasToken = Boolean(accessToken) || Boolean(storedToken);
+  
+  // Character needs password if:
+  // 1. API explicitly says password_required: true, OR
+  // 2. We have a stored token (proving it was password-protected when we authenticated)
+  const needsPassword = isPasswordProtected || Boolean(storedToken);
+  
+  // Character is locked if it needs a password AND we don't have a valid token AND not loading
+  const isLocked = needsPassword && !hasToken && !isLoadingCharacter;
+  const canForgetAccess = needsPassword && hasToken;
 
   const avatarUrl = character?.avatar_url?.trim() ?? '';
   const hasAvatar = avatarUrl !== '';
@@ -103,6 +123,12 @@ export function ChatPage() {
 
   useEffect(() => {
     if (!normalizedConfigId || isLoadingCharacter) {
+      return;
+    }
+
+    // Don't run if we just set a token from password submission
+    // This prevents race conditions where this effect clears the token we just set
+    if (justSetTokenRef.current) {
       return;
     }
 
@@ -286,9 +312,18 @@ export function ChatPage() {
           response.access_token,
           typeof expiresAtMs === 'number' ? expiresAtMs : null
         );
+        
+        // Set flag to prevent token loading effect from interfering
+        justSetTokenRef.current = true;
         setAccessToken(response.access_token);
         setPasswordInput('');
         setPasswordSuccess('Access granted. Loading chat…');
+        
+        // Clear the flag after a short delay to allow state to settle
+        setTimeout(() => {
+          justSetTokenRef.current = false;
+        }, 100);
+        
         // Don't call startNewConversation here - let the chat initialize naturally
         // when isChatUnlocked becomes true
       } catch (err) {
