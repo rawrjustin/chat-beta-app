@@ -42,14 +42,14 @@ export function Navbar() {
               Characters
             </Link>
             <Link
-              to="/pricing"
+              to="/beta-signup"
               className={`text-sm font-medium transition-colors ${
-                isActive('/pricing')
+                isActive('/beta-signup')
                   ? 'text-purple-600'
                   : 'text-gray-700 hover:text-purple-600'
               }`}
             >
-              Pricing
+              3D Avatar Beta
             </Link>
             <Link
               to="/"
@@ -103,15 +103,15 @@ export function Navbar() {
                 Characters
               </Link>
               <Link
-                to="/pricing"
+                to="/beta-signup"
                 onClick={() => setMobileMenuOpen(false)}
                 className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                  isActive('/pricing')
+                  isActive('/beta-signup')
                     ? 'text-purple-600 bg-purple-50'
                     : 'text-gray-700 hover:text-purple-600 hover:bg-gray-50'
                 }`}
               >
-                Pricing
+                3D Avatar Beta
               </Link>
               <Link
                 to="/"

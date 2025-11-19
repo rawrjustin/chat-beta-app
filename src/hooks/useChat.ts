@@ -11,9 +11,10 @@ import {
   fetchInitialMessage,
   sendChatMessage,
   fetchFollowupsJob,
+  ApiError,
 } from '../utils/api';
 import mixpanel from 'mixpanel-browser';
-import { saveChatSession, loadChatSession, clearChatSession } from '../utils/storage';
+import { saveChatSession, loadChatSession, clearChatSession, clearCharacterAccessToken } from '../utils/storage';
 
 const mapChatMessageToHistory = ({
   role,
@@ -27,6 +28,7 @@ interface UseChatOptions {
   accessToken?: string | null;
   characterPassword?: string;
   enabled?: boolean;
+  onTokenInvalidated?: () => void;
 }
 
 export function useChat(configId: string, options: UseChatOptions = {}) {
@@ -299,13 +301,21 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
         'API Response Time': responseTime,
       });
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to load initial message';
-      setError(errorMessage);
-      mixpanel.track('API Error', {
-        error_type: 'initial_message',
-        error_message: errorMessage,
-      });
+      if (err instanceof ApiError && err.passwordRequired && configId) {
+        clearCharacterAccessToken(configId);
+        if (options.onTokenInvalidated) {
+          options.onTokenInvalidated();
+        }
+        setError('Your session has expired. Please enter the password again.');
+      } else {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Failed to load initial message';
+        setError(errorMessage);
+        mixpanel.track('API Error', {
+          error_type: 'initial_message',
+          error_message: errorMessage,
+        });
+      }
       setIsFetchingFollowups(false);
       followupsJobIdRef.current = null;
     } finally {
@@ -313,7 +323,7 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
       setHasFetchedInitialMessage(true);
       initialFetchInProgressRef.current = false;
     }
-  }, [configId, messages, sessionId, handleFollowupsFromResponse, authOptions, isEnabled]);
+  }, [configId, messages, sessionId, handleFollowupsFromResponse, authOptions, isEnabled, options.onTokenInvalidated]);
 
   useEffect(() => {
     if (!configId || !hasAttemptedRestore || !isEnabled) {
@@ -408,17 +418,27 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
         setMessages((prevMessages: ChatMessage[]) => [...prevMessages, aiMessage]);
         handleFollowupsFromResponse(response, { preserveExisting: false });
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to send message';
-        setError(errorMessage);
-        
-        // Track API Error event
-        mixpanel.track('API Error', {
-          error_type: 'api',
-          error_message: errorMessage,
-        });
-        
-        // Remove the user message on error
-        setMessages((prevMessages: ChatMessage[]) => prevMessages.slice(0, -1));
+        if (err instanceof ApiError && err.passwordRequired && configId) {
+          clearCharacterAccessToken(configId);
+          if (options.onTokenInvalidated) {
+            options.onTokenInvalidated();
+          }
+          setError('Your session has expired. Please enter the password again.');
+          // Remove the user message on error
+          setMessages((prevMessages: ChatMessage[]) => prevMessages.slice(0, -1));
+        } else {
+          const errorMessage = err instanceof Error ? err.message : 'Failed to send message';
+          setError(errorMessage);
+          
+          // Track API Error event
+          mixpanel.track('API Error', {
+            error_type: 'api',
+            error_message: errorMessage,
+          });
+          
+          // Remove the user message on error
+          setMessages((prevMessages: ChatMessage[]) => prevMessages.slice(0, -1));
+        }
         setSuggestedPrompts([]);
         setIsFetchingFollowups(false);
         followupsJobIdRef.current = null;
@@ -434,6 +454,7 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
       handleFollowupsFromResponse,
       authOptions,
       isEnabled,
+      options.onTokenInvalidated,
     ]
   );
 

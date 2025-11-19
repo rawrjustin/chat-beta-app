@@ -27,6 +27,7 @@ export interface HealthResponse {
 export interface ErrorResponse {
   error: string;
   message?: string;
+  password_required?: boolean;
 }
 
 // Request Types

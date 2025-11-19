@@ -26,8 +26,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/pricing" className="hover:text-white transition-colors">
-                  Pricing
+                <Link to="/beta-signup" className="hover:text-white transition-colors">
+                  3D Avatar Beta
                 </Link>
               </li>
             </ul>

@@ -21,13 +21,29 @@ interface CharacterAuthOptions {
   characterAccessToken?: string;
 }
 
+export class ApiError extends Error {
+  passwordRequired?: boolean;
+  statusCode?: number;
+
+  constructor(message: string, passwordRequired?: boolean, statusCode?: number) {
+    super(message);
+    this.name = 'ApiError';
+    this.passwordRequired = passwordRequired;
+    this.statusCode = statusCode;
+  }
+}
+
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const error: ErrorResponse = await response.json().catch(() => ({
       error: `HTTP ${response.status}`,
       message: response.statusText,
     }));
-    throw new Error(error.error || `HTTP ${response.status}`);
+    throw new ApiError(
+      error.error || `HTTP ${response.status}`,
+      error.password_required,
+      response.status
+    );
   }
   return response.json();
 }

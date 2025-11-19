@@ -40,6 +40,16 @@ export function ChatPage() {
     !isLoadingCharacter &&
     (!isPasswordProtected || Boolean(accessToken))
   );
+  const handleTokenInvalidated = useCallback(() => {
+    if (normalizedConfigId) {
+      clearCharacterAccessToken(normalizedConfigId);
+    }
+    setAccessToken(null);
+    setPasswordInput('');
+    setPasswordError(null);
+    setPasswordSuccess(null);
+  }, [normalizedConfigId]);
+
   const {
     messages,
     isLoading,
@@ -52,6 +62,7 @@ export function ChatPage() {
   } = useChat(normalizedConfigId, {
     accessToken,
     enabled: isChatUnlocked,
+    onTokenInvalidated: handleTokenInvalidated,
   });
   const [promptVisibility, setPromptVisibility] = useState<'hidden' | 'visible' | 'fading'>(
     'hidden'

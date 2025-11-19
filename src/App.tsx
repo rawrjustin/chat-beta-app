@@ -1,9 +1,9 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Layout } from './components/Layout';
 import { HomePage } from './pages/HomePage';
 import { ChatPage } from './pages/ChatPage';
-import { PricingPage } from './pages/PricingPage';
+import { BetaSignupPage } from './pages/BetaSignupPage';
 import { CharactersPage } from './pages/CharactersPage';
 import { AdminPage } from './pages/AdminPage';
 import mixpanel from 'mixpanel-browser';
@@ -36,13 +36,14 @@ function App() {
           }
         />
         <Route
-          path="/pricing"
+          path="/beta-signup"
           element={
             <Layout>
-              <PricingPage />
+              <BetaSignupPage />
             </Layout>
           }
         />
+        <Route path="/pricing" element={<Navigate to="/beta-signup" replace />} />
         <Route
           path="/characters"
           element={

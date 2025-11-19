@@ -26,38 +26,34 @@ export function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Unlock Character Creation</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Unlock 3D Avatar Creation</h2>
           <p className="text-sm sm:text-base text-gray-600">
-            Create custom AI characters with Pro or Enterprise plans
+            Instant access is limited. Join the private beta to create custom 3D avatars with our team.
           </p>
         </div>
 
         <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
-          <div className="bg-gray-50 rounded-xl p-3 sm:p-4">
-            <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Pro Plan - $9/month</h3>
-            <ul className="text-xs sm:text-sm text-gray-600 space-y-1">
-              <li>✓ Unlimited character creation</li>
-              <li>✓ Custom personalities and traits</li>
-              <li>✓ Advanced conversation features</li>
-            </ul>
-          </div>
-          <div className="bg-gray-50 rounded-xl p-3 sm:p-4">
-            <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Enterprise - Custom</h3>
-            <ul className="text-xs sm:text-sm text-gray-600 space-y-1">
-              <li>✓ Everything in Pro</li>
-              <li>✓ Team collaboration</li>
-              <li>✓ Custom integrations</li>
-            </ul>
-          </div>
+          {[
+            'Work alongside our avatar engineers for four weeks.',
+            'Export-ready GLB/USDZ files plus streaming presets.',
+            'Priority feature requests while the beta is active.',
+          ].map((benefit) => (
+            <div key={benefit} className="bg-gray-50 rounded-xl p-3 sm:p-4">
+              <p className="text-sm sm:text-base text-gray-700 flex items-start gap-2">
+                <span className="mt-1 h-2 w-2 rounded-full bg-purple-500" />
+                {benefit}
+              </p>
+            </div>
+          ))}
         </div>
 
         <div className="flex flex-col gap-2 sm:gap-3">
           <Link
-            to="/pricing"
+            to="/beta-signup"
             className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-sm sm:text-base font-semibold hover:shadow-lg transition-all text-center"
             onClick={onClose}
           >
-            View Pricing Plans
+            Apply for Beta Access
           </Link>
           <button
             onClick={onClose}
