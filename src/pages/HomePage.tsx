@@ -269,7 +269,7 @@ export function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             <div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-                Dive back into Story World with
+                Dive back into Ego Lab with
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-purple-200 to-rose-300">
                   {activeHero.name}
                 </span>

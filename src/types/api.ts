@@ -79,7 +79,7 @@ export interface CharacterResponse {
   password_required?: boolean;
   password_hint?: string | null;
   password_updated_at?: string | null;
-  config: any; // Full character configuration
+  config?: any; // Full character configuration (optional in some endpoints)
 }
 
 export interface CharactersResponse {

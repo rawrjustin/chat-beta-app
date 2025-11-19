@@ -6,10 +6,10 @@ export function PricingPage() {
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 md:py-32 text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 sm:mb-6 px-4">
-            Story World Pro is Coming Soon
+            Ego Lab Pro is Coming Soon
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl text-purple-100 max-w-3xl mx-auto mb-8 sm:mb-12 px-4">
-            We're polishing the next evolution of Story World. Join the waitlist to be the first to know when Pro launches.
+            We're polishing the next evolution of Ego Lab. Join the waitlist to be the first to know when Pro launches.
           </p>
           <button
             type="button"
@@ -46,7 +46,7 @@ export function PricingPage() {
                 <div className="flex items-baseline justify-center mb-4">
                   <span className="text-4xl sm:text-5xl font-bold">Pricing TBA</span>
                 </div>
-                <p className="text-purple-100 text-lg">A sneak peek at what we're building to supercharge your Story World experience.</p>
+                <p className="text-purple-100 text-lg">A sneak peek at what we're building to supercharge your Ego Lab experience.</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">

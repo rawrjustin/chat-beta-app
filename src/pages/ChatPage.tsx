@@ -4,7 +4,7 @@ import { useChat } from '../hooks/useChat';
 import { ChatMessage } from '../components/ChatMessage';
 import { ChatInput } from '../components/ChatInput';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { getCharacters, verifyCharacterPassword } from '../utils/api';
+import { getCharacterConfig, getCharacters, verifyCharacterPassword } from '../utils/api';
 import { extractAvatarUrl, normalizeAvatarUrl } from '../utils/avatar';
 import { SuggestedPromptsBar } from '../components/SuggestedPromptsBar';
 import {
@@ -127,6 +127,7 @@ export function ChatPage() {
     const fetchCharacter = async () => {
       if (!configId) {
         setIsLoadingCharacter(false);
+        setCharacter(null);
         return;
       }
 
@@ -135,14 +136,24 @@ export function ChatPage() {
       setImageLoaded(false);
       setImageDimensions(null);
       try {
-        const data = await getCharacters();
-        const foundCharacter = data.characters.find(
-          (char) => char.config_id === configId
-        );
-        if (foundCharacter) {
-          const extracted = extractAvatarUrl(foundCharacter) ?? foundCharacter.avatar_url;
+        let resolvedCharacter: CharacterResponse | null = null;
+
+        try {
+          resolvedCharacter = await getCharacterConfig(configId);
+        } catch (primaryError) {
+          console.warn('Direct character lookup failed, falling back to characters list', {
+            configId,
+            error: primaryError instanceof Error ? primaryError.message : primaryError,
+          });
+          const data = await getCharacters();
+          resolvedCharacter =
+            data.characters.find((char) => char.config_id === configId) ?? null;
+        }
+
+        if (resolvedCharacter) {
+          const extracted = extractAvatarUrl(resolvedCharacter) ?? resolvedCharacter.avatar_url;
           setCharacter({
-            ...foundCharacter,
+            ...resolvedCharacter,
             avatar_url: normalizeAvatarUrl(extracted),
           });
         } else {

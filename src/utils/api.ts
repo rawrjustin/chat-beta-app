@@ -7,6 +7,7 @@ import type {
   InitialMessageRequest,
   InitialMessageHistoryMessage,
   CharactersResponse,
+  CharacterResponse,
   AdminCharactersResponse,
   FollowupsJobResponse,
   PasswordProtectionResponse,
@@ -124,9 +125,17 @@ export async function getCharacters(): Promise<CharactersResponse> {
   return handleResponse<CharactersResponse>(response);
 }
 
-export async function getCharacterConfig(configId: string): Promise<any> {
+type CharacterConfigApiResponse = Omit<CharacterResponse, 'config'> & {
+  config?: CharacterResponse['config'];
+};
+
+export async function getCharacterConfig(configId: string): Promise<CharacterResponse> {
   const response = await fetch(`${API_BASE}/api/config/${configId}`);
-  return handleResponse<any>(response);
+  const data = await handleResponse<CharacterConfigApiResponse>(response);
+  return {
+    ...data,
+    config: data.config ?? null,
+  };
 }
 
 export async function getAdminCharacters(password: string): Promise<AdminCharactersResponse> {

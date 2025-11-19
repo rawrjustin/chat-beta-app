@@ -7,8 +7,8 @@ interface StoredChat {
   configId: string;
 }
 
-const STORAGE_PREFIX = 'storyworld_chat_';
-const ACCESS_STORAGE_PREFIX = 'storyworld_character_access_';
+const STORAGE_PREFIX = 'egolab_chat_';
+const ACCESS_STORAGE_PREFIX = 'egolab_character_access_';
 
 interface StoredCharacterAccess {
   configId: string;

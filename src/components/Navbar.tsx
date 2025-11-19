@@ -13,10 +13,10 @@ export function Navbar() {
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">S</span>
+              <span className="text-white font-bold text-lg">E</span>
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              Story World
+              Ego Lab
             </span>
           </Link>
 
