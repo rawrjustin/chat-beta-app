@@ -112,31 +112,36 @@ export function ChatPage() {
       return;
     }
 
-    if (!character.password_required) {
-      clearCharacterAccessToken(normalizedConfigId);
-      setAccessToken(null);
-      return;
-    }
-
-    // Only load token from storage if we don't already have one set
-    // This prevents overwriting a token that was just set from password submission
-    if (accessToken) {
-      return;
-    }
-
+    // Check if we have a stored token first
+    // If we have a token, it means the character was password-protected when we authenticated
+    // Don't clear it just because the API response doesn't include password_required
     const stored = getCharacterAccessToken(normalizedConfigId);
-    if (!stored) {
+    
+    if (stored) {
+      // Check if token is expired
+      if (stored.expiresAt && stored.expiresAt <= Date.now()) {
+        clearCharacterAccessToken(normalizedConfigId);
+        setAccessToken(null);
+        return;
+      }
+      
+      // If we have a valid stored token, use it (even if character.password_required is missing from API)
+      // Only load from storage if we don't already have one in state
+      if (!accessToken) {
+        setAccessToken(stored.token);
+      }
+      return;
+    }
+
+    // No stored token - check if character requires password
+    if (!character.password_required) {
+      // Character doesn't require password and we have no token - clear any stale state
       setAccessToken(null);
       return;
     }
 
-    if (stored.expiresAt && stored.expiresAt <= Date.now()) {
-      clearCharacterAccessToken(normalizedConfigId);
-      setAccessToken(null);
-      return;
-    }
-
-    setAccessToken(stored.token);
+    // Character requires password but we have no stored token
+    setAccessToken(null);
   }, [character, normalizedConfigId, isLoadingCharacter, accessToken]);
 
   // Fetch character info
