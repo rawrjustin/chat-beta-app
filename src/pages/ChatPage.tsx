@@ -312,20 +312,17 @@ export function ChatPage() {
           response.access_token,
           typeof expiresAtMs === 'number' ? expiresAtMs : null
         );
-        
+
         // Set flag to prevent token loading effect from interfering
         justSetTokenRef.current = true;
         setAccessToken(response.access_token);
         setPasswordInput('');
         setPasswordSuccess('Access granted. Loading chat…');
-        
+
         // Clear the flag after a short delay to allow state to settle
         setTimeout(() => {
           justSetTokenRef.current = false;
         }, 100);
-        
-        // Don't call startNewConversation here - let the chat initialize naturally
-        // when isChatUnlocked becomes true
       } catch (err) {
         const message =
           err instanceof Error ? err.message : 'Failed to verify password. Please try again.';
@@ -334,7 +331,7 @@ export function ChatPage() {
         setIsVerifyingPassword(false);
       }
     },
-    [normalizedConfigId, passwordInput, startNewConversation]
+    [normalizedConfigId, passwordInput]
   );
 
   const handleForgetAccess = useCallback(() => {
