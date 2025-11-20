@@ -260,7 +260,7 @@ export function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-900 via-purple-900 to-black text-white relative overflow-hidden">
+      <section className="bg-gradient-to-br from-blue-900 via-purple-900 to-black text-gray-900 relative overflow-hidden">
         <div className="absolute inset-0">
           <img
             src="https://genies-character-profile-images-dev.s3.us-west-2.amazonaws.com/hero-bg.png"
@@ -268,19 +268,19 @@ export function HomePage() {
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.25),_rgba(15,23,42,0.2))]" />
-          <div className="absolute inset-0 backdrop-blur-md" />
+          <div className="absolute inset-0 backdrop-blur-sm" />
         </div>
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 md:py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             <div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-gray-900">
                 Dive back into Ego Lab with
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-purple-200 to-rose-300">
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600">
                   {activeHero.name}
                 </span>
               </h1>
-              <p className="text-base sm:text-lg text-slate-200 mb-6 max-w-xl">
+              <p className="text-base sm:text-lg text-gray-700 mb-6 max-w-xl">
                 Step into a world of AI characters. Engage with characters who actually understand
                 you.
               </p>
@@ -290,9 +290,9 @@ export function HomePage() {
               <div className="absolute -top-8 -right-6 sm:-right-12 h-24 w-24 sm:h-32 sm:w-32 bg-sky-400/10 rounded-full blur-3xl" />
               <div className="absolute -bottom-8 -left-10 sm:-left-16 h-32 w-32 sm:h-40 sm:w-40 bg-purple-500/10 rounded-full blur-3xl" />
 
-              <div className="relative bg-white/8 border border-white/10 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-lg">
+              <div className="relative bg-white/90 border border-gray-200 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-sm">
                 <div className="flex items-start gap-4 mb-5">
-                  <div className="h-20 w-20 rounded-2xl overflow-hidden border border-white/20 shadow-lg bg-white/10 flex items-center justify-center">
+                  <div className="h-20 w-20 rounded-2xl overflow-hidden border border-gray-300 shadow-lg bg-white flex items-center justify-center">
                     {activeHero.avatarUrl ? (
                       <img
                         src={activeHero.avatarUrl}
@@ -300,17 +300,17 @@ export function HomePage() {
                         className="w-full h-full object-contain"
                       />
                     ) : (
-                      <div className="text-2xl font-bold text-white/60">
+                      <div className="text-2xl font-bold text-gray-600">
                         {activeHero.name.charAt(0).toUpperCase()}
                       </div>
                     )}
                   </div>
                   <div>
-                    <h2 className="text-xl sm:text-2xl font-semibold text-white mb-1">
+                    <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-1">
                       {activeHero.name}
                     </h2>
                     {activeHero?.description && (
-                      <p className="text-sm text-slate-300">{activeHero.description}</p>
+                      <p className="text-sm text-gray-600">{activeHero.description}</p>
                     )}
                   </div>
                 </div>
@@ -320,15 +320,15 @@ export function HomePage() {
                     activeConversation.map((pair, index) => (
                       <div key={`${activeHero.id}-message-${index}`} className="space-y-3">
                         <div className="flex gap-3 items-start">
-                          <div className="flex-shrink-0 h-9 w-9 rounded-full bg-white/20 flex items-center justify-center text-xs font-semibold text-white/80">
+                          <div className="flex-shrink-0 h-9 w-9 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-700">
                             You
                           </div>
-                          <div className="flex-1 bg-white/15 border border-white/10 rounded-2xl px-4 py-3 text-sm text-slate-100 shadow-lg shadow-black/20">
+                          <div className="flex-1 bg-gray-100 border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-800 shadow-lg">
                             {pair.user}
                           </div>
                         </div>
                         <div className="flex gap-3 items-start">
-                          <div className="flex-shrink-0 h-9 w-9 rounded-full overflow-hidden border border-white/20 bg-white/10 flex items-center justify-center">
+                          <div className="flex-shrink-0 h-9 w-9 rounded-full overflow-hidden border border-gray-300 bg-white flex items-center justify-center">
                             {activeHero.avatarUrl ? (
                               <img
                                 src={activeHero.avatarUrl}
@@ -336,19 +336,19 @@ export function HomePage() {
                                 className="w-full h-full object-contain"
                               />
                             ) : (
-                              <div className="text-xs font-bold text-white/60">
+                              <div className="text-xs font-bold text-gray-600">
                                 {activeHero.name.charAt(0).toUpperCase()}
                               </div>
                             )}
                           </div>
-                          <div className="flex-1 bg-white border border-white/70 rounded-2xl px-4 py-3 text-sm text-slate-900 shadow-lg shadow-black/25">
+                          <div className="flex-1 bg-white border border-gray-300 rounded-2xl px-4 py-3 text-sm text-gray-900 shadow-lg">
                             {pair.ai}
                           </div>
                         </div>
                       </div>
                     ))
                   ) : (
-                    <div className="bg-white/10 border border-white/15 rounded-2xl px-4 py-3 text-sm text-slate-100">
+                    <div className="bg-gray-100 border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-700">
                       Dialogue preview coming soon.
                     </div>
                   )}
@@ -377,7 +377,7 @@ export function HomePage() {
                   setHeroIndex(index);
                 }}
                 className={`h-2 w-10 rounded-full transition-all ${
-                  heroIndex === index ? 'bg-white' : 'bg-white/30'
+                  heroIndex === index ? 'bg-gray-900' : 'bg-gray-400'
                 }`}
                 aria-label={`Show ${hero.name}`}
               />

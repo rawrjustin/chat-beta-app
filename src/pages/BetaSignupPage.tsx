@@ -1,4 +1,4 @@
-const BETA_SIGNUP_FORM_URL = import.meta.env.VITE_BETA_SIGNUP_FORM_URL ?? '';
+const BETA_SIGNUP_FORM_URL = import.meta.env.VITE_BETA_SIGNUP_FORM_URL ?? 'https://geniesinc.notion.site/2aa8f0c92dfc807eb056df0d7b23c47f?pvs=105';
 
 const creationHighlights = [
   {
