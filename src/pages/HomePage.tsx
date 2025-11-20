@@ -262,6 +262,11 @@ export function HomePage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-blue-900 via-purple-900 to-black text-white relative overflow-hidden">
         <div className="absolute inset-0">
+          <img
+            src="https://genies-character-profile-images-dev.s3.us-west-2.amazonaws.com/hero-bg.png"
+            alt=""
+            className="w-full h-full object-cover"
+          />
           <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.25),_rgba(15,23,42,0.2))]" />
           <div className="absolute inset-0 backdrop-blur-md" />
         </div>
