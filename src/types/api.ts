@@ -2,11 +2,11 @@
 export interface ChatResponse {
   ai: string;
   session_id: string;
-  request_id?: string;
+  request_id: string; // Required for async preprompts
   text_response_cleaned?: string;
   warning_message?: string | null;
-  preprompts?: SuggestedPreprompt[];
-  followups_job_id?: string;
+  preprompts: null; // Always null - fetch via /api/preprompts/:request_id
+  followups_job_id?: string; // Deprecated - kept for backward compatibility
   followups_ready?: boolean;
   followups_status?: FollowupsJobStatus;
 }
@@ -120,6 +120,7 @@ export interface ChatMessage {
   content: string;
   timestamp?: Date;
   metadata?: ChatMessageMetadata;
+  request_id?: string; // For fetching async preprompts (only on AI messages)
 }
 
 export type SuggestedPrepromptType = 'roleplay' | 'conversation';
@@ -139,5 +140,13 @@ export interface FollowupsJobResponse {
   error?: string;
   poll_after_ms?: number;
   completed_at?: string;
+}
+
+// Async Preprompts Response (new endpoint: GET /api/preprompts/:request_id)
+export interface PrepromptResponse {
+  request_id: string;
+  preprompts: SuggestedPreprompt[] | null;
+  retry_after?: number; // Milliseconds to wait before retrying (when status is 202)
+  message?: string; // Status message
 }
 

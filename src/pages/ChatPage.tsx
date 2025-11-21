@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useChat } from '../hooks/useChat';
+import { usePreprompts } from '../hooks/usePreprompts';
 import { ChatMessage } from '../components/ChatMessage';
 import { ChatInput } from '../components/ChatInput';
 import { LoadingSpinner } from '../components/LoadingSpinner';
@@ -63,14 +65,29 @@ export function ChatPage() {
     error,
     sendMessage,
     startNewConversation,
-    suggestedPrompts,
-    clearSuggestedPrompts,
-    isFetchingFollowups,
   } = useChat(normalizedConfigId, {
     accessToken,
     enabled: isChatUnlocked,
     onTokenInvalidated: handleTokenInvalidated,
   });
+
+  // Get the latest AI message's request_id for fetching preprompts
+  const latestAiMessage = useMemo(() => {
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].role === 'ai') {
+        return messages[i];
+      }
+    }
+    return null;
+  }, [messages]);
+
+  const latestRequestId = latestAiMessage?.request_id;
+
+  // Fetch preprompts for the latest AI message
+  const {
+    preprompts: suggestedPrompts,
+    isLoading: isFetchingFollowups,
+  } = usePreprompts(latestRequestId);
   const [promptVisibility, setPromptVisibility] = useState<'hidden' | 'visible' | 'fading'>(
     'hidden'
   );
@@ -225,7 +242,8 @@ export function ChatPage() {
 
   // Reset prompt visibility whenever new prompts are provided
   useEffect(() => {
-    if (suggestedPrompts.length > 0 || isFetchingFollowups) {
+    const hasPrompts = suggestedPrompts && suggestedPrompts.length > 0;
+    if (hasPrompts || isFetchingFollowups) {
       setPromptVisibility((prevVisibility: typeof promptVisibility) =>
         prevVisibility === 'visible' ? prevVisibility : 'visible'
       );
@@ -251,7 +269,8 @@ export function ChatPage() {
   }, []);
 
   const schedulePromptFadeOut = useCallback(() => {
-    if (suggestedPrompts.length === 0) {
+    const hasPrompts = suggestedPrompts && suggestedPrompts.length > 0;
+    if (!hasPrompts) {
       return;
     }
 
@@ -266,12 +285,13 @@ export function ChatPage() {
 
     promptFadeTimeoutRef.current = setTimeout(() => {
       if (fadeVersionRef.current === currentVersion) {
-        clearSuggestedPrompts();
+        // Preprompts will hide automatically when user sends next message
+        // (latestRequestId changes, causing preprompts to reset)
         setPromptVisibility('hidden');
         promptFadeTimeoutRef.current = null;
       }
     }, 220);
-  }, [clearSuggestedPrompts, suggestedPrompts.length]);
+  }, [suggestedPrompts]);
 
   const handlePasswordSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
@@ -403,8 +423,29 @@ export function ChatPage() {
   }
 
   if (isLocked) {
+    const characterName = character?.name || configId || 'AI Character';
+    const characterDescription = character?.description || 'Chat with AI';
+    const pageTitle = `Chat with ${characterName}`;
+    const pageUrl = typeof window !== 'undefined' ? window.location.href : `https://egolab.app/chat/${configId}`;
+    const ogImage = imageUrl || 'https://egolab.app/bg.png';
+
     return (
-      <div className="min-h-screen bg-gray-50 py-10 px-4 flex items-center justify-center">
+      <>
+        <Helmet>
+          <title>{pageTitle}</title>
+          <meta name="description" content={characterDescription} />
+          <meta property="og:title" content={pageTitle} />
+          <meta property="og:description" content={characterDescription} />
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content={pageUrl} />
+          <meta property="og:image" content={ogImage} />
+          <meta property="og:site_name" content="Ego Lab" />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={pageTitle} />
+          <meta name="twitter:description" content={characterDescription} />
+          <meta name="twitter:image" content={ogImage} />
+        </Helmet>
+        <div className="min-h-screen bg-gray-50 py-10 px-4 flex items-center justify-center">
         <div className="w-full max-w-xl space-y-6">
           <Link
             to="/"
@@ -494,14 +535,36 @@ export function ChatPage() {
           </form>
         </div>
       </div>
+      </>
     );
   }
 
+  const characterName = character?.name || configId || 'AI Character';
+  const characterDescription = character?.description || 'Chat with AI';
+  const pageTitle = `Chat with ${characterName}`;
+  const pageUrl = typeof window !== 'undefined' ? window.location.href : `https://egolab.app/chat/${configId}`;
+  const ogImage = imageUrl || 'https://egolab.app/bg.png';
+
   return (
-    <div
-      className="min-h-screen bg-gray-50 flex"
-      style={{ minHeight: '100dvh' }}
-    >
+    <>
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={characterDescription} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={characterDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:site_name" content="Ego Lab" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={characterDescription} />
+        <meta name="twitter:image" content={ogImage} />
+      </Helmet>
+      <div
+        className="min-h-screen bg-gray-50 flex"
+        style={{ minHeight: '100dvh' }}
+      >
       {/* Character Sidebar - Hidden on mobile, visible on larger screens */}
       <aside className="hidden lg:flex lg:flex-col lg:w-80 xl:w-96 bg-white border-r border-gray-200 sticky top-0 h-screen">
         <div className="p-6 border-b border-gray-200">
@@ -750,7 +813,7 @@ export function ChatPage() {
         {/* Chat Input */}
         <div className="border-t border-gray-200 bg-white">
           <SuggestedPromptsBar
-            prompts={suggestedPrompts}
+            prompts={suggestedPrompts || []}
             visibility={promptVisibility}
             onSelect={handlePromptSelect}
             disabled={isLoading || isLocked}
@@ -764,6 +827,7 @@ export function ChatPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

@@ -1,16 +1,13 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import type {
   ChatMessage,
-  SuggestedPreprompt,
   InitialMessageHistoryMessage,
   ChatMessageMetadata,
-  ChatResponse,
 } from '../types/api';
 import {
   createSession,
   fetchInitialMessage,
   sendChatMessage,
-  fetchFollowupsJob,
   ApiError,
 } from '../utils/api';
 import mixpanel from 'mixpanel-browser';
@@ -36,12 +33,9 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [suggestedPrompts, setSuggestedPrompts] = useState<SuggestedPreprompt[]>([]);
   const [hasFetchedInitialMessage, setHasFetchedInitialMessage] = useState(false);
   const [hasAttemptedRestore, setHasAttemptedRestore] = useState(false);
-  const [isFetchingFollowups, setIsFetchingFollowups] = useState(false);
   const initialFetchInProgressRef = useRef(false);
-  const followupsJobIdRef = useRef<string | null>(null);
   const isComponentMountedRef = useRef(true);
   const isEnabled = options.enabled !== false;
 
@@ -60,144 +54,16 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
     };
   }, []);
 
-  const pollFollowupsJob = useCallback(
-    async (jobId: string) => {
-      const MAX_ATTEMPTS = 10;
-      const BASE_DELAY_MS = 800;
-
-      for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt += 1) {
-        if (!isComponentMountedRef.current || followupsJobIdRef.current !== jobId) {
-          return;
-        }
-
-        try {
-          const result = await fetchFollowupsJob(jobId);
-
-          if (!isComponentMountedRef.current || followupsJobIdRef.current !== jobId) {
-            return;
-          }
-
-          if (result.status === 'ready') {
-            setSuggestedPrompts(result.preprompts ?? []);
-            setIsFetchingFollowups(false);
-            followupsJobIdRef.current = null;
-            mixpanel.track('AI Followups Ready', {
-              attempts: attempt + 1,
-              followups_job_id: jobId,
-            });
-            return;
-          }
-
-          if (result.status === 'failed') {
-            setIsFetchingFollowups(false);
-            followupsJobIdRef.current = null;
-            mixpanel.track('AI Followups Failed', {
-              attempts: attempt + 1,
-              followups_job_id: jobId,
-              error_message: result.error,
-            });
-            console.warn('Followup generation failed', {
-              jobId,
-              error: result.error,
-            });
-            return;
-          }
-
-          const delayMs =
-            result.poll_after_ms ?? Math.min(BASE_DELAY_MS * (attempt + 1), 4000);
-          await new Promise((resolve) => setTimeout(resolve, delayMs));
-        } catch (err) {
-          const errorMessage =
-            err instanceof Error ? err.message : 'Unknown followup fetch error';
-
-          if (!isComponentMountedRef.current || followupsJobIdRef.current !== jobId) {
-            return;
-          }
-
-          if (attempt === MAX_ATTEMPTS - 1) {
-            setIsFetchingFollowups(false);
-            followupsJobIdRef.current = null;
-            mixpanel.track('AI Followups Error', {
-              followups_job_id: jobId,
-              error_message: errorMessage,
-            });
-            console.error('Failed to retrieve followup suggestions:', errorMessage);
-            return;
-          }
-
-          const delayMs = Math.min(BASE_DELAY_MS * (attempt + 1), 4000);
-          await new Promise((resolve) => setTimeout(resolve, delayMs));
-        }
-      }
-
-      if (!isComponentMountedRef.current || followupsJobIdRef.current !== jobId) {
-        return;
-      }
-
-      setIsFetchingFollowups(false);
-      followupsJobIdRef.current = null;
-      mixpanel.track('AI Followups Timeout', {
-        followups_job_id: jobId,
-      });
-      console.warn('Followup generation timed out', {
-        jobId,
-        attempts: MAX_ATTEMPTS,
-      });
-    },
-    []
-  );
-
-  const handleFollowupsFromResponse = useCallback(
-    (response: ChatResponse, { preserveExisting }: { preserveExisting?: boolean } = {}) => {
-      if (!isComponentMountedRef.current) {
-        return;
-      }
-
-      const hasInlineFollowups =
-        Array.isArray(response.preprompts) && response.preprompts.length > 0;
-
-      if (hasInlineFollowups) {
-        followupsJobIdRef.current = null;
-        setSuggestedPrompts(response.preprompts ?? []);
-        setIsFetchingFollowups(false);
-        return;
-      }
-
-      if (response.followups_job_id) {
-        followupsJobIdRef.current = response.followups_job_id;
-        setSuggestedPrompts([]);
-        setIsFetchingFollowups(true);
-        mixpanel.track('AI Followups Pending', {
-          followups_job_id: response.followups_job_id,
-          followups_status: response.followups_status ?? 'pending',
-        });
-        void pollFollowupsJob(response.followups_job_id);
-        return;
-      }
-
-      if (!preserveExisting) {
-        setSuggestedPrompts([]);
-      }
-
-      setIsFetchingFollowups(false);
-      followupsJobIdRef.current = null;
-    },
-    [pollFollowupsJob]
-  );
-
   // Load saved chat session on mount or when changing characters
   useEffect(() => {
     if (!configId || !isEnabled) {
       setSessionId('');
       setMessages([]);
-      setSuggestedPrompts([]);
       setError(null);
       setIsLoading(false);
       setHasFetchedInitialMessage(false);
       setHasAttemptedRestore(false);
       initialFetchInProgressRef.current = false;
-      followupsJobIdRef.current = null;
-      setIsFetchingFollowups(false);
       return;
     }
 
@@ -217,13 +83,10 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
       setHasFetchedInitialMessage(false);
     }
 
-    setSuggestedPrompts([]);
     setError(null);
     setIsLoading(false);
     setHasAttemptedRestore(true);
     initialFetchInProgressRef.current = false;
-    followupsJobIdRef.current = null;
-    setIsFetchingFollowups(false);
   }, [
     configId,
     authOptions.characterAccessToken,
@@ -292,10 +155,10 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
         role: 'ai',
         content: response.ai,
         timestamp: new Date(),
+        request_id: response.request_id,
       };
 
       setMessages((prevMessages: ChatMessage[]) => [...prevMessages, aiMessage]);
-      handleFollowupsFromResponse(response);
 
       mixpanel.track('AI Initial Message', {
         'API Response Time': responseTime,
@@ -316,14 +179,12 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
           error_message: errorMessage,
         });
       }
-      setIsFetchingFollowups(false);
-      followupsJobIdRef.current = null;
     } finally {
       setIsLoading(false);
       setHasFetchedInitialMessage(true);
       initialFetchInProgressRef.current = false;
     }
-  }, [configId, messages, sessionId, handleFollowupsFromResponse, authOptions, isEnabled, options.onTokenInvalidated]);
+  }, [configId, messages, sessionId, authOptions, isEnabled, options.onTokenInvalidated]);
 
   useEffect(() => {
     if (!configId || !hasAttemptedRestore || !isEnabled) {
@@ -343,8 +204,6 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
 
       setIsLoading(true);
       setError(null);
-      followupsJobIdRef.current = null;
-      setIsFetchingFollowups(false);
 
       const inputSource = metadata?.inputSource ?? 'user-written';
 
@@ -414,9 +273,9 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
           role: 'ai',
           content: response.ai,
           timestamp: new Date(),
+          request_id: response.request_id,
         };
         setMessages((prevMessages: ChatMessage[]) => [...prevMessages, aiMessage]);
-        handleFollowupsFromResponse(response, { preserveExisting: false });
       } catch (err) {
         if (err instanceof ApiError && err.passwordRequired && configId) {
           clearCharacterAccessToken(configId);
@@ -429,19 +288,16 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
         } else {
           const errorMessage = err instanceof Error ? err.message : 'Failed to send message';
           setError(errorMessage);
-          
+
           // Track API Error event
           mixpanel.track('API Error', {
             error_type: 'api',
             error_message: errorMessage,
           });
-          
+
           // Remove the user message on error
           setMessages((prevMessages: ChatMessage[]) => prevMessages.slice(0, -1));
         }
-        setSuggestedPrompts([]);
-        setIsFetchingFollowups(false);
-        followupsJobIdRef.current = null;
       } finally {
         setIsLoading(false);
       }
@@ -451,7 +307,6 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
       configId,
       isLoading,
       messages,
-      handleFollowupsFromResponse,
       authOptions,
       isEnabled,
       options.onTokenInvalidated,
@@ -462,22 +317,15 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
     setSessionId('');
     setMessages([]);
     setError(null);
-    setSuggestedPrompts([]);
     setHasFetchedInitialMessage(false);
     setHasAttemptedRestore(true);
     setIsLoading(false);
     initialFetchInProgressRef.current = false;
-    followupsJobIdRef.current = null;
-    setIsFetchingFollowups(false);
     // Clear saved session from local storage
     if (configId) {
       clearChatSession(configId);
     }
   }, [configId]);
-
-  const clearSuggestedPrompts = useCallback(() => {
-    setSuggestedPrompts([]);
-  }, []);
 
   return {
     messages,
@@ -485,9 +333,6 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
     error,
     sendMessage,
     startNewConversation,
-    suggestedPrompts,
-    clearSuggestedPrompts,
-    isFetchingFollowups,
   };
 }
 

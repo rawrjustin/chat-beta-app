@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { HelmetProvider } from 'react-helmet-async';
 import { Layout } from './components/Layout';
 import { HomePage } from './pages/HomePage';
 import { ChatPage } from './pages/ChatPage';
@@ -23,9 +24,10 @@ function PageViewTracker() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <PageViewTracker />
-      <Routes>
+    <HelmetProvider>
+      <BrowserRouter>
+        <PageViewTracker />
+        <Routes>
         <Route path="/chat/:configId" element={<ChatPage />} />
         <Route
           path="/"
@@ -76,7 +78,8 @@ function App() {
           }
         />
       </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
+    </HelmetProvider>
   );
 }
 

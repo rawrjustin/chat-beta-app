@@ -12,6 +12,7 @@ import type {
   FollowupsJobResponse,
   PasswordProtectionResponse,
   CharacterPasswordVerificationResponse,
+  PrepromptResponse,
 } from '../types/api';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
@@ -237,5 +238,25 @@ export async function clearCharacterPasswordProtection(
   );
 
   return handleResponse<PasswordProtectionResponse>(response);
+}
+
+export async function fetchPreprompts(requestId: string): Promise<PrepromptResponse> {
+  const response = await fetch(`${API_BASE}/api/preprompts/${encodeURIComponent(requestId)}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  // Don't use handleResponse here because we need to handle 202 status specially
+  if (!response.ok && response.status !== 202) {
+    const error: ErrorResponse = await response.json().catch(() => ({
+      error: `HTTP ${response.status}`,
+      message: response.statusText,
+    }));
+    throw new ApiError(error.error || `HTTP ${response.status}`, false, response.status);
+  }
+
+  return response.json();
 }
 
