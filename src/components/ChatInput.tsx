@@ -73,13 +73,13 @@ export function ChatInput({ onSendMessage, isLoading, disabled }: ChatInputProps
           placeholder="Type your message... (Press Enter to send, Shift+Enter for new line)"
           disabled={isLoading || disabled}
           rows={1}
-          className="flex-1 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-airbnb-red focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed resize-none overflow-hidden min-h-[2.5rem] max-h-48"
+          className="flex-1 px-3 sm:px-4 py-2 sm:py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-airbnb-red focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed resize-none overflow-hidden min-h-[2.5rem] max-h-48"
           style={{ height: 'auto' }}
         />
         <button
           type="submit"
           disabled={!input.trim() || isLoading || disabled}
-          className="btn-primary px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base"
+          className="btn-primary px-4 sm:px-6 py-2 sm:py-3 text-base"
         >
           {isLoading ? (
             <div className="flex items-center gap-1 sm:gap-2">

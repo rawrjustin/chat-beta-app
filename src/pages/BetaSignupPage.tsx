@@ -90,21 +90,21 @@ export function BetaSignupPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-50">
       {/* Hero Video Section */}
-      <section className="relative w-full h-screen overflow-hidden bg-black">
+      <section className="relative w-full h-screen overflow-hidden bg-black flex items-center justify-center">
         <video
           autoPlay
           loop
           muted
           playsInline
-          className="w-full h-full object-cover"
+          className="h-full w-auto object-contain"
         >
           <source
             src="https://genies-character-profile-images-dev.s3.us-west-2.amazonaws.com/animated-tiger"
             type="video/mp4"
           />
         </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/50" />
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/50 pointer-events-none" />
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="text-center px-4">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
               Build Your AI Character
