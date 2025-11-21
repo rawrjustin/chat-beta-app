@@ -267,32 +267,31 @@ export function HomePage() {
             alt=""
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.25),_rgba(15,23,42,0.2))]" />
-          <div className="absolute inset-0 backdrop-blur-sm" />
+          <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.3),_rgba(15,23,42,0.15))]" />
+          <div className="absolute inset-0 backdrop-blur-[2px]" />
         </div>
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 md:py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             <div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-gray-900">
-                Dive back into Ego Lab with
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600">
-                  {activeHero.name}
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+                Where Characters Come to Life
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600 mt-2">
+                  And Talk Back
                 </span>
               </h1>
-              <p className="text-base sm:text-lg text-gray-700 mb-6 max-w-xl">
-                Step into a world of AI characters. Engage with characters who actually understand
-                you.
+              <p className="text-base sm:text-lg mb-6 max-w-xl bg-white/95 backdrop-blur-sm px-6 py-4 rounded-2xl shadow-lg border border-white/20 text-gray-800 leading-relaxed">
+                Drop into Ego Lab to chat with a cast of characters who roast, question, comfort, and surprise you. What they say next is shaped entirely by you.
               </p>
             </div>
 
             <div className="relative">
-              <div className="absolute -top-8 -right-6 sm:-right-12 h-24 w-24 sm:h-32 sm:w-32 bg-sky-400/10 rounded-full blur-3xl" />
-              <div className="absolute -bottom-8 -left-10 sm:-left-16 h-32 w-32 sm:h-40 sm:w-40 bg-purple-500/10 rounded-full blur-3xl" />
+              <div className="absolute -top-8 -right-6 sm:-right-12 h-24 w-24 sm:h-32 sm:w-32 bg-blue-400/20 rounded-full blur-3xl animate-pulse" />
+              <div className="absolute -bottom-8 -left-10 sm:-left-16 h-32 w-32 sm:h-40 sm:w-40 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
 
-              <div className="relative bg-white/90 border border-gray-200 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-sm">
+              <div className="relative bg-white/95 border border-gray-200/50 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-sm hover:shadow-3xl transition-shadow duration-300">
                 <div className="flex items-start gap-4 mb-5">
-                  <div className="h-20 w-20 rounded-2xl overflow-hidden border border-gray-300 shadow-lg bg-white flex items-center justify-center">
+                  <div className="h-20 w-20 rounded-2xl overflow-hidden border-2 border-purple-200 shadow-xl bg-gradient-to-br from-white to-purple-50 flex items-center justify-center ring-2 ring-purple-100">
                     {activeHero.avatarUrl ? (
                       <img
                         src={activeHero.avatarUrl}
@@ -300,7 +299,7 @@ export function HomePage() {
                         className="w-full h-full object-contain"
                       />
                     ) : (
-                      <div className="text-2xl font-bold text-gray-600">
+                      <div className="text-2xl font-bold text-purple-600">
                         {activeHero.name.charAt(0).toUpperCase()}
                       </div>
                     )}
@@ -320,15 +319,15 @@ export function HomePage() {
                     activeConversation.map((pair, index) => (
                       <div key={`${activeHero.id}-message-${index}`} className="space-y-3">
                         <div className="flex gap-3 items-start">
-                          <div className="flex-shrink-0 h-9 w-9 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-700">
+                          <div className="flex-shrink-0 h-9 w-9 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 border border-blue-200 flex items-center justify-center text-xs font-semibold text-gray-700 shadow-sm">
                             You
                           </div>
-                          <div className="flex-1 bg-gray-100 border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-800 shadow-lg">
+                          <div className="flex-1 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-800 shadow-md hover:shadow-lg transition-shadow">
                             {pair.user}
                           </div>
                         </div>
                         <div className="flex gap-3 items-start">
-                          <div className="flex-shrink-0 h-9 w-9 rounded-full overflow-hidden border border-gray-300 bg-white flex items-center justify-center">
+                          <div className="flex-shrink-0 h-9 w-9 rounded-full overflow-hidden border-2 border-purple-200 bg-white shadow-sm flex items-center justify-center ring-2 ring-purple-100">
                             {activeHero.avatarUrl ? (
                               <img
                                 src={activeHero.avatarUrl}
@@ -336,12 +335,12 @@ export function HomePage() {
                                 className="w-full h-full object-contain"
                               />
                             ) : (
-                              <div className="text-xs font-bold text-gray-600">
+                              <div className="text-xs font-bold text-purple-600">
                                 {activeHero.name.charAt(0).toUpperCase()}
                               </div>
                             )}
                           </div>
-                          <div className="flex-1 bg-white border border-gray-300 rounded-2xl px-4 py-3 text-sm text-gray-900 shadow-lg">
+                          <div className="flex-1 bg-white border-2 border-purple-100 rounded-2xl px-4 py-3 text-sm text-gray-900 shadow-md hover:shadow-lg transition-shadow">
                             {pair.ai}
                           </div>
                         </div>
@@ -357,9 +356,9 @@ export function HomePage() {
                 <div className="mt-6">
                   <Link
                     to={`/chat/${activeHero.configId}`}
-                    className="inline-flex items-center justify-center w-full bg-gradient-to-r from-sky-400 to-purple-500 hover:from-sky-500 hover:to-purple-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+                    className="inline-flex items-center justify-center w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
                   >
-                    Chat with {activeHero.name}
+                    Start Chatting with {activeHero.name} →
                   </Link>
                 </div>
 
@@ -367,7 +366,7 @@ export function HomePage() {
             </div>
           </div>
 
-          <div className="mt-12 flex items-center gap-3">
+          <div className="mt-12 flex items-center justify-center gap-3">
             {heroCharacters.map((hero, index) => (
               <button
                 key={hero.id}
@@ -377,7 +376,7 @@ export function HomePage() {
                   setHeroIndex(index);
                 }}
                 className={`h-2 w-10 rounded-full transition-all ${
-                  heroIndex === index ? 'bg-gray-900' : 'bg-gray-400'
+                  heroIndex === index ? 'bg-gray-900 w-12' : 'bg-gray-400 hover:bg-gray-500'
                 }`}
                 aria-label={`Show ${hero.name}`}
               />

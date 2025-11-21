@@ -90,7 +90,7 @@ export function BetaSignupPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-50">
       {/* Hero Video Section */}
-      <section className="relative w-full h-[60vh] min-h-[400px] max-h-[600px] overflow-hidden bg-black">
+      <section className="relative w-full h-screen overflow-hidden bg-black">
         <video
           autoPlay
           loop
