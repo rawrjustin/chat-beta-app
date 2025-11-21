@@ -93,6 +93,22 @@ export function ChatPage() {
 
   // Use inline preprompts if available, otherwise use async preprompts
   const suggestedPrompts = hasInlinePreprompts ? latestAiMessage.inline_preprompts : asyncPreprompts;
+
+  // Debug logging
+  useEffect(() => {
+    console.log('[ChatPage] Preprompts state:', {
+      hasInlinePreprompts,
+      latestRequestId,
+      asyncPreprompts: asyncPreprompts?.length || 0,
+      suggestedPrompts: suggestedPrompts?.length || 0,
+      isFetchingFollowups,
+      latestAiMessage: latestAiMessage ? {
+        role: latestAiMessage.role,
+        request_id: latestAiMessage.request_id,
+        inline_preprompts: latestAiMessage.inline_preprompts?.length || 0
+      } : null
+    });
+  }, [hasInlinePreprompts, latestRequestId, asyncPreprompts, suggestedPrompts, isFetchingFollowups, latestAiMessage]);
   const [promptVisibility, setPromptVisibility] = useState<'hidden' | 'visible' | 'fading'>(
     'hidden'
   );
