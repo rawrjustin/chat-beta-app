@@ -5,7 +5,7 @@ export interface ChatResponse {
   request_id: string; // Required for async preprompts
   text_response_cleaned?: string;
   warning_message?: string | null;
-  preprompts: null; // Always null - fetch via /api/preprompts/:request_id
+  preprompts?: SuggestedPreprompt[] | null; // Can be: array (old backend), null (new backend), or undefined
   followups_job_id?: string; // Deprecated - kept for backward compatibility
   followups_ready?: boolean;
   followups_status?: FollowupsJobStatus;
@@ -121,6 +121,7 @@ export interface ChatMessage {
   timestamp?: Date;
   metadata?: ChatMessageMetadata;
   request_id?: string; // For fetching async preprompts (only on AI messages)
+  inline_preprompts?: SuggestedPreprompt[]; // Preprompts returned inline with response (old backend)
 }
 
 export type SuggestedPrepromptType = 'roleplay' | 'conversation';

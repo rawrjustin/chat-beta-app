@@ -81,13 +81,18 @@ export function ChatPage() {
     return null;
   }, [messages]);
 
-  const latestRequestId = latestAiMessage?.request_id;
+  // Check if we have inline preprompts (old backend) or need to fetch async (new backend)
+  const hasInlinePreprompts = latestAiMessage?.inline_preprompts && latestAiMessage.inline_preprompts.length > 0;
+  const latestRequestId = !hasInlinePreprompts ? latestAiMessage?.request_id : null;
 
-  // Fetch preprompts for the latest AI message
+  // Fetch preprompts async only if we don't have inline preprompts
   const {
-    preprompts: suggestedPrompts,
+    preprompts: asyncPreprompts,
     isLoading: isFetchingFollowups,
   } = usePreprompts(latestRequestId);
+
+  // Use inline preprompts if available, otherwise use async preprompts
+  const suggestedPrompts = hasInlinePreprompts ? latestAiMessage.inline_preprompts : asyncPreprompts;
   const [promptVisibility, setPromptVisibility] = useState<'hidden' | 'visible' | 'fading'>(
     'hidden'
   );

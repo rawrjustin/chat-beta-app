@@ -156,6 +156,7 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
         content: response.ai,
         timestamp: new Date(),
         request_id: response.request_id,
+        inline_preprompts: response.preprompts && Array.isArray(response.preprompts) ? response.preprompts : undefined,
       };
 
       setMessages((prevMessages: ChatMessage[]) => [...prevMessages, aiMessage]);
@@ -274,6 +275,7 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
           content: response.ai,
           timestamp: new Date(),
           request_id: response.request_id,
+          inline_preprompts: response.preprompts && Array.isArray(response.preprompts) ? response.preprompts : undefined,
         };
         setMessages((prevMessages: ChatMessage[]) => [...prevMessages, aiMessage]);
       } catch (err) {
