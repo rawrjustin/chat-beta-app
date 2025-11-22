@@ -94,24 +94,37 @@ export function ChatPage() {
   // Use inline preprompts if available, otherwise use async preprompts
   const suggestedPrompts = hasInlinePreprompts ? latestAiMessage.inline_preprompts : asyncPreprompts;
 
-  // Debug logging
-  useEffect(() => {
-    console.log('[ChatPage] Preprompts state:', {
-      hasInlinePreprompts,
-      latestRequestId,
-      asyncPreprompts: asyncPreprompts?.length || 0,
-      suggestedPrompts: suggestedPrompts?.length || 0,
-      isFetchingFollowups,
-      latestAiMessage: latestAiMessage ? {
-        role: latestAiMessage.role,
-        request_id: latestAiMessage.request_id,
-        inline_preprompts: latestAiMessage.inline_preprompts?.length || 0
-      } : null
-    });
-  }, [hasInlinePreprompts, latestRequestId, asyncPreprompts, suggestedPrompts, isFetchingFollowups, latestAiMessage]);
   const [promptVisibility, setPromptVisibility] = useState<'hidden' | 'visible' | 'fading'>(
     'hidden'
   );
+
+  // Debug logging - comprehensive state
+  useEffect(() => {
+    console.log('[ChatPage] === PREPROMPTS STATE ===');
+    console.log('[ChatPage] Latest AI message:', latestAiMessage ? {
+      role: latestAiMessage.role,
+      request_id: latestAiMessage.request_id,
+      inline_preprompts_count: latestAiMessage.inline_preprompts?.length || 0,
+      inline_preprompts: latestAiMessage.inline_preprompts
+    } : null);
+    console.log('[ChatPage] Preprompt sources:', {
+      hasInlinePreprompts,
+      inline_preprompts_count: latestAiMessage?.inline_preprompts?.length || 0,
+      latestRequestId,
+      asyncPreprompts_count: asyncPreprompts?.length || 0,
+      isFetchingFollowups,
+    });
+    console.log('[ChatPage] Final suggestedPrompts:', {
+      count: suggestedPrompts?.length || 0,
+      prompts: suggestedPrompts,
+      source: hasInlinePreprompts ? 'INLINE' : 'ASYNC'
+    });
+    console.log('[ChatPage] UI state:', {
+      promptVisibility,
+      will_render: (suggestedPrompts && suggestedPrompts.length > 0) || isFetchingFollowups
+    });
+    console.log('[ChatPage] =====================');
+  }, [hasInlinePreprompts, latestRequestId, asyncPreprompts, suggestedPrompts, isFetchingFollowups, latestAiMessage, promptVisibility]);
   const promptFadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fadeVersionRef = useRef(0);
   const promptsContainerRef = useRef<HTMLDivElement>(null);
@@ -269,7 +282,17 @@ export function ChatPage() {
     // This prevents white space when we're not actively fetching
     const shouldShowLoading = isFetchingFollowups && latestRequestId;
 
+    console.log('[ChatPage:visibility] Evaluating visibility:', {
+      hasPrompts,
+      shouldShowLoading,
+      isFetchingFollowups,
+      latestRequestId,
+      suggestedPrompts_count: suggestedPrompts?.length || 0,
+      current_visibility: promptVisibility
+    });
+
     if (hasPrompts || shouldShowLoading) {
+      console.log('[ChatPage:visibility] Setting to VISIBLE');
       setPromptVisibility((prevVisibility: typeof promptVisibility) =>
         prevVisibility === 'visible' ? prevVisibility : 'visible'
       );
@@ -278,13 +301,14 @@ export function ChatPage() {
         promptFadeTimeoutRef.current = null;
       }
     } else {
+      console.log('[ChatPage:visibility] Setting to HIDDEN');
       setPromptVisibility((prevVisibility: typeof promptVisibility) =>
         prevVisibility === 'visible' || prevVisibility === 'fading'
           ? 'hidden'
           : prevVisibility
       );
     }
-  }, [suggestedPrompts, isFetchingFollowups, latestRequestId]);
+  }, [suggestedPrompts, isFetchingFollowups, latestRequestId, promptVisibility]);
 
   useEffect(() => {
     return () => {
