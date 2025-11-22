@@ -114,6 +114,7 @@ export function ChatPage() {
   );
   const promptFadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fadeVersionRef = useRef(0);
+  const promptsContainerRef = useRef<HTMLDivElement>(null);
   const justSetTokenRef = useRef(false);
   
   // Check if we have a token in state OR in localStorage
@@ -264,7 +265,11 @@ export function ChatPage() {
   // Reset prompt visibility whenever new prompts are provided
   useEffect(() => {
     const hasPrompts = suggestedPrompts && suggestedPrompts.length > 0;
-    if (hasPrompts || isFetchingFollowups) {
+    // Only show loading state if we're actually fetching AND have a request ID
+    // This prevents white space when we're not actively fetching
+    const shouldShowLoading = isFetchingFollowups && latestRequestId;
+
+    if (hasPrompts || shouldShowLoading) {
       setPromptVisibility((prevVisibility: typeof promptVisibility) =>
         prevVisibility === 'visible' ? prevVisibility : 'visible'
       );
@@ -279,7 +284,7 @@ export function ChatPage() {
           : prevVisibility
       );
     }
-  }, [suggestedPrompts, isFetchingFollowups]);
+  }, [suggestedPrompts, isFetchingFollowups, latestRequestId]);
 
   useEffect(() => {
     return () => {
@@ -288,6 +293,19 @@ export function ChatPage() {
       }
     };
   }, []);
+
+  // Scroll to show preprompts when they appear
+  useEffect(() => {
+    if (promptVisibility === 'visible' && suggestedPrompts && suggestedPrompts.length > 0) {
+      // Small delay to let the DOM update
+      setTimeout(() => {
+        promptsContainerRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'end',
+        });
+      }, 100);
+    }
+  }, [promptVisibility, suggestedPrompts]);
 
   const schedulePromptFadeOut = useCallback(() => {
     const hasPrompts = suggestedPrompts && suggestedPrompts.length > 0;
@@ -831,8 +849,8 @@ export function ChatPage() {
         </div>
       </div>
 
-        {/* Chat Input */}
-        <div className="border-t border-gray-200 bg-white">
+        {/* Chat Input - Sticky at bottom */}
+        <div ref={promptsContainerRef} className="border-t border-gray-200 bg-white sticky bottom-0">
           <SuggestedPromptsBar
             prompts={suggestedPrompts || []}
             visibility={promptVisibility}
