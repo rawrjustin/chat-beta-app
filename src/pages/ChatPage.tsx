@@ -794,10 +794,10 @@ export function ChatPage() {
           </div>
         </header>
 
-        {/* Chat Messages */}
+        {/* Chat Messages - Extra bottom padding to account for sticky input area */}
         <div
           ref={chatContainerRef}
-          className="flex-1 min-h-0 overflow-y-auto px-3 sm:px-4 md:px-6 lg:px-8 pb-4 sm:pb-6 pt-20 sm:pt-24 lg:pt-6 relative"
+          className="flex-1 min-h-0 overflow-y-auto px-3 sm:px-4 md:px-6 lg:px-8 pb-32 pt-20 sm:pt-24 lg:pt-6 relative z-10"
         >
           {/* Mobile Background Avatar - Only visible on mobile */}
           {hasAvatar && !imageError && imageUrl && (
@@ -873,8 +873,8 @@ export function ChatPage() {
         </div>
       </div>
 
-        {/* Chat Input - Sticky at bottom */}
-        <div ref={promptsContainerRef} className="border-t border-gray-200 bg-white sticky bottom-0">
+        {/* Chat Input - Sticky at bottom with z-index to stay above scrolling content */}
+        <div ref={promptsContainerRef} className="border-t border-gray-200 bg-white sticky bottom-0 z-30">
           <SuggestedPromptsBar
             prompts={suggestedPrompts || []}
             visibility={promptVisibility}
