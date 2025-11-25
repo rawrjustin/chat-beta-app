@@ -10,7 +10,6 @@ interface CharacterCardProps {
 export function CharacterCard({ character }: CharacterCardProps) {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
 
   const avatarUrlRaw = (character.avatar_url ?? character.avatar ?? '').trim();
   const hasAvatar = avatarUrlRaw !== '';
@@ -21,30 +20,18 @@ export function CharacterCard({ character }: CharacterCardProps) {
     setImageError(true);
   };
 
-  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const img = e.currentTarget;
-    setImageDimensions({
-      width: img.naturalWidth,
-      height: img.naturalHeight,
-    });
+  const handleImageLoad = () => {
     setImageLoaded(true);
   };
 
   return (
     <Link to={`/chat/${character.id}`} className="block group">
       <div className="card h-full flex flex-row md:flex-col group-hover:scale-[1.02] transition-transform duration-200 gap-4 md:gap-0">
-        <div 
-          className="relative bg-gradient-to-br from-purple-100 via-blue-100 to-purple-200 flex items-center justify-center overflow-hidden flex-shrink-0 w-24 sm:w-28 md:w-full md:min-h-[200px]"
-          style={{
-            aspectRatio: imageDimensions 
-              ? `${imageDimensions.width} / ${imageDimensions.height}` 
-              : '5 / 6',
-          }}
-        >
+        <div className="relative bg-gradient-to-br from-purple-100 via-blue-100 to-purple-200 flex items-center justify-center overflow-hidden flex-shrink-0 w-24 h-24 sm:w-28 sm:h-28 md:w-full md:h-[240px]">
           {hasAvatar && !imageError ? (
             <>
               {isPasswordProtected && (
-                <div className="absolute top-2 right-2 bg-white/95 text-gray-700 text-[11px] px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1">
+                <div className="absolute top-2 right-2 bg-white/95 text-gray-700 text-[11px] px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1 z-10">
                   <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M10 2a4 4 0 00-4 4v2H5a1 1 0 00-1 1v7a2 2 0 002 2h8a2 2 0 002-2v-7a1 1 0 00-1-1h-1V6a4 4 0 00-4-4zm2 6V6a2 2 0 10-4 0v2h4z" />
                   </svg>
@@ -59,7 +46,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
               <img
                 src={imageUrl}
                 alt={character.name}
-                className={`w-full h-full object-contain group-hover:scale-110 transition-transform duration-300 ${
+                className={`w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-300 ${
                   imageLoaded ? 'opacity-100' : 'opacity-0'
                 }`}
                 onError={handleImageError}

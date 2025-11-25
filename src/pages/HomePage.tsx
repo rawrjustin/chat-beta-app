@@ -291,12 +291,12 @@ export function HomePage() {
 
               <div className="relative bg-white/95 border border-gray-200/50 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-sm hover:shadow-3xl transition-shadow duration-300">
                 <div className="flex items-start gap-4 mb-5">
-                  <div className="h-20 w-20 rounded-2xl overflow-hidden border-2 border-purple-200 shadow-xl bg-gradient-to-br from-white to-purple-50 flex items-center justify-center ring-2 ring-purple-100">
+                  <div className="h-20 w-20 rounded-2xl overflow-hidden border-2 border-purple-200 shadow-xl bg-gradient-to-br from-white to-purple-50 flex items-center justify-center ring-2 ring-purple-100 flex-shrink-0">
                     {activeHero.avatarUrl ? (
                       <img
                         src={activeHero.avatarUrl}
                         alt={activeHero.name}
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-contain p-1"
                       />
                     ) : (
                       <div className="text-2xl font-bold text-purple-600">
@@ -332,7 +332,7 @@ export function HomePage() {
                               <img
                                 src={activeHero.avatarUrl}
                                 alt={`${activeHero.name} avatar`}
-                                className="w-full h-full object-contain"
+                                className="w-full h-full object-contain p-0.5"
                               />
                             ) : (
                               <div className="text-xs font-bold text-purple-600">

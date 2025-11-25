@@ -30,7 +30,6 @@ export function ChatPage() {
   const [isLoadingCharacter, setIsLoadingCharacter] = useState(true);
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [passwordInput, setPasswordInput] = useState('');
   const [passwordError, setPasswordError] = useState<string | null>(null);
@@ -126,12 +125,7 @@ export function ChatPage() {
     setImageError(true);
   };
 
-  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const img = e.currentTarget;
-    setImageDimensions({
-      width: img.naturalWidth,
-      height: img.naturalHeight,
-    });
+  const handleImageLoad = () => {
     setImageLoaded(true);
   };
 
@@ -196,7 +190,6 @@ export function ChatPage() {
       setIsLoadingCharacter(true);
       setImageError(false);
       setImageLoaded(false);
-      setImageDimensions(null);
       try {
         let resolvedCharacter: CharacterResponse | null = null;
 
@@ -489,7 +482,7 @@ export function ChatPage() {
                     <img
                       src={imageUrl}
                       alt={character?.name || 'Character avatar'}
-                      className="w-16 h-16 rounded-full object-cover border border-gray-200"
+                      className="w-16 h-16 rounded-full object-contain border border-gray-200 bg-white p-1"
                     />
                   ) : (
                     <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-lg font-semibold text-gray-600">
@@ -622,15 +615,7 @@ export function ChatPage() {
         </div>
         
         <div className="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-purple-50 to-blue-50">
-          <div 
-            className="w-full max-w-xs bg-gradient-to-br from-purple-100 via-blue-100 to-purple-200 rounded-2xl flex items-center justify-center overflow-hidden relative shadow-lg"
-            style={{
-              aspectRatio: imageDimensions 
-                ? `${imageDimensions.width} / ${imageDimensions.height}` 
-                : '5 / 6',
-              minHeight: '300px',
-            }}
-          >
+          <div className="w-full max-w-xs h-[400px] bg-gradient-to-br from-purple-100 via-blue-100 to-purple-200 rounded-2xl flex items-center justify-center overflow-hidden relative shadow-lg">
             {hasAvatar && !imageError ? (
               <>
                 {!imageLoaded && (
@@ -641,7 +626,7 @@ export function ChatPage() {
                 <img
                   src={imageUrl}
                   alt={character?.name || 'Character'}
-                  className={`w-full h-full object-contain transition-opacity duration-300 ${
+                  className={`w-full h-full object-contain p-4 transition-opacity duration-300 ${
                     imageLoaded ? 'opacity-100' : 'opacity-0'
                   }`}
                   onError={handleImageError}
