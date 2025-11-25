@@ -275,10 +275,7 @@ export function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             <div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-gray-900">
-                Where Characters Come to Life
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600 mt-2">
-                  And Talk Back
-                </span>
+                Chat with the most unhinged egos on earth
               </h1>
               <p className="text-base sm:text-lg mb-6 max-w-xl bg-white/95 backdrop-blur-sm px-6 py-4 rounded-2xl shadow-lg border border-white/20 text-gray-800 leading-relaxed">
                 Drop into Ego Lab to chat with a cast of characters who roast, question, comfort, and surprise you. What they say next is shaped entirely by you.
