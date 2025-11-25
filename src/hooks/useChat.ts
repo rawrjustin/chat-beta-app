@@ -72,11 +72,6 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
       setSessionId(savedChat.sessionId);
       setMessages(savedChat.messages);
       setHasFetchedInitialMessage(false);
-      console.log('Loaded saved chat session:', {
-        configId,
-        sessionId: savedChat.sessionId,
-        messageCount: savedChat.messages.length,
-      });
     } else {
       setSessionId('');
       setMessages([]);
@@ -153,16 +148,6 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
 
       const inlinePreprompts = response.preprompts && Array.isArray(response.preprompts) ? response.preprompts : undefined;
 
-      console.log('[useChat:initializeChat] Received response:', {
-        request_id: response.request_id,
-        has_preprompts: !!response.preprompts,
-        preprompts_type: typeof response.preprompts,
-        preprompts_is_array: Array.isArray(response.preprompts),
-        preprompts_count: response.preprompts?.length || 0,
-        inline_preprompts_count: inlinePreprompts?.length || 0,
-        response_preprompts: response.preprompts
-      });
-
       const aiMessage: ChatMessage = {
         role: 'ai',
         content: response.ai,
@@ -170,11 +155,6 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
         request_id: response.request_id,
         inline_preprompts: inlinePreprompts,
       };
-
-      console.log('[useChat:initializeChat] Created AI message:', {
-        request_id: aiMessage.request_id,
-        inline_preprompts_count: aiMessage.inline_preprompts?.length || 0,
-      });
 
       setMessages((prevMessages: ChatMessage[]) => [...prevMessages, aiMessage]);
 
@@ -289,16 +269,6 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
         // Add AI response to UI
         const inlinePreprompts = response.preprompts && Array.isArray(response.preprompts) ? response.preprompts : undefined;
 
-        console.log('[useChat:sendMessage] Received response:', {
-          request_id: response.request_id,
-          has_preprompts: !!response.preprompts,
-          preprompts_type: typeof response.preprompts,
-          preprompts_is_array: Array.isArray(response.preprompts),
-          preprompts_count: response.preprompts?.length || 0,
-          inline_preprompts_count: inlinePreprompts?.length || 0,
-          response_preprompts: response.preprompts
-        });
-
         const aiMessage: ChatMessage = {
           role: 'ai',
           content: response.ai,
@@ -306,11 +276,6 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
           request_id: response.request_id,
           inline_preprompts: inlinePreprompts,
         };
-
-        console.log('[useChat:sendMessage] Created AI message:', {
-          request_id: aiMessage.request_id,
-          inline_preprompts_count: aiMessage.inline_preprompts?.length || 0,
-        });
 
         setMessages((prevMessages: ChatMessage[]) => [...prevMessages, aiMessage]);
       } catch (err) {

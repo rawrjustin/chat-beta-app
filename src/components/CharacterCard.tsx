@@ -18,27 +18,15 @@ export function CharacterCard({ character }: CharacterCardProps) {
   const isPasswordProtected = Boolean(character.password_required);
 
   const handleImageError = () => {
-    console.error('Failed to load avatar image:', {
-      url: avatarUrlRaw,
-      normalizedUrl: imageUrl,
-      character: character.name,
-    });
     setImageError(true);
   };
 
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const img = e.currentTarget;
-    const dimensions = {
+    setImageDimensions({
       width: img.naturalWidth,
       height: img.naturalHeight,
-    };
-    console.log('Character image dimensions:', {
-      character: character.name,
-      dimensions,
-      aspectRatio: `${dimensions.width} / ${dimensions.height}`,
-      url: imageUrl,
     });
-    setImageDimensions(dimensions);
     setImageLoaded(true);
   };
 

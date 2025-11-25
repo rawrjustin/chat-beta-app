@@ -92,17 +92,8 @@ export function usePreprompts(requestId: string | null | undefined) {
 
         if (!isMountedRef.current) return;
 
-        console.log('[usePreprompts] Fetched preprompts:', {
-          request_id: requestId,
-          retry: retryCountRef.current,
-          has_preprompts: !!response.preprompts,
-          count: response.preprompts?.length || 0,
-          response
-        });
-
         // Success - we have preprompts
         if (response.preprompts && response.preprompts.length > 0) {
-          console.log('[usePreprompts] Setting preprompts:', response.preprompts);
           setPreprompts(response.preprompts);
           setIsLoading(false);
           setError(null);
@@ -122,11 +113,6 @@ export function usePreprompts(requestId: string | null | undefined) {
         retryCountRef.current += 1;
         const retryDelay = response.retry_after || 1000;
 
-        console.log('[usePreprompts] Retrying...', {
-          retry: retryCountRef.current,
-          delay: retryDelay
-        });
-
         if (!isMountedRef.current) return;
 
         retryTimeoutRef.current = setTimeout(() => {
@@ -136,11 +122,6 @@ export function usePreprompts(requestId: string | null | undefined) {
         if (!isMountedRef.current) return;
 
         const errorMessage = err instanceof Error ? err.message : 'Failed to load suggestions';
-        console.error('[usePreprompts] Error fetching preprompts:', {
-          request_id: requestId,
-          error: err,
-          message: errorMessage
-        });
         setError(errorMessage);
         setIsLoading(false);
         if (timeoutRef.current) {
