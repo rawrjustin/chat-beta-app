@@ -158,7 +158,7 @@ export function BetaSignupPage() {
         </section>
 
         {/* Why join */}
-        <section className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-white/10 rounded-3xl p-8 sm:p-10 space-y-6">
+        <section className="bg-gradient-to-br from-primary-500/10 to-secondary-500/10 border border-white/10 rounded-3xl p-8 sm:p-10 space-y-6">
           <h2 className="text-3xl sm:text-4xl font-bold text-white">Why Join the Creator Beta?</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {betaBenefits.map((benefit) => (

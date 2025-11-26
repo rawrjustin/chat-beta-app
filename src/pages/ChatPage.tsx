@@ -477,7 +477,7 @@ export function ChatPage() {
         <div className="w-full max-w-xl space-y-6">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-purple-600 transition-colors text-sm"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-primary-600 transition-colors text-sm"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -515,7 +515,7 @@ export function ChatPage() {
                       <h1 className="text-2xl font-bold text-gray-900">
                         {character?.name || normalizedConfigId || 'AI Character'}
                       </h1>
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-sm border border-amber-100 text-[10px] uppercase tracking-wider font-semibold bg-amber-50 text-amber-700">
                         <svg
                           className="w-3.5 h-3.5 mr-1"
                           viewBox="0 0 20 20"
@@ -548,7 +548,7 @@ export function ChatPage() {
                 value={passwordInput}
                 onChange={(event) => setPasswordInput(event.target.value)}
                 placeholder="Enter password to unlock"
-                className="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-purple-500 focus:outline-none focus:ring-purple-500 sm:text-sm"
+                className="block w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 sm:text-sm transition-all"
               />
             </div>
             {passwordError && <p className="text-sm text-red-600">{passwordError}</p>}
@@ -598,7 +598,7 @@ export function ChatPage() {
         <div className="p-6 border-b border-gray-200">
           <Link
             to="/"
-            className="text-gray-600 hover:text-purple-600 transition-colors inline-flex items-center gap-2 mb-4"
+            className="text-gray-600 hover:text-primary-600 transition-colors inline-flex items-center gap-2 mb-4"
           >
             <svg
               className="w-5 h-5"
@@ -621,7 +621,7 @@ export function ChatPage() {
               : character?.name || configId || 'AI Character'}
           </h2>
           {isPasswordProtected && (
-            <span className="inline-flex items-center gap-1 text-xs font-medium text-yellow-800 bg-yellow-100 px-2 py-0.5 rounded-full">
+            <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-sm border border-amber-100">
               <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M10 2a4 4 0 00-4 4v2H5a1 1 0 00-1 1v7a2 2 0 002 2h8a2 2 0 002-2v-7a1 1 0 00-1-1h-1V6a4 4 0 00-4-4zm2 6V6a2 2 0 10-4 0v2h4z" />
               </svg>
@@ -635,13 +635,13 @@ export function ChatPage() {
           </p>
         </div>
         
-        <div className="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-purple-50 to-blue-50">
-          <div className="w-full max-w-xs h-[400px] bg-gradient-to-br from-purple-100 via-blue-100 to-purple-200 rounded-2xl flex items-center justify-center overflow-hidden relative shadow-lg">
+        <div className="flex-1 flex items-center justify-center p-6 bg-gray-50/50">
+          <div className="w-full max-w-xs h-[400px] bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 rounded-2xl flex items-center justify-center overflow-hidden relative shadow-soft border border-gray-100">
             {hasAvatar && !imageError ? (
               <>
                 {!imageLoaded && (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
                   </div>
                 )}
                 <img
@@ -655,7 +655,7 @@ export function ChatPage() {
                 />
               </>
             ) : (
-              <div className="text-8xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <div className="text-8xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
                 {character?.name?.charAt(0).toUpperCase() || '?'}
               </div>
             )}
@@ -721,7 +721,7 @@ export function ChatPage() {
                       : character?.description || 'Chat with AI'}
                   </p>
                   {isPasswordProtected && (
-                    <span className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-medium text-yellow-800 bg-yellow-100 px-2 py-0.5 rounded-full mt-1">
+                    <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-sm border border-amber-100 mt-1">
                       <svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor">
                         <path d="M10 2a4 4 0 00-4 4v2H5a1 1 0 00-1 1v7a2 2 0 002 2h8a2 2 0 002-2v-7a1 1 0 00-1-1h-1V6a4 4 0 00-4-4zm2 6V6a2 2 0 10-4 0v2h4z" />
                       </svg>

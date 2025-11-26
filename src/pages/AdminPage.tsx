@@ -250,8 +250,8 @@ export function AdminPage() {
     const passwordState = passwordActionState[character.config_id];
     const passwordStatusLabel = character.password_required ? 'Protected' : 'Not Protected';
     const passwordStatusStyles = character.password_required
-      ? 'bg-yellow-100 text-yellow-800'
-      : 'bg-gray-100 text-gray-700';
+      ? 'bg-amber-50 text-amber-700 border border-amber-100'
+      : 'bg-gray-50 text-gray-600 border border-gray-200';
     const passwordUpdatedAtLabel = character.password_updated_at
       ? new Date(character.password_updated_at).toLocaleString()
       : null;
@@ -289,7 +289,7 @@ export function AdminPage() {
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2 text-xs">
               <span
-                className={`inline-flex items-center px-2.5 py-1 rounded-full font-medium ${passwordStatusStyles}`}
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full font-medium border ${passwordStatusStyles}`}
               >
                 {passwordStatusLabel}
               </span>
@@ -310,7 +310,7 @@ export function AdminPage() {
                 placeholder={
                   character.password_required ? 'Update password' : 'Set new password'
                 }
-                className="flex-1 bg-gray-50 border border-gray-200 rounded px-2 py-1 text-sm text-gray-700"
+                className="flex-1 bg-gray-50 border border-gray-200 rounded px-2 py-1 text-sm text-gray-700 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                 disabled={Boolean(passwordState?.isSaving) || isLoading}
               />
               <div className="flex flex-wrap gap-2">
@@ -389,7 +389,7 @@ export function AdminPage() {
                 type="password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500 sm:text-sm"
                 placeholder="Enter admin password"
               />
             </div>

@@ -65,8 +65,8 @@ export function SuggestedPromptsBar({
           const key = `${prompt.type}-${index}-${prompt.simplified_text || prompt.prompt}`;
           const accentColor =
             prompt.type === 'roleplay'
-              ? 'bg-gradient-to-br from-purple-50 via-pink-50 to-purple-100 border-purple-200 hover:border-purple-300'
-              : 'bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-100 border-blue-200 hover:border-blue-300';
+              ? 'bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 border-primary-200 hover:border-primary-300'
+              : 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-100 hover:border-blue-200';
 
           const displayText = (prompt.simplified_text ?? '').trim() || prompt.prompt;
           const isRoleplay = prompt.type === 'roleplay';
@@ -78,7 +78,7 @@ export function SuggestedPromptsBar({
               type="button"
               onClick={() => onSelect(prompt)}
               disabled={disabled}
-              className={`w-full px-4 sm:px-5 py-2 sm:py-2.5 text-left text-sm sm:text-base font-medium text-gray-800 border rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed ${accentColor}`}
+              className={`w-full px-4 sm:px-5 py-2 sm:py-2.5 text-left text-sm sm:text-base font-medium text-gray-800 border rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed ${accentColor}`}
               aria-label={prompt.prompt}
               title={prompt.prompt}
               data-prompt-type={prompt.type}
@@ -86,7 +86,7 @@ export function SuggestedPromptsBar({
               <span className="flex items-start gap-3">
                 <span
                   className={`mt-1.5 h-2 w-2 flex-shrink-0 rounded-full ${
-                    prompt.type === 'roleplay' ? 'bg-purple-500' : 'bg-blue-500'
+                    prompt.type === 'roleplay' ? 'bg-primary-500' : 'bg-blue-500'
                   }`}
                   aria-hidden="true"
                 />
