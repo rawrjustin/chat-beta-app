@@ -33,26 +33,7 @@ export function Footer() {
             </ul>
           </div>
 
-          <div>
-            <h3 className="text-white font-semibold mb-4">Support</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="mailto:support@egolab.com" className="hover:text-white transition-colors">
-                  Contact Support
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  Documentation
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  API Reference
-                </a>
-              </li>
-            </ul>
-          </div>
+
 
           <div>
             <h3 className="text-white font-semibold mb-4">Legal</h3>
@@ -77,11 +58,7 @@ export function Footer() {
                   Terms of Service
                 </a>
               </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  Cookie Policy
-                </a>
-              </li>
+
             </ul>
           </div>
         </div>

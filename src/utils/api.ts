@@ -15,7 +15,12 @@ import type {
   PrepromptResponse,
 } from '../types/api';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+// Use relative URLs in production (proxied through Express server)
+// This allows the server to use Railway's internal network for backend communication
+// In development, use the explicit API URL
+const API_BASE = import.meta.env.PROD 
+  ? '' // Use relative URLs - server will proxy to backend via internal network
+  : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000');
 
 interface CharacterAuthOptions {
   characterPassword?: string;

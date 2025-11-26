@@ -43,10 +43,10 @@ export function Navbar() {
             </Link>
             <Link
               to="/beta-signup"
-              className={`text-sm font-medium transition-colors ${
+              className={`text-sm font-medium px-3 py-1.5 rounded-full border transition-all ${
                 isActive('/beta-signup')
-                  ? 'text-primary-600'
-                  : 'text-gray-700 hover:text-primary-600'
+                  ? 'bg-primary-50 border-primary-200 text-primary-700'
+                  : 'border-primary-100 bg-gradient-to-r from-primary-50/50 to-secondary-50/50 text-primary-700 hover:border-primary-200 hover:shadow-sm'
               }`}
             >
               3D Avatar Beta
