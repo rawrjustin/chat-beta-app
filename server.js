@@ -27,6 +27,12 @@ if (BACKEND_URL.includes('.railway.internal') && !BACKEND_URL.match(/:\d+$/)) {
 
 console.log(`Backend URL configured: ${BACKEND_URL}`);
 
+// Local health check endpoint (responds immediately without proxying to backend)
+// This ensures Railway health checks pass even if backend is temporarily unavailable
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', service: 'frontend' });
+});
+
 // Proxy API requests to backend using internal network
 app.use('/api', createProxyMiddleware({
   target: BACKEND_URL,
@@ -41,12 +47,6 @@ app.use('/api', createProxyMiddleware({
     console.error('Proxy error:', err);
     res.status(500).json({ error: 'Proxy error', message: err.message });
   },
-}));
-
-// Proxy health check endpoint
-app.use('/health', createProxyMiddleware({
-  target: BACKEND_URL,
-  changeOrigin: true,
 }));
 
 // Proxy admin endpoints
