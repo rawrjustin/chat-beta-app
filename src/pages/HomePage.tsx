@@ -272,35 +272,55 @@ export function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-900 via-purple-900 to-black text-gray-900 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src="https://genies-character-profile-images-dev.s3.us-west-2.amazonaws.com/hero-bg.png"
-            alt=""
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.3),_rgba(15,23,42,0.15))]" />
-          <div className="absolute inset-0 backdrop-blur-[2px]" />
+      <section className="bg-gray-900 relative overflow-hidden">
+        {/* Abstract Background Effects */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-[30%] -left-[10%] w-[70%] h-[70%] bg-primary-600/20 rounded-full blur-[120px] animate-pulse-slow" />
+          <div className="absolute top-[20%] -right-[10%] w-[60%] h-[60%] bg-secondary-600/20 rounded-full blur-[100px] animate-pulse-slow" style={{ animationDelay: '1.5s' }} />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[40%] bg-purple-900/30 rounded-full blur-[120px]" />
+          <div className="absolute inset-0 bg-grid-pattern opacity-[0.03]" />
         </div>
 
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 md:py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-            <div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-gray-900">
-                Chat with the most unhinged egos on earth
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24 lg:py-32">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-primary-200 text-sm font-medium mb-6 backdrop-blur-sm">
+                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                Now in Public Beta
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 text-white tracking-tight leading-[1.1]">
+                Chat with the most <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400">unhinged egos</span> on earth
               </h1>
-              <p className="text-base sm:text-lg mb-6 max-w-xl bg-white/95 backdrop-blur-sm px-6 py-4 rounded-2xl shadow-lg border border-white/20 text-gray-800 leading-relaxed">
+              <p className="text-lg sm:text-xl mb-8 max-w-xl text-gray-300 leading-relaxed font-light">
                 Drop into Ego Lab to chat with a cast of characters who roast, question, comfort, and surprise you. What they say next is shaped entirely by you.
               </p>
+              
+              <div className="flex flex-wrap gap-4">
+                <Link
+                  to={`/chat/${activeHero.configId}`}
+                  className="btn-primary text-lg px-8 py-4 shadow-glow"
+                >
+                  Start Chatting
+                </Link>
+                <Link
+                  to="/characters"
+                  className="px-8 py-4 rounded-xl bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 transition-all backdrop-blur-sm"
+                >
+                  View All Characters
+                </Link>
+              </div>
             </div>
 
-            <div className="relative">
-              <div className="absolute -top-8 -right-6 sm:-right-12 h-24 w-24 sm:h-32 sm:w-32 bg-blue-400/20 rounded-full blur-3xl animate-pulse" />
-              <div className="absolute -bottom-8 -left-10 sm:-left-16 h-32 w-32 sm:h-40 sm:w-40 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+            <div className="relative perspective-1000">
+              {/* Decorative elements behind card */}
+              <div className="absolute -top-12 -right-12 w-48 h-48 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full blur-3xl opacity-20 animate-pulse" />
+              <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }} />
 
-              <div className="relative bg-white/95 border border-gray-200/50 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-sm hover:shadow-3xl transition-shadow duration-300">
-                <div className="flex items-start gap-4 mb-5">
-                  <div className="h-20 w-20 rounded-2xl overflow-hidden border-2 border-purple-200 shadow-xl bg-gradient-to-br from-white to-purple-50 flex items-center justify-center ring-2 ring-purple-100 flex-shrink-0">
+              <div className="relative bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-2xl transition-transform duration-500 hover:scale-[1.01] hover:shadow-glow">
+                {/* Card Header */}
+                <div className="flex items-start gap-5 mb-8">
+                  <div className="h-20 w-20 rounded-2xl overflow-hidden border-2 border-white/10 shadow-lg bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center flex-shrink-0 relative group">
+                    <div className="absolute inset-0 bg-primary-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                     {activeHero.avatarUrl ? (
                       <img
                         src={activeHero.avatarUrl}
@@ -308,35 +328,36 @@ export function HomePage() {
                         className="w-full h-full object-contain p-1"
                       />
                     ) : (
-                      <div className="text-2xl font-bold text-purple-600">
+                      <div className="text-3xl font-bold text-primary-400">
                         {activeHero.name.charAt(0).toUpperCase()}
                       </div>
                     )}
                   </div>
                   <div>
-                    <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-1">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
                       {activeHero.name}
                     </h2>
                     {activeHero?.description && (
-                      <p className="text-sm text-gray-600">{activeHero.description}</p>
+                      <p className="text-sm text-gray-400 leading-relaxed">{activeHero.description}</p>
                     )}
                   </div>
                 </div>
 
-                <div className="space-y-4">
+                {/* Chat Preview */}
+                <div className="space-y-6">
                   {activeConversation.length > 0 ? (
                     activeConversation.map((pair, index) => (
-                      <div key={`${activeHero.id}-message-${index}`} className="space-y-3">
-                        <div className="flex gap-3 items-start">
-                          <div className="flex-shrink-0 h-9 w-9 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 border border-blue-200 flex items-center justify-center text-xs font-semibold text-gray-700 shadow-sm">
-                            You
-                          </div>
-                          <div className="flex-1 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-800 shadow-md hover:shadow-lg transition-shadow">
+                      <div key={`${activeHero.id}-message-${index}`} className="space-y-4">
+                        {/* User Message */}
+                        <div className="flex justify-end">
+                          <div className="bg-primary-600 text-white rounded-2xl rounded-tr-sm px-5 py-3.5 text-sm sm:text-base shadow-lg max-w-[85%]">
                             {pair.user}
                           </div>
                         </div>
-                        <div className="flex gap-3 items-start">
-                          <div className="flex-shrink-0 h-9 w-9 rounded-full overflow-hidden border-2 border-purple-200 bg-white shadow-sm flex items-center justify-center ring-2 ring-purple-100">
+                        
+                        {/* AI Message */}
+                        <div className="flex gap-4 items-end">
+                          <div className="flex-shrink-0 h-8 w-8 rounded-full overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center">
                             {activeHero.avatarUrl ? (
                               <img
                                 src={activeHero.avatarUrl}
@@ -344,58 +365,52 @@ export function HomePage() {
                                 className="w-full h-full object-contain p-0.5"
                               />
                             ) : (
-                              <div className="text-xs font-bold text-purple-600">
+                              <div className="text-xs font-bold text-primary-400">
                                 {activeHero.name.charAt(0).toUpperCase()}
                               </div>
                             )}
                           </div>
-                          <div className="flex-1 bg-white border-2 border-purple-100 rounded-2xl px-4 py-3 text-sm text-gray-900 shadow-md hover:shadow-lg transition-shadow">
+                          <div className="bg-white/10 border border-white/5 text-gray-100 rounded-2xl rounded-tl-sm px-5 py-3.5 text-sm sm:text-base backdrop-blur-sm shadow-sm max-w-[85%]">
                             {pair.ai}
                           </div>
                         </div>
                       </div>
                     ))
                   ) : (
-                    <div className="bg-gray-100 border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-700">
-                      Dialogue preview coming soon.
+                    <div className="text-center py-8 text-gray-500">
+                      Preview loading...
                     </div>
                   )}
                 </div>
 
-                <div className="mt-6">
-                  <Link
-                    to={`/chat/${activeHero.configId}`}
-                    className="inline-flex items-center justify-center w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
-                  >
-                    Start Chatting with {activeHero.name} →
-                  </Link>
+                <div className="mt-8 pt-6 border-t border-white/10 flex justify-between items-center">
+                   <div className="flex gap-2">
+                    {heroCharacters.map((hero, index) => (
+                      <button
+                        key={hero.id}
+                        type="button"
+                        onClick={() => {
+                          heroIndexRef.current = index;
+                          setHeroIndex(index);
+                        }}
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                          heroIndex === index ? 'bg-primary-500 w-8' : 'bg-white/20 w-2 hover:bg-white/40'
+                        }`}
+                        aria-label={`Show ${hero.name}`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-xs text-gray-500 font-mono">LIVE PREVIEW</span>
                 </div>
 
               </div>
             </div>
           </div>
-
-          <div className="mt-12 flex items-center justify-center gap-3">
-            {heroCharacters.map((hero, index) => (
-              <button
-                key={hero.id}
-                type="button"
-                onClick={() => {
-                  heroIndexRef.current = index;
-                  setHeroIndex(index);
-                }}
-                className={`h-2 w-10 rounded-full transition-all ${
-                  heroIndex === index ? 'bg-gray-900 w-12' : 'bg-gray-400 hover:bg-gray-500'
-                }`}
-                aria-label={`Show ${hero.name}`}
-              />
-            ))}
-          </div>
         </div>
       </section>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
         {isLoading && (
           <div className="flex justify-center items-center py-12">
             <LoadingSpinner />
@@ -403,33 +418,43 @@ export function HomePage() {
         )}
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <p className="text-red-800 text-sm">
-              <span className="font-semibold">Error loading characters:</span> {error}
+          <div className="bg-red-50 border border-red-200 rounded-xl p-6 mb-8">
+            <p className="text-red-800 flex items-center gap-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              <span className="font-semibold">Unable to load characters:</span> {error}
             </p>
           </div>
         )}
 
         {!isLoading && !error && characters.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-600">No characters available at this time.</p>
+          <div className="text-center py-20">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg>
+            </div>
+            <p className="text-gray-500 text-lg">No characters available at this time.</p>
           </div>
         )}
 
         {!isLoading && !error && characters.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {characters.map((character) => (
-              <CharacterCard
-                key={character.config_id}
-                character={{
-                  id: character.config_id,
-                  name: character.name || character.config_id,
-                  description: character.description || 'No description available',
-                  avatar_url: character.avatar_url,
-                }}
-              />
-            ))}
-          </div>
+          <>
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-bold text-gray-900">Featured Characters</h2>
+              {/* Optional filter/sort controls could go here */}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+              {characters.map((character) => (
+                <CharacterCard
+                  key={character.config_id}
+                  character={{
+                    id: character.config_id,
+                    name: character.name || character.config_id,
+                    description: character.description || 'No description available',
+                    avatar_url: character.avatar_url,
+                  }}
+                />
+              ))}
+            </div>
+          </>
         )}
       </main>
     </div>

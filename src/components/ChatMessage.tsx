@@ -19,18 +19,18 @@ export function ChatMessage({ message }: ChatMessageProps) {
       className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4 animate-fade-in`}
     >
       <div
-        className={`max-w-[85%] sm:max-w-[80%] md:max-w-[70%] rounded-2xl px-3 sm:px-4 py-2 sm:py-3 ${
+        className={`max-w-[85%] sm:max-w-[80%] md:max-w-[70%] rounded-2xl px-4 py-3 shadow-sm ${
           isUser
-            ? 'bg-airbnb-red text-white rounded-tr-none'
-            : 'bg-white text-gray-900 border border-gray-200 rounded-tl-none shadow-sm'
+            ? 'bg-primary-600 text-white rounded-tr-sm'
+            : 'bg-white text-gray-900 border border-gray-100 rounded-tl-sm'
         }`}
       >
-        <p className="whitespace-pre-wrap break-words text-sm sm:text-base">
+        <p className="whitespace-pre-wrap break-words text-sm sm:text-base leading-relaxed">
           {shouldFormatRoleplayAction && formattedSegments
             ? formattedSegments.map((segment, index) => (
                 <span
                   key={`message-segment-${index}`}
-                  className={segment.isQuoted ? undefined : 'italic'}
+                  className={segment.isQuoted ? undefined : 'italic text-primary-200'}
                 >
                   {segment.text}
                 </span>
@@ -39,8 +39,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
         </p>
         {message.timestamp && (
           <p
-            className={`text-xs mt-1 ${
-              isUser ? 'text-red-100' : 'text-gray-500'
+            className={`text-[10px] mt-1.5 ${
+              isUser ? 'text-primary-100/80' : 'text-gray-400'
             }`}
           >
             {message.timestamp.toLocaleTimeString([], {

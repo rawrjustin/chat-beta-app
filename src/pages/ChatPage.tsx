@@ -15,6 +15,7 @@ import {
   getCharacterAccessToken,
   saveCharacterAccessToken,
   setCharacterName,
+  setCharacterNames,
 } from '../utils/storage';
 import type {
   CharacterResponse,
@@ -204,6 +205,18 @@ export function ChatPage() {
           const data = await getCharacters();
           resolvedCharacter =
             data.characters.find((char) => char.config_id === configId) ?? null;
+          
+          // When falling back to characters list, populate cache for ALL characters
+          // This ensures the cache is available for future events
+          const nameMappings = data.characters
+            .filter((char) => char.config_id && char.name)
+            .map((char) => ({
+              configId: char.config_id,
+              name: char.name!,
+            }));
+          if (nameMappings.length > 0) {
+            setCharacterNames(nameMappings);
+          }
         }
 
         if (resolvedCharacter) {
@@ -215,6 +228,7 @@ export function ChatPage() {
           setCharacter(enhancedCharacter);
           
           // Populate character name cache for Mixpanel tracking
+          // Do this even if we already populated from getCharacters() to ensure it's up to date
           if (resolvedCharacter.config_id && resolvedCharacter.name) {
             setCharacterName(resolvedCharacter.config_id, resolvedCharacter.name);
           }
@@ -679,7 +693,7 @@ export function ChatPage() {
               <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
                 <Link
                   to="/"
-                  className="text-gray-600 hover:text-airbnb-dark transition-colors flex-shrink-0"
+                  className="text-gray-600 hover:text-primary-600 transition-colors flex-shrink-0"
                 >
                   <svg
                     className="w-5 h-5 sm:w-6 sm:h-6"
@@ -696,7 +710,7 @@ export function ChatPage() {
                   </svg>
                 </Link>
                 <div className="min-w-0 flex-1">
-                  <h1 className="text-base sm:text-lg md:text-xl font-semibold text-airbnb-dark truncate">
+                  <h1 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 truncate">
                     {isLoadingCharacter
                       ? 'Loading...'
                       : character?.name || configId || 'AI Character'}

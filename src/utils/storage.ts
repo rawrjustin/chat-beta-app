@@ -205,9 +205,9 @@ export function getCharacterName(configId: string): string | null {
  * Set character name for a given config_id
  */
 export function setCharacterName(configId: string, name: string): void {
-  if (!configId || !name) return;
+  if (!configId || !name || typeof name !== 'string' || name.trim() === '') return;
   const cache = getCharacterNameCache();
-  cache[configId] = name;
+  cache[configId] = name.trim();
   saveCharacterNameCache(cache);
 }
 
@@ -217,8 +217,8 @@ export function setCharacterName(configId: string, name: string): void {
 export function setCharacterNames(mappings: Array<{ configId: string; name: string }>): void {
   const cache = getCharacterNameCache();
   for (const { configId, name } of mappings) {
-    if (configId && name) {
-      cache[configId] = name;
+    if (configId && name && typeof name === 'string' && name.trim() !== '') {
+      cache[configId] = name.trim();
     }
   }
   saveCharacterNameCache(cache);
@@ -242,5 +242,12 @@ export function clearAllCharacterNames(): void {
   } catch (error) {
     console.error('Failed to clear character name cache:', error);
   }
+}
+
+/**
+ * Get all character names from cache (for debugging)
+ */
+export function getAllCharacterNames(): CharacterNameCache {
+  return getCharacterNameCache();
 }
 

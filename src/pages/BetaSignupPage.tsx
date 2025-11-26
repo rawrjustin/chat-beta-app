@@ -72,7 +72,7 @@ export function BetaSignupPage() {
         href={BETA_SIGNUP_FORM_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center justify-center bg-gradient-to-r from-purple-600 to-blue-500 text-white px-8 py-4 rounded-xl font-semibold shadow-lg shadow-purple-500/30 hover:opacity-95 transition"
+        className="inline-flex items-center justify-center bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg shadow-primary-500/30 hover:opacity-95 transition"
       >
         {label}
       </a>

@@ -12,10 +12,10 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-lg flex items-center justify-center shadow-lg shadow-primary-500/30">
               <span className="text-white font-bold text-lg">E</span>
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
               Ego Lab
             </span>
           </Link>
@@ -25,8 +25,8 @@ export function Navbar() {
               to="/"
               className={`text-sm font-medium transition-colors ${
                 isActive('/')
-                  ? 'text-purple-600'
-                  : 'text-gray-700 hover:text-purple-600'
+                  ? 'text-primary-600'
+                  : 'text-gray-700 hover:text-primary-600'
               }`}
             >
               Home
@@ -35,8 +35,8 @@ export function Navbar() {
               to="/characters"
               className={`text-sm font-medium transition-colors ${
                 isActive('/characters')
-                  ? 'text-purple-600'
-                  : 'text-gray-700 hover:text-purple-600'
+                  ? 'text-primary-600'
+                  : 'text-gray-700 hover:text-primary-600'
               }`}
             >
               Characters
@@ -45,15 +45,15 @@ export function Navbar() {
               to="/beta-signup"
               className={`text-sm font-medium transition-colors ${
                 isActive('/beta-signup')
-                  ? 'text-purple-600'
-                  : 'text-gray-700 hover:text-purple-600'
+                  ? 'text-primary-600'
+                  : 'text-gray-700 hover:text-primary-600'
               }`}
             >
               3D Avatar Beta
             </Link>
             <Link
               to="/"
-              className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:shadow-lg transition-all"
+              className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:shadow-lg hover:shadow-primary-500/30 transition-all hover:-translate-y-0.5"
             >
               Get Started
             </Link>
