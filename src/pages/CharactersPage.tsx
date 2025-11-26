@@ -8,6 +8,8 @@ import { setCharacterNames } from '../utils/storage';
 
 export function CharactersPage() {
   const [characters, setCharacters] = useState<CharacterResponse[]>([]);
+  const [filteredCharacters, setFilteredCharacters] = useState<CharacterResponse[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,6 +33,7 @@ export function CharactersPage() {
           };
         });
         setCharacters(enhancedCharacters);
+        setFilteredCharacters(enhancedCharacters);
         
         // Populate character name cache for Mixpanel tracking
         const nameMappings = enhancedCharacters
@@ -52,6 +55,21 @@ export function CharactersPage() {
 
     fetchCharacters();
   }, []);
+
+  useEffect(() => {
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) {
+      setFilteredCharacters(characters);
+      return;
+    }
+
+    const filtered = characters.filter((character) => {
+      const nameMatch = character.name?.toLowerCase().includes(query);
+      const descMatch = character.description?.toLowerCase().includes(query);
+      return nameMatch || descMatch;
+    });
+    setFilteredCharacters(filtered);
+  }, [searchQuery, characters]);
 
   return (
     <div className="min-h-screen bg-gray-50 relative">
@@ -78,10 +96,8 @@ export function CharactersPage() {
                 type="text" 
                 placeholder="Find a character..." 
                 className="w-full px-4 py-2 outline-none text-gray-700 placeholder-gray-400 bg-transparent"
-                onChange={() => {
-                  // Basic client-side search could be implemented here if desired
-                  // For now, this is just a visual enhancement request
-                }}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
           </div>
@@ -101,15 +117,19 @@ export function CharactersPage() {
           </div>
         )}
 
-        {!isLoading && !error && characters.length === 0 && (
+        {!isLoading && !error && filteredCharacters.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-600">No characters available at this time.</p>
+            <p className="text-gray-600">
+              {characters.length === 0 
+                ? "No characters available at this time." 
+                : "No characters found matching your search."}
+            </p>
           </div>
         )}
 
-        {!isLoading && !error && characters.length > 0 && (
+        {!isLoading && !error && filteredCharacters.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {characters.map((character) => (
+            {filteredCharacters.map((character) => (
               <CharacterCard
                 key={character.config_id}
                 character={{

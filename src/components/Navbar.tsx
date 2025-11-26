@@ -51,12 +51,6 @@ export function Navbar() {
             >
               3D Avatar Beta
             </Link>
-            <Link
-              to="/"
-              className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:shadow-lg hover:shadow-primary-500/30 transition-all hover:-translate-y-0.5"
-            >
-              Get Started
-            </Link>
           </div>
 
           <button
@@ -112,13 +106,6 @@ export function Navbar() {
                 }`}
               >
                 3D Avatar Beta
-              </Link>
-              <Link
-                to="/"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-md text-base font-semibold bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:opacity-90 transition-opacity"
-              >
-                Get Started
               </Link>
             </div>
           </div>
