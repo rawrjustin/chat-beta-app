@@ -17,6 +17,7 @@ import {
   setCharacterName,
   setCharacterNames,
 } from '../utils/storage';
+import { registerCharacterName, unregisterCharacterName } from '../utils/mixpanel';
 import type {
   CharacterResponse,
   SuggestedPreprompt,
@@ -182,6 +183,10 @@ export function ChatPage() {
 
   // Fetch character info
   useEffect(() => {
+    // Clear previous character's Mixpanel super property immediately when configId changes
+    // This prevents the wrong character_name from appearing on events during loading
+    unregisterCharacterName();
+
     const fetchCharacter = async () => {
       if (!configId) {
         setIsLoadingCharacter(false);
@@ -231,6 +236,8 @@ export function ChatPage() {
           // Do this even if we already populated from getCharacters() to ensure it's up to date
           if (resolvedCharacter.config_id && resolvedCharacter.name) {
             setCharacterName(resolvedCharacter.config_id, resolvedCharacter.name);
+            // Register as Mixpanel super property so ALL subsequent events include character_name
+            registerCharacterName(resolvedCharacter.name);
           }
         } else {
           setCharacter(null);
@@ -245,6 +252,14 @@ export function ChatPage() {
 
     fetchCharacter();
   }, [configId]);
+
+  // Cleanup: Unregister character_name from Mixpanel when leaving chat page
+  // This prevents character_name from leaking into events on other pages
+  useEffect(() => {
+    return () => {
+      unregisterCharacterName();
+    };
+  }, []);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {

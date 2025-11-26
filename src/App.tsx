@@ -8,12 +8,20 @@ import { BetaSignupPage } from './pages/BetaSignupPage';
 import { CharactersPage } from './pages/CharactersPage';
 import { AdminPage } from './pages/AdminPage';
 import mixpanel from 'mixpanel-browser';
-import { withCharacterName } from './utils/mixpanel';
+import { withCharacterName, unregisterCharacterName } from './utils/mixpanel';
 
 function PageViewTracker() {
   const location = useLocation();
 
   useEffect(() => {
+    // Clear character_name super property when not on a chat page
+    // This prevents character_name from leaking into events on other pages
+    // (e.g., autocaptured clicks, form submissions) due to effect timing
+    const isOnChatPage = location.pathname.startsWith('/chat/');
+    if (!isOnChatPage) {
+      unregisterCharacterName();
+    }
+
     mixpanel.track('Page View', withCharacterName({
       page_url: window.location.href,
       page_title: document.title,

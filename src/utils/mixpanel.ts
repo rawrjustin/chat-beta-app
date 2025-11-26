@@ -1,4 +1,22 @@
+import mixpanel from 'mixpanel-browser';
 import { getCharacterName } from './storage';
+
+/**
+ * Register character_name as a Mixpanel super property
+ * Super properties are automatically added to ALL subsequent events
+ * Call this when character data is loaded to ensure all events have character_name
+ */
+export function registerCharacterName(characterName: string): void {
+  mixpanel.register({ character_name: characterName });
+}
+
+/**
+ * Unregister character_name super property
+ * Call this when leaving a chat page to prevent character_name from leaking into other page events
+ */
+export function unregisterCharacterName(): void {
+  mixpanel.unregister('character_name');
+}
 
 /**
  * Extract character config_id from URL path
