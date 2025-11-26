@@ -78,9 +78,8 @@ export function CharactersPage() {
                 type="text" 
                 placeholder="Find a character..." 
                 className="w-full px-4 py-2 outline-none text-gray-700 placeholder-gray-400 bg-transparent"
-                onChange={(e) => {
+                onChange={() => {
                   // Basic client-side search could be implemented here if desired
-                  const term = e.target.value.toLowerCase();
                   // For now, this is just a visual enhancement request
                 }}
               />
