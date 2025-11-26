@@ -12,6 +12,7 @@ import {
 } from '../utils/api';
 import mixpanel from 'mixpanel-browser';
 import { saveChatSession, loadChatSession, clearChatSession, clearCharacterAccessToken } from '../utils/storage';
+import { withCharacterName } from '../utils/mixpanel';
 
 const mapChatMessageToHistory = ({
   role,
@@ -158,9 +159,9 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
 
       setMessages((prevMessages: ChatMessage[]) => [...prevMessages, aiMessage]);
 
-      mixpanel.track('AI Initial Message', {
+      mixpanel.track('AI Initial Message', withCharacterName({
         'API Response Time': responseTime,
-      });
+      }, configId));
     } catch (err) {
       if (err instanceof ApiError && err.passwordRequired && configId) {
         clearCharacterAccessToken(configId);
@@ -172,10 +173,10 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
         const errorMessage =
           err instanceof Error ? err.message : 'Failed to load initial message';
         setError(errorMessage);
-        mixpanel.track('API Error', {
+        mixpanel.track('API Error', withCharacterName({
           error_type: 'initial_message',
           error_message: errorMessage,
-        });
+        }, configId));
       }
     } finally {
       setIsLoading(false);
@@ -215,13 +216,13 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
         promptEventPayload.simplified_text = metadata.simplifiedText;
       }
 
-      mixpanel.track('AI Prompt Sent and Prompt Text', promptEventPayload);
+      mixpanel.track('AI Prompt Sent and Prompt Text', withCharacterName(promptEventPayload, configId));
 
       const hasUserMessage = messages.some(
         (message: ChatMessage) => message.role === 'user'
       );
       if (!hasUserMessage) {
-        mixpanel.track('Launch AI');
+        mixpanel.track('Launch AI', withCharacterName({}, configId));
       }
 
       const conversationHistory: InitialMessageHistoryMessage[] = messages
@@ -262,9 +263,9 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
         }
 
         // Track AI Response Sent event
-        mixpanel.track('AI Response Sent', {
+        mixpanel.track('AI Response Sent', withCharacterName({
           'API Response Time': responseTime,
-        });
+        }, configId));
 
         // Add AI response to UI
         const inlinePreprompts = response.preprompts && Array.isArray(response.preprompts) ? response.preprompts : undefined;
@@ -292,10 +293,10 @@ export function useChat(configId: string, options: UseChatOptions = {}) {
           setError(errorMessage);
 
           // Track API Error event
-          mixpanel.track('API Error', {
+          mixpanel.track('API Error', withCharacterName({
             error_type: 'api',
             error_message: errorMessage,
-          });
+          }, configId));
 
           // Remove the user message on error
           setMessages((prevMessages: ChatMessage[]) => prevMessages.slice(0, -1));

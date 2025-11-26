@@ -14,6 +14,7 @@ import {
   clearCharacterAccessToken,
   getCharacterAccessToken,
   saveCharacterAccessToken,
+  setCharacterName,
 } from '../utils/storage';
 import type {
   CharacterResponse,
@@ -207,10 +208,16 @@ export function ChatPage() {
 
         if (resolvedCharacter) {
           const extracted = extractAvatarUrl(resolvedCharacter) ?? resolvedCharacter.avatar_url;
-          setCharacter({
+          const enhancedCharacter = {
             ...resolvedCharacter,
             avatar_url: normalizeAvatarUrl(extracted),
-          });
+          };
+          setCharacter(enhancedCharacter);
+          
+          // Populate character name cache for Mixpanel tracking
+          if (resolvedCharacter.config_id && resolvedCharacter.name) {
+            setCharacterName(resolvedCharacter.config_id, resolvedCharacter.name);
+          }
         } else {
           setCharacter(null);
         }

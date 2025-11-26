@@ -9,6 +9,7 @@ interface StoredChat {
 
 const STORAGE_PREFIX = 'egolab_chat_';
 const ACCESS_STORAGE_PREFIX = 'egolab_character_access_';
+const CHARACTER_NAME_CACHE_KEY = 'egolab_character_name_cache';
 
 interface StoredCharacterAccess {
   configId: string;
@@ -155,6 +156,91 @@ export function clearCharacterAccessToken(configId: string): void {
     localStorage.removeItem(getAccessStorageKey(configId));
   } catch (error) {
     console.error('Failed to clear character access token:', error);
+  }
+}
+
+/**
+ * Character Name Cache
+ * Maps character config_id to character name for Mixpanel tracking
+ */
+
+interface CharacterNameCache {
+  [configId: string]: string;
+}
+
+/**
+ * Get the character name cache from localStorage
+ */
+function getCharacterNameCache(): CharacterNameCache {
+  try {
+    const cached = localStorage.getItem(CHARACTER_NAME_CACHE_KEY);
+    if (!cached) return {};
+    return JSON.parse(cached);
+  } catch (error) {
+    console.error('Failed to load character name cache:', error);
+    return {};
+  }
+}
+
+/**
+ * Save the character name cache to localStorage
+ */
+function saveCharacterNameCache(cache: CharacterNameCache): void {
+  try {
+    localStorage.setItem(CHARACTER_NAME_CACHE_KEY, JSON.stringify(cache));
+  } catch (error) {
+    console.error('Failed to save character name cache:', error);
+  }
+}
+
+/**
+ * Get character name for a given config_id
+ */
+export function getCharacterName(configId: string): string | null {
+  const cache = getCharacterNameCache();
+  return cache[configId] || null;
+}
+
+/**
+ * Set character name for a given config_id
+ */
+export function setCharacterName(configId: string, name: string): void {
+  if (!configId || !name) return;
+  const cache = getCharacterNameCache();
+  cache[configId] = name;
+  saveCharacterNameCache(cache);
+}
+
+/**
+ * Set multiple character names at once (for bulk updates)
+ */
+export function setCharacterNames(mappings: Array<{ configId: string; name: string }>): void {
+  const cache = getCharacterNameCache();
+  for (const { configId, name } of mappings) {
+    if (configId && name) {
+      cache[configId] = name;
+    }
+  }
+  saveCharacterNameCache(cache);
+}
+
+/**
+ * Clear character name from cache
+ */
+export function clearCharacterName(configId: string): void {
+  const cache = getCharacterNameCache();
+  delete cache[configId];
+  saveCharacterNameCache(cache);
+}
+
+/**
+ * Clear all character names from cache
+ */
+export function clearAllCharacterNames(): void {
+  try {
+    localStorage.removeItem(CHARACTER_NAME_CACHE_KEY);
+  } catch (error) {
+    console.error('Failed to clear character name cache:', error);
   }
 }
 

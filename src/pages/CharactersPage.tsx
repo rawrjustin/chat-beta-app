@@ -4,6 +4,7 @@ import { getCharacters } from '../utils/api';
 import { extractAvatarUrl, normalizeAvatarUrl } from '../utils/avatar';
 import type { CharacterResponse } from '../types/api';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { setCharacterNames } from '../utils/storage';
 
 export function CharactersPage() {
   const [characters, setCharacters] = useState<CharacterResponse[]>([]);
@@ -30,6 +31,17 @@ export function CharactersPage() {
           };
         });
         setCharacters(enhancedCharacters);
+        
+        // Populate character name cache for Mixpanel tracking
+        const nameMappings = enhancedCharacters
+          .filter((char) => char.config_id && char.name)
+          .map((char) => ({
+            configId: char.config_id,
+            name: char.name!,
+          }));
+        if (nameMappings.length > 0) {
+          setCharacterNames(nameMappings);
+        }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to load characters';
         setError(errorMessage);

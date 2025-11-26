@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import type { SuggestedPreprompt } from '../types/api';
 import { fetchPreprompts } from '../utils/api';
 import mixpanel from 'mixpanel-browser';
+import { withCharacterName } from '../utils/mixpanel';
 
 const MAX_RETRIES = 5;
 const PREPROMPT_TIMEOUT = 15000; // 15 seconds total timeout
@@ -60,10 +61,10 @@ export function usePreprompts(requestId: string | null | undefined) {
       if (!isMountedRef.current) return;
       setIsLoading(false);
       setError('Suggestions timed out');
-      mixpanel.track('Async Preprompts Timeout', {
+      mixpanel.track('Async Preprompts Timeout', withCharacterName({
         request_id: requestId,
         retry_count: retryCountRef.current,
-      });
+      }));
     }, PREPROMPT_TIMEOUT);
 
     async function fetchPrepromptsWithRetry() {
@@ -79,11 +80,11 @@ export function usePreprompts(requestId: string | null | undefined) {
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current);
         }
-        mixpanel.track('Async Preprompts Max Retries', {
+        mixpanel.track('Async Preprompts Max Retries', withCharacterName({
           request_id: requestId,
           retry_count: retryCountRef.current,
           elapsed_time_ms: elapsedTime,
-        });
+        }));
         return;
       }
 
@@ -100,12 +101,12 @@ export function usePreprompts(requestId: string | null | undefined) {
           if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
           }
-          mixpanel.track('Async Preprompts Success', {
+          mixpanel.track('Async Preprompts Success', withCharacterName({
             request_id: requestId,
             retry_count: retryCountRef.current,
             elapsed_time_ms: Date.now() - startTimeRef.current,
             preprompt_count: response.preprompts.length,
-          });
+          }));
           return;
         }
 
@@ -127,11 +128,11 @@ export function usePreprompts(requestId: string | null | undefined) {
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current);
         }
-        mixpanel.track('Async Preprompts Error', {
+        mixpanel.track('Async Preprompts Error', withCharacterName({
           request_id: requestId,
           retry_count: retryCountRef.current,
           error_message: errorMessage,
-        });
+        }));
       }
     }
 

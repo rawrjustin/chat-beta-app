@@ -8,15 +8,16 @@ import { BetaSignupPage } from './pages/BetaSignupPage';
 import { CharactersPage } from './pages/CharactersPage';
 import { AdminPage } from './pages/AdminPage';
 import mixpanel from 'mixpanel-browser';
+import { withCharacterName } from './utils/mixpanel';
 
 function PageViewTracker() {
   const location = useLocation();
 
   useEffect(() => {
-    mixpanel.track('Page View', {
+    mixpanel.track('Page View', withCharacterName({
       page_url: window.location.href,
       page_title: document.title,
-    });
+    }));
   }, [location]);
 
   return null;
