@@ -1,78 +1,76 @@
 const BETA_SIGNUP_FORM_URL = import.meta.env.VITE_BETA_SIGNUP_FORM_URL ?? 'https://geniesinc.notion.site/2aa8f0c92dfc807eb056df0d7b23c47f?pvs=105';
 
-const creationHighlights = [
+const features = [
   {
-    title: '3D Game-Ready Avatars',
-    description:
-      'Generate high-quality models in seconds — stylized, realistic, fantasy, animals, whatever your world needs.',
+    icon: '🎨',
+    title: '3D Identity Engine',
+    description: 'Generate high-fidelity, game-ready avatars in seconds. From stylized to realistic, create the face of your new digital entity.',
   },
   {
-    title: 'AI Brains With Memory',
-    description:
-      'Upload docs, pages, scripts, or lore so your Ego understands your world and responds with consistency and depth.',
+    icon: '🧠',
+    title: 'Cognitive Core',
+    description: 'Upload lore, scripts, and memories. Your Ego doesn’t just chat; it remembers, learns, and evolves with every interaction.',
   },
   {
-    title: 'Custom Behavior & Personality Modes',
-    description:
-      'Choose exactly how your character talks, reacts, moves, and expresses itself — from wholesome to chaotic to stoic.',
+    icon: '🎭',
+    title: 'Personality Matrix',
+    description: 'Fine-tune behavioral traits. Make them chaotic, stoic, wholesome, or unhinged. You define the soul of the machine.',
   },
   {
-    title: 'Voice & Chat Interactions',
-    description: 'Fans can chat with your Ego through text or natural voice conversations.',
-  },
-  {
-    title: 'Wearables & Look Customization',
-    description:
-      'Swap outfits, props, hairstyles, and accessories to match storylines, seasons, or special events.',
-  },
+    icon: '🗣️',
+    title: 'Multi-Modal Voice',
+    description: 'Give your Ego a voice. Seamless text-to-speech and speech-to-text integration for natural, fluid conversations.',
+  }
 ];
 
-const betaBenefits = [
+const benefits = [
   {
-    title: '✔ Unlimited free access to all Ego creation tools',
-    description: 'No caps. No paywalls. Experiment with as many characters as you want.',
+    title: 'Unlimited Access',
+    description: 'No caps. No paywalls. Experiment freely with our entire suite of creation tools during the beta period.',
   },
   {
-    title: '✔ Shape the future of avatar-driven storytelling',
-    description: 'Your feedback directly informs the next generation of Ego creation tools.',
+    title: 'Direct Influence',
+    description: 'Your feedback shapes the platform. Work directly with our engineering team to build the features you need.',
   },
   {
-    title: '✔ Early revenue opportunities',
-    description:
-      'Monetize your characters before the public launch — from custom interactions to character-driven experiences.',
+    title: 'Early Monetization',
+    description: 'Be the first to unlock revenue streams. Monetize your characters through exclusive interactions and experiences.',
   },
   {
-    title: '✔ Priority onboarding in January 2026',
-    description: 'Early adopters get dedicated support and faster feature access.',
+    title: 'Priority Status',
+    description: 'Get verified early. Secure your username and gain priority support when we launch publicly in 2026.',
   },
 ];
 
 const creatorTraits = [
-  'Have built characters before (webtoons, fiction, games, roleplay, OC worlds, AI personas, etc.)',
-  'Want their creations to feel alive, expressive, and interactive',
-  'Are excited to help shape new AI technology',
-  'Enjoy experimenting, storytelling, worldbuilding, or designing avatars',
-  'No minimum audience size required',
+  'Worldbuilders & Storytellers',
+  'Game Developers & Modders',
+  'Roleplay Enthusiasts',
+  'AI Artists & Technologists',
+  'Streamers & Content Creators',
 ];
 
-const applicationSteps = [
-  'Fill out the short application.',
-  'If accepted, you’ll get invited to Beta onboarding in January 2026.',
-  'You’ll gain access to Ego creation tools, tutorials, and community spaces.',
-  'Start generating characters + send feedback as you build.',
-  'Participate in early monetization experiments with your Egos.',
+const roadmap = [
+  { phase: '01', title: 'Apply', desc: 'Submit your creator profile.' },
+  { phase: '02', title: 'Onboard', desc: 'Get invited to the closed beta in Jan 2026.' },
+  { phase: '03', title: 'Create', desc: 'Access tools, build Egos, and share.' },
+  { phase: '04', title: 'Monetize', desc: 'Unlock early revenue features.' },
 ];
 
 export function BetaSignupPage() {
   const hasBetaLink = Boolean(BETA_SIGNUP_FORM_URL);
 
-  const renderCta = (label: string) =>
+  const renderCta = (label: string, secondary = false) =>
     hasBetaLink ? (
       <a
         href={BETA_SIGNUP_FORM_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center justify-center bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg shadow-primary-500/30 hover:opacity-95 transition"
+        className={`inline-flex items-center justify-center px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 ${
+          secondary 
+            ? 'bg-white/10 text-white hover:bg-white/20 border border-white/20 backdrop-blur-sm'
+            : 'bg-gradient-to-r from-primary-600 to-secondary-600 text-white shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 hover:-translate-y-0.5'
+        }`}
       >
         {label}
       </a>
@@ -80,127 +78,180 @@ export function BetaSignupPage() {
       <button
         type="button"
         disabled
-        className="inline-flex items-center justify-center bg-white/10 text-white/70 px-8 py-4 rounded-xl font-semibold border border-white/20 cursor-not-allowed"
-        aria-disabled="true"
+        className="inline-flex items-center justify-center bg-white/5 text-white/40 px-8 py-4 rounded-xl font-semibold border border-white/10 cursor-not-allowed"
       >
-        Beta Form Coming Soon
+        Beta Full
       </button>
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-50">
-      {/* Hero Video Section */}
-      <section className="relative w-full h-screen overflow-hidden bg-black flex items-center justify-center">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="h-full w-auto object-contain"
-        >
-          <source
-            src="https://genies-character-profile-images-dev.s3.us-west-2.amazonaws.com/animated-tiger"
-            type="video/mp4"
-          />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/50 pointer-events-none" />
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="text-center px-4">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
-              Build Your AI Character
-            </h2>
-            <p className="text-lg sm:text-xl text-white/90 max-w-2xl drop-shadow-md">
-              Create engaging, interactive AI characters that connect with your audience
-            </p>
+    <div className="min-h-screen bg-slate-950 text-slate-50 font-sans selection:bg-primary-500/30">
+      
+      {/* Hero Section */}
+      <section className="relative w-full h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden">
+        {/* Background Video */}
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="h-full w-full object-cover opacity-60"
+          >
+            <source
+              src="https://genies-character-profile-images-dev.s3.us-west-2.amazonaws.com/animated-tiger"
+              type="video/mp4"
+            />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-transparent to-slate-950/80" />
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center space-y-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-primary-300 text-sm font-medium backdrop-blur-md mb-4">
+            <span className="w-2 h-2 rounded-full bg-primary-400 animate-pulse" />
+            Accepting Early Access Applications
+          </div>
+          
+          <h1 className="text-5xl sm:text-7xl md:text-8xl font-bold tracking-tighter text-white drop-shadow-2xl">
+            Forge Your <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-fuchsia-400 to-secondary-400">
+              Digital Ego
+            </span>
+          </h1>
+          
+          <p className="text-xl sm:text-2xl text-slate-300 max-w-2xl mx-auto leading-relaxed font-light">
+            The operating system for avatar identity. Design living, breathing AI characters that connect, remember, and evolve.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
+            {renderCta('Apply for Beta')}
           </div>
         </div>
       </section>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 space-y-16">
-        {/* Hero */}
-        <section className="text-center space-y-6">
-          <p className="text-sm uppercase tracking-[0.3em] text-slate-400">Creator Beta</p>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white">
-            Bring Your Characters to Life as AI Egos
-          </h1>
-          <p className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto">
-            Create stunning 3D, game-ready avatars with personalities, memories, and voices your fans can truly talk to.
-          </p>
-          <p className="text-base sm:text-lg text-slate-200">Apply for the Creator Beta — launching January 2026.</p>
-          {renderCta('Join the Beta')}
-        </section>
-
-        {/* Sub-hero */}
-        <section className="bg-white/5 border border-white/10 rounded-3xl p-8 sm:p-10 space-y-4 text-center">
-          <p className="text-sm uppercase tracking-[0.2em] text-amber-300">Unlimited AI-Powered Creation</p>
-          <h2 className="text-3xl font-bold text-white">
-            Ego Lab gives creators the tools to generate living, expressive digital characters.
-          </h2>
-          <p className="text-lg text-slate-200">
-            3D looks, intelligent brains, natural behavior, and fully customizable personalities.
-          </p>
-          <p className="text-base text-slate-300">
-            Your characters become Egos — AI companions your fans can chat with, voice-talk to, and interact with across worlds.
-          </p>
-        </section>
-
-        {/* What you can create */}
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-6 py-24 space-y-32">
+        
+        {/* Value Prop / Features Grid */}
         <section>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">What You Can Create in the Beta</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {creationHighlights.map((item) => (
-              <div key={item.title} className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                <h3 className="text-xl font-semibold text-white mb-2">{item.title}</h3>
-                <p className="text-slate-300 text-sm sm:text-base">{item.description}</p>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">The Creation Suite</h2>
+            <p className="text-slate-400 max-w-2xl mx-auto">
+              Professional-grade tools distilled into an intuitive interface. Build complex personas without writing a single line of code.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {features.map((item, idx) => (
+              <div key={idx} className="group p-8 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors duration-300">
+                <div className="text-4xl mb-6 bg-white/5 w-16 h-16 rounded-2xl flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform">
+                  {item.icon}
+                </div>
+                <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
+                <p className="text-slate-400 leading-relaxed text-sm">
+                  {item.description}
+                </p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Why join */}
-        <section className="bg-gradient-to-br from-primary-500/10 to-secondary-500/10 border border-white/10 rounded-3xl p-8 sm:p-10 space-y-6">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white">Why Join the Creator Beta?</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {betaBenefits.map((benefit) => (
-              <div key={benefit.title} className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                <h3 className="text-lg font-semibold text-white mb-2">{benefit.title}</h3>
-                <p className="text-sm text-slate-300">{benefit.description}</p>
-              </div>
-            ))}
+        {/* Split Section: Vision */}
+        <section className="grid lg:grid-cols-2 gap-12 items-center bg-gradient-to-br from-primary-900/20 to-secondary-900/20 rounded-[2.5rem] p-8 sm:p-12 border border-white/10">
+          <div className="space-y-8">
+            <h2 className="text-3xl sm:text-5xl font-bold text-white leading-tight">
+              Not Just a Chatbot. <br />
+              <span className="text-primary-400">A Digital Soul.</span>
+            </h2>
+            <div className="space-y-6 text-lg text-slate-300">
+              <p>
+                Ego Lab gives you the power to create entities that feel truly alive. They have histories, opinions, and distinct voices.
+              </p>
+              <p>
+                Whether you're building a companion for your community, an NPC for your game, or a star for your next story, Ego Lab provides the infrastructure for digital life.
+              </p>
+            </div>
+            <div className="pt-4">
+              <ul className="flex flex-wrap gap-3">
+                {creatorTraits.map(trait => (
+                  <li key={trait} className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-slate-200">
+                    {trait}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div className="relative aspect-square lg:aspect-auto h-full min-h-[400px] rounded-2xl overflow-hidden bg-black/50 border border-white/10 flex items-center justify-center">
+            {/* Abstract visual placeholder */}
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20 animate-pulse" />
+            <div className="text-center p-8">
+              <p className="text-6xl mb-4">🧬</p>
+              <p className="text-white font-mono text-sm opacity-50">SYSTEM_READY</p>
+            </div>
           </div>
         </section>
 
-        {/* Who we're looking for */}
-        <section>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Who We’re Looking For</h2>
-          <p className="text-slate-300 mb-6">Creators who:</p>
-          <ul className="space-y-3 text-slate-200">
-            {creatorTraits.map((trait) => (
-              <li key={trait} className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 rounded-full bg-emerald-400" />
-                <span>{trait}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        {/* What to expect */}
-        <section className="bg-white/5 border border-white/10 rounded-3xl p-8 sm:p-10 space-y-8 text-center">
+        {/* Benefits & Roadmap */}
+        <section className="grid md:grid-cols-2 gap-12 lg:gap-24">
           <div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">What to Expect After You Apply</h2>
-            <p className="text-slate-300">Here’s how the Creator Beta journey unfolds:</p>
+            <h3 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+              <span className="w-8 h-1 bg-primary-500 rounded-full" />
+              Creator Benefits
+            </h3>
+            <div className="space-y-8">
+              {benefits.map((benefit, idx) => (
+                <div key={idx} className="flex gap-4">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-xs mt-1">
+                    ✓
+                  </div>
+                  <div>
+                    <h4 className="text-white font-bold mb-1">{benefit.title}</h4>
+                    <p className="text-slate-400 text-sm">{benefit.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          <ol className="space-y-4 text-left max-w-3xl mx-auto text-slate-200">
-            {applicationSteps.map((step, idx) => (
-              <li key={step} className="flex gap-4">
-                <span className="text-lg font-semibold text-emerald-300">{idx + 1}.</span>
-                <span>{step}</span>
-              </li>
-            ))}
-          </ol>
-          {renderCta('Apply Now')}
+
+          <div>
+            <h3 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+              <span className="w-8 h-1 bg-secondary-500 rounded-full" />
+              Launch Roadmap
+            </h3>
+            <div className="relative border-l border-white/10 ml-3 space-y-8 pb-2">
+              {roadmap.map((step, idx) => (
+                <div key={idx} className="relative pl-8">
+                  <span className="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-slate-800 border border-slate-600" />
+                  <span className="text-xs font-mono text-primary-400 mb-1 block">PHASE {step.phase}</span>
+                  <h4 className="text-white font-bold">{step.title}</h4>
+                  <p className="text-slate-500 text-sm">{step.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
-      </div>
+
+        {/* Final CTA */}
+        <section className="text-center py-20 bg-gradient-to-t from-primary-900/10 to-transparent rounded-[3rem]">
+          <h2 className="text-4xl sm:text-6xl font-bold text-white mb-8 tracking-tight">
+            Ready to Build?
+          </h2>
+          <p className="text-xl text-slate-400 mb-10 max-w-xl mx-auto">
+            Join the waitlist today and secure your spot in the next generation of digital identity.
+          </p>
+          <div className="flex justify-center">
+            {renderCta('Start Application')}
+          </div>
+        </section>
+
+      </main>
+
+      {/* Simple Footer */}
+      <footer className="border-t border-white/5 py-12 text-center text-slate-500 text-sm">
+        <p>© {new Date().getFullYear()} Ego Lab. All rights reserved.</p>
+      </footer>
     </div>
   );
 }
